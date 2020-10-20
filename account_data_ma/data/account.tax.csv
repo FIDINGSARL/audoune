@@ -1,0 +1,139 @@
+id,amount_type,code,amount,name,type_tax_use,sequence,description,chart_template_id/id,invoice_repartition_line_ids/factor_percent,invoice_repartition_line_ids/repartition_type,invoice_repartition_line_ids/account_id/id,refund_repartition_line_ids/factor_percent,refund_repartition_line_ids/repartition_type,refund_repartition_line_ids/account_id/id
+80,percent,80,20.0,20% (080),sale,1,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550080,100.0,of tax,account_data_ma.pcg_44550080
+81,percent,81,20.0,20% (081),sale,2,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550081,100.0,of tax,account_data_ma.pcg_44550081
+82,percent,82,20.0,20% (082),sale,3,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550082,100.0,of tax,account_data_ma.pcg_44550082
+83,percent,83,20.0,20% (083),sale,4,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550083,100.0,of tax,account_data_ma.pcg_44550083
+87,percent,87,20.0,20% (087),sale,5,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550087,100.0,of tax,account_data_ma.pcg_44550087
+102,percent,102,20.0,20% (102),sale,6,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550102,100.0,of tax,account_data_ma.pcg_44550102
+84,percent,84,14.0,14% (084),sale,7,14%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550084,100.0,of tax,account_data_ma.pcg_44550084
+86,percent,86,14.0,14% (086),sale,8,14%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550086,100.0,of tax,account_data_ma.pcg_44550086
+88,percent,88,14.0,14% (088),sale,9,14%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550088,100.0,of tax,account_data_ma.pcg_44550088
+90,percent,90,14.0,14% (090),sale,10,14%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550090,100.0,of tax,account_data_ma.pcg_44550090
+104,percent,104,14.0,14% (104),sale,11,14%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550104,100.0,of tax,account_data_ma.pcg_44550104
+91,percent,91,14.0,14% (091),sale,12,14%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550091,100.0,of tax,account_data_ma.pcg_44550091
+78,percent,78,10.0,10% (078),sale,13,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550078,100.0,of tax,account_data_ma.pcg_44550078
+79,percent,79,10.0,10% (079),sale,14,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550079,100.0,of tax,account_data_ma.pcg_44550079
+85,percent,85,10.0,10% (085),sale,15,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550085,100.0,of tax,account_data_ma.pcg_44550085
+89,percent,89,10.0,10% (089),sale,16,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550089,100.0,of tax,account_data_ma.pcg_44550089
+92,percent,92,10.0,10% (092),sale,17,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550092,100.0,of tax,account_data_ma.pcg_44550092
+93,percent,93,10.0,10% (093),sale,18,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550093,100.0,of tax,account_data_ma.pcg_44550093
+94,percent,94,10.0,10% (094),sale,19,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550094,100.0,of tax,account_data_ma.pcg_44550094
+95,percent,95,10.0,10% (095),sale,20,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550095,100.0,of tax,account_data_ma.pcg_44550095
+96,percent,96,10.0,10% (096),sale,21,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550096,100.0,of tax,account_data_ma.pcg_44550096
+97,percent,97,10.0,10% (097),sale,22,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550097,100.0,of tax,account_data_ma.pcg_44550097
+98,percent,98,10.0,10% (098),sale,23,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550098,100.0,of tax,account_data_ma.pcg_44550098
+99,percent,99,10.0,10% (099),sale,24,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550099,100.0,of tax,account_data_ma.pcg_44550099
+100,percent,100,10.0,10% (100),sale,25,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550100,100.0,of tax,account_data_ma.pcg_44550100
+101,percent,101,10.0,10% (101),sale,26,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550101,100.0,of tax,account_data_ma.pcg_44550101
+103,percent,103,10.0,10% (103),sale,27,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550103,100.0,of tax,account_data_ma.pcg_44550103
+105,percent,105,10.0,10% (105),sale,28,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550105,100.0,of tax,account_data_ma.pcg_44550105
+108,percent,108,10.0,10% (108),sale,29,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550108,100.0,of tax,account_data_ma.pcg_44550108
+109,percent,109,10.0,10% (109),sale,30,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550109,100.0,of tax,account_data_ma.pcg_44550109
+118,percent,118,10.0,10% (118),sale,31,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550118,100.0,of tax,account_data_ma.pcg_44550118
+106,percent,106,7.0,7% (106),sale,32,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550106,100.0,of tax,account_data_ma.pcg_44550106
+107,percent,107,7.0,7% (107),sale,33,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550107,100.0,of tax,account_data_ma.pcg_44550107
+110,percent,110,7.0,7% (110),sale,34,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550110,100.0,of tax,account_data_ma.pcg_44550110
+111,percent,111,7.0,7% (111),sale,35,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550111,100.0,of tax,account_data_ma.pcg_44550111
+113,percent,113,7.0,7% (113),sale,36,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550113,100.0,of tax,account_data_ma.pcg_44550113
+114,percent,114,7.0,7% (114),sale,37,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550114,100.0,of tax,account_data_ma.pcg_44550114
+115,percent,115,7.0,7% (115),sale,38,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550115,100.0,of tax,account_data_ma.pcg_44550115
+116,percent,116,7.0,7% (116),sale,39,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550116,100.0,of tax,account_data_ma.pcg_44550116
+117,percent,117,7.0,7% (117),sale,40,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550117,100.0,of tax,account_data_ma.pcg_44550117
+119,percent,119,7.0,7% (119),sale,41,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_44550119,100.0,of tax,account_data_ma.pcg_44550119
+140,percent,140,20.0,20% (140),purchase,42,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552140,100.0,of tax,account_data_ma.pcg_34552140
+141,percent,141,14.0,14% (141),purchase,43,14%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552141,100.0,of tax,account_data_ma.pcg_34552141
+142,percent,142,10.0,10% (142),purchase,44,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552142,100.0,of tax,account_data_ma.pcg_34552142
+143,percent,143,10.0,10% (143),purchase,45,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552143,100.0,of tax,account_data_ma.pcg_34552143
+144,percent,144,10.0,10% (144),purchase,46,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552144,100.0,of tax,account_data_ma.pcg_34552144
+153,percent,153,10.0,10% (153),purchase,47,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552153,100.0,of tax,account_data_ma.pcg_34552153
+145,percent,145,20.0,20% (145),purchase,48,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552145,100.0,of tax,account_data_ma.pcg_34552145
+146,percent,146,20.0,20% (146),purchase,49,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552146,100.0,of tax,account_data_ma.pcg_34552146
+147,percent,147,14.0,14% (147),purchase,50,14%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552147,100.0,of tax,account_data_ma.pcg_34552147
+148,percent,148,14.0,14% (148),purchase,51,14%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552148,100.0,of tax,account_data_ma.pcg_34552148
+149,percent,149,10.0,10% (149),purchase,52,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552149,100.0,of tax,account_data_ma.pcg_34552149
+150,percent,150,10.0,10% (150),purchase,53,10%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552150,100.0,of tax,account_data_ma.pcg_34552150
+151,percent,151,7.0,7% (151),purchase,54,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552151,100.0,of tax,account_data_ma.pcg_34552151
+152,percent,152,7.0,7% (152),purchase,55,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552152,100.0,of tax,account_data_ma.pcg_34552152
+155,percent,155,20.0,20% (155),purchase,56,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552155,100.0,of tax,account_data_ma.pcg_34552155
+156,percent,156,20.0,20% (156),purchase,57,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34552156,100.0,of tax,account_data_ma.pcg_34552156
+162,percent,162,20.0,20% (162),purchase,58,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34551162,100.0,of tax,account_data_ma.pcg_34551162
+163,percent,163,20.0,20% (163),purchase,59,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34551163,100.0,of tax,account_data_ma.pcg_34551163
+164,percent,164,20.0,20% (164),purchase,60,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34551164,100.0,of tax,account_data_ma.pcg_34551164
+165,percent,165,20.0,20% (165),purchase,61,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34551165,100.0,of tax,account_data_ma.pcg_34551165
+166,percent,166,20.0,20% (166),purchase,62,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34551166,100.0,of tax,account_data_ma.pcg_34551166
+167,percent,167,20.0,20% (167),purchase,63,20%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34551167,100.0,of tax,account_data_ma.pcg_34551167
+168,percent,168,14.0,14% (168),purchase,64,14%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34551168,100.0,of tax,account_data_ma.pcg_34551168
+169,percent,169,7.0,7% (169),purchase,65,7%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,account_data_ma.pcg_34551169,100.0,of tax,account_data_ma.pcg_34551169
+20,percent,20,0.0,Opérations situées hors champ d'application de la TVA,sale,66,0%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,,100.0,of tax,
+30,percent,30,0.0,Opérations exonérées sans droit à déduction (art 91 du CGI),sale,67,0%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,,100.0,of tax,
+40,percent,40,0.0,Opérations exonérées avec droit à déduction (art 92 du CGI),sale,68,0%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,,100.0,of tax,
+50,percent,50,0.0,Opérations faites en suspension de la TVA (art 94 du CGI),sale,69,0%,l10n_ma_temp_chart,100.0,Base,,100.0,Base,
+,,,,,,,,,100.0,of tax,,100.0,of tax,
