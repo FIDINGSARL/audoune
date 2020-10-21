@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="report_asset_label_template">
+            <table class="table col-xs-6" style="border:0">
+                <colgroup>
+                    <col width='50%'/>
+                    <col width='50%'/>
+                </colgroup>
+                <tr height="155px" style="border:0;margin:0;padding:0;text-align:center;">
+                    <td>
+                        <!--                        <t t-if="label.product_id.company_id" ></t>-->
+                        <div>
+                            <span style="text-align:center;font-weight:bold;"
+                                  t-field="label.product_id.company_id.name"/>
+                        </div>
+                        <div style="overflow:hidden;  padding: 5px 5px 0; line-height: 1.3;">
+                            <span t-field="label.code_inventaire"/>
+                            <!-- <span t-if="label.product_id.attribute_value_ids" t-esc="u', '.join(map(lambda x: x.attribute_id.name + u': ' + x.name, label.product_id.attribute_value_ids))"/> -->
+                        </div>
+                        <div style="overflow:hidden;  padding: 5px 5px 0; line-height: 1; font-size:12px;">
+                            <span t-field="label.product_id.name"/>
+                            <!-- <span t-if="label.product_id.attribute_value_ids" t-esc="u', '.join(map(lambda x: x.attribute_id.name + u': ' + x.name, label.product_id.attribute_value_ids))"/> -->
+                        </div>
+                        <div style="overflow:hidden; margin-top:20px;font-weight:bold;padding: 5px 5px 0; line-height: 1.3;">
+                            <span t-field="label.asset_stock_inventory.name"/>
+                            <!-- <span t-if="label.product_id.attribute_value_ids" t-esc="u', '.join(map(lambda x: x.attribute_id.name + u': ' + x.name, label.product_id.attribute_value_ids))"/> -->
+                        </div>
+                        <div style="overflow:hidden;  font-weight:bold;padding: 5px 5px 0; line-height: 1.3;">
+                            <span t-field="label.num_salle.name"/>
+                            <!-- <span t-if="label.product_id.attribute_value_ids" t-esc="u', '.join(map(lambda x: x.attribute_id.name + u': ' + x.name, label.product_id.attribute_value_ids))"/> -->
+                        </div>
+
+                    </td>
+                    <td>
+                        <div style="margin-top:50px;">
+                            <img t-if="label.product_id.barcode"
+                                 t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('EAN13', label.bar_code_print, 600, 100)"
+                                 style="width:100%;height:30%;"/>
+                            <div t-if="label.bar_code_print"
+                                 style="width: 100%; padding: 0; margin: 0; font-size: 12px;">
+                                <span t-field="label.bar_code_print"/>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </template>
+
+        <template id="report_asset_label_57x35_template">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+                    <t t-set="count" t-value="0"/>
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <t t-foreach="docs" t-as="label">
+                            <div style="width: 30%; float: left; height: 180px; margin: 0 10px;">
+                                <t t-call="account_asset_extend.report_asset_label_template"/>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="view_account_asset_asset_extend">
+            <field name="name">view.account.asset.asset.ma</field>
+            <field name="model">account.asset.asset</field>
+            <field name="inherit_id" ref="account_asset_comm.view_account_asset_asset_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="action_print" string="Code de barre"
+                            help="Imprimer le code barre de l'immobilisation"
+                            type="object" icon="fa-print"
+                            class="btn-primary mt8 mb8"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Emplacement">
+                        <group>
+                            <group>
+                                <field name="num_ordre" readonly="1"/>
+                                <field name="affectataire"/>
+                                <field name="code_inventaire"/>
+                                <field name="account_id"/>
+                            </group>
+                            <group>
+                                <field name="bar_code_print"/>
+                                <field name="num_salle"/>
+                                <field name="asset_stock_inventory"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <field name="invoice_id" position="after">
+                    <field name="product_id"/>
+                    <field name="lot_id" domain="[('product_id', '=', product_id)]"/>
+                    <field name="num_so"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_account_asset_asset_tree_extend">
+            <field name="name">view.account.asset.asset.tree.extend</field>
+            <field name="model">account.asset.asset</field>
+            <field name="inherit_id" ref="account_asset_ma.view_tree_account_asset_asset_inherit_ma"/>
+            <field name="arch" type="xml">
+                <field name="is_cost_asset" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="parent_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="category_id" position="after">
+                    <field name="affectataire"/>
+                    <field name="code_inventaire"/>
+                </field>
+            </field>
+        </record>
+
+        <act_window id="action_print_asset_report"
+                    name="Imprimer l'état"
+                    res_model="print.asset.report"
+                    binding_model="account.asset.asset"
+                    view_mode="form"
+                    target="new"
+                    binding_views="list,form"
+        />
+
+        <record model="ir.ui.view" id="view_account_asset_asset_search_extend">
+            <field name="name">view.account.asset.asset.search.extend</field>
+            <field name="model">account.asset.asset</field>
+            <field name="inherit_id" ref="account_asset_comm.view_account_asset_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="inside">
+                    <filter string="Emplacement" name="location" domain="[]" context="{'group_by':'asset_stock_inventory'}"/>
+                    <filter string="Affectataire" name="location" domain="[]" context="{'group_by':'affectataire'}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <menuitem name="Immobilisations" parent="" id="account_asset_comm.menu_action_account_asset_asset_form"
+                  action="account_asset_comm.action_account_asset_asset_form" sequence="101"
+                  groups="account.group_account_manager"/>
+
+
+    </data>
+</odoo>

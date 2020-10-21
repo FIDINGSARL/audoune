@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--<record id="pcg_51150000" model="account.account.template">
+      <field name="name">Virement de fonds</field>
+      <field name="code">51150000</field>
+      <field name="reconcile" eval='False'/>
+      <field name="user_type_id" ref="account.data_account_type_current_assets"/>
+    </record>-->
+    <!-- account chart  -->
+    <record id="l10n_ma_temp_chart" model="account.chart.template">
+        <field name="name">Plan comptable marocain</field>
+        <field name="code_digits">8</field>
+        <field name="currency_id" ref="base.MAD"/>
+
+        <field name="bank_account_code_prefix">5141</field>
+        <field name="cash_account_code_prefix">5161</field>
+        <field name="transfer_account_code_prefix">5115</field>
+    </record>
+
+</odoo>
