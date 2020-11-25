@@ -170,7 +170,7 @@ class PaiementEffetClient(models.Model):
                 'date': date,
                 'ref': effet.note,
                 'line_ids': lines,
-                'type': 'entry'  # nacer
+                # 'type': 'entry'  # nacer
                 })
             move_id.post()
         return True
@@ -382,7 +382,7 @@ class PaiementChequeClient(models.Model):
             if cheque.state == 'at_bank':
                 date = cheque.payed_date
                 journal_id = cheque.bordereau_id.journal_id
-                deb_account = journal_id.default_credit_account_id.id
+                deb_account = journal_id.default_account_id.id
                 cred_account = cheque.model_id.at_bank_account.id
 
             debit_val = {
@@ -427,7 +427,7 @@ class PaiementChequeClient(models.Model):
                 'date': date,
                 'name': cheque_name,
                 'ref': cheque.note,
-                'type': 'entry',
+                # 'type': 'entry',
                 'line_ids': lines,
             })
             move_id.post()
@@ -543,7 +543,7 @@ class PaiementChequeClient(models.Model):
                 'date': date_rejet,
                 'name': cheque_name,
                 'ref': cheque.note,
-                'type': 'entry',
+                # 'type': 'entry',
                 'line_ids': lines,
             })
             move.post()
@@ -693,7 +693,7 @@ class PaiementOvClient(models.Model):
                 'date_maturity': ov.due_date,
                 'ref': ov.note,
                 'partner_id': ov.client.id,
-                'account_id': ov.journal_id.default_credit_account_id.id,
+                'account_id': ov.journal_id.default_account_id.id,
                 'credit': 0.0,
                 'debit': ov.amount,
                 'ov_client_id': ov.id,
@@ -836,7 +836,7 @@ class PaiementCashClient(models.Model):
                 'date': cash.date,
                 'ref': cash.note,
                 'partner_id': cash.client.id,
-                'account_id': cash.journal_id.default_credit_account_id.id,
+                'account_id': cash.journal_id.default_account_id.id,
                 'credit': 0.0,
                 'debit': cash.amount,
                 'cash_client_id': cash.id,
@@ -983,7 +983,7 @@ class PaiementCbClient(models.Model):
                 'date_maturity': cb.due_date,
                 'ref': cb.note,
                 'partner_id': cb.client.id,
-                'account_id': cb.journal_id.default_credit_account_id.id,
+                'account_id': cb.journal_id.default_account_id.id,
                 'credit': 0.0,
                 'debit': cb.amount,
                 'cb_client_id': cb.id,

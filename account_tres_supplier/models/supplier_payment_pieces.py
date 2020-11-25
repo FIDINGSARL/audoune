@@ -64,7 +64,7 @@ class PaiementCashSupplier(models.Model):
                 'date': cash.date,
                 'ref': cash.note,
                 'partner_id': cash.partner_id.id,
-                'account_id': cash.journal_id.default_credit_account_id.id,
+                'account_id': cash.journal_id.default_account_id.id,
                 'credit': cash.amount,
                 'debit': 0.0,
                 'cash_supplier_id': cash.id,
@@ -195,7 +195,7 @@ class PaiementChequeSupplier(models.Model):
                 'date_maturity': cheque.due_date,
                 'ref': cheque.note,
                 'partner_id': cheque.partner_id.id,
-                'account_id': cheque.journal_id.default_credit_account_id.id,
+                'account_id': cheque.journal_id.default_account_id.id,
                 'credit': cheque.amount,
                 'debit': 0.0,
                 'cheque_supplier_id': cheque.id,
@@ -331,7 +331,7 @@ class PaiementEffetSupplier(models.Model):
 
             if effet.state == 'delivred':
                 move_name = effet.name + '[ENC]'
-                cred_account = effet.journal_id.default_credit_account_id.id
+                cred_account = effet.journal_id.default_account_id.id
                 deb_account = effet.model_id.delivred_account.id
 
             debit_val = {
@@ -516,7 +516,7 @@ class PaiementOvSupplier(models.Model):
                 raise ValidationError('Le partenaire doit avoir un compte comptable')
             if ov.analytic_account_id:
                 analytic = ov.analytic_account_id.id
-            cred_account = ov.journal_id.default_credit_account_id.id
+            cred_account = ov.journal_id.default_account_id.id
             deb_account = account_id
 
             debit_val = {
@@ -718,7 +718,7 @@ class FraisBancaire(models.Model):
                 'name': name,
                 'date': date,
                 'partner_id': partner_id,
-                'account_id': journal_id.default_credit_account_id.id,
+                'account_id': journal_id.default_account_id.id,
                 'credit': record.amount,
                 'debit': 0.0,
                 'journal_id': journal_id.id,
