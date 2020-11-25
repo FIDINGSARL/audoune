@@ -76,13 +76,13 @@ class TresFees(models.Model):
             }
 
             # account_move_line_obj.create(debit)
-            if not journal_id.default_credit_account_id:
+            if not journal_id.default_account_id:
                 raise UserError(u'Il faut lier le compte crédit au journal de la pièce')
             credit = {
                 'name': name,
                 'date': date,
                 'partner_id': partner_id,
-                'account_id': journal_id.default_credit_account_id.id,
+                'account_id': journal_id.default_account_id.id,
                 'credit': record.amount,
                 'debit': 0.0,
                 'journal_id': journal_id.id,
@@ -151,8 +151,8 @@ class PaiementRecord(models.Model):
         caisse_id = self.env.user.caisse_id
         if caisse_id:
             return caisse_id.id
-
-    @api.depends('paiement_lines.amount', 'invoice_ids.amount_residual', 'invoice_ids.type')
+    # deleted this , 'invoice_ids.type' in the dependencies list below since account.move has no type anymore in odoo 14
+    @api.depends('paiement_lines.amount', 'invoice_ids.amount_residual')
     def _calc_amount(self):
         for rec in self:
             rec.amount = sum(line.amount for line in rec.paiement_lines)

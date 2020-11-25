@@ -208,8 +208,9 @@
                                 <field name="cash_lines" nolabel="1"/>
                             </page>
                             <page string="Factures">
+                                <!--domain="[('type','in',['out_invoice','out_refund']),('state','=','posted'),('partner_id','child_of',client_id)]"-->
                                 <field name="invoice_ids" nolabel="1"
-                                       domain="[('type','in',['out_invoice','out_refund']),('state','=','posted'),('partner_id','child_of',client_id)]"
+                                       domain="[('state','=','posted'),('partner_id','child_of',client_id)]"
                                        context="{'form_view_ref':'account.invoice_form', 'tree_view_ref':'account.invoice_tree'}"/>
                             </page>
                             <page string="Notes">

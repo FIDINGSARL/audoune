@@ -88,8 +88,12 @@
 	                            <separator string="Espèces" colspan="4"/>
 	                            <field colspan="4" name="cash_lines" nolabel="1"/>
 	                        </page>
+
 							<page string="Factures">
-								<field name="invoice_ids" nolabel="1" domain="[('type','=','in_invoice'),('state','=','open'),('partner_id','child_of',partner_id)]"/>
+<!--                                domain="[('type','=','in_invoice'),('state','=','open'),('partner_id','child_of',partner_id)]"/>-->
+
+								<field name="invoice_ids" nolabel="1"
+                                       domain="[('state','=','open'),('partner_id','child_of',partner_id)]"/>
 	                        </page>
 						</notebook>
                     </sheet>
