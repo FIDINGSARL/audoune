@@ -19,6 +19,19 @@
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_payment_form" />
             <field name="arch" type="xml">
+                <field name="date" position="after">
+                    <field name="payement_method_id" required="1" widget='selection'/>
+                    <field name="payement_code" invisible="1" />
+                    <field name="date_echeance" attrs="{'invisible':[('payement_code','not in',['2', '5'])]}"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_account_payment_register_wizard_inherited" model="ir.ui.view">
+            <field name="name">account.register.payment.wizard.inherited</field>
+            <field name="model">account.payment.register</field>
+            <field name="inherit_id" ref="account.view_account_payment_register_form" />
+            <field name="arch" type="xml">
                 <field name="payment_date" position="after">
                     <field name="payement_method_id" required="1" widget='selection'/>
                     <field name="payement_code" invisible="1" />

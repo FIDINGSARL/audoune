@@ -2,12 +2,12 @@
 <odoo>
     <data noupdate="0">
         <record id="account_tres_supplier" model="res.groups">
-            <field name="category_id" ref="account_data_ma.categorie_security_andema"/>
+            <field name="category_id" ref="l10n_maroc.categorie_security_andema"/>
             <field name="name">Réglement fournisseurs</field>
         </record>
 
          <record id="account_tres_supplier_cancel" model="res.groups">
-            <field name="category_id" ref="account_data_ma.categorie_security_andema"/>
+            <field name="category_id" ref="l10n_maroc.categorie_security_andema"/>
             <field name="name">Trésorerie fournisseur/Annulation</field>
         </record>
 

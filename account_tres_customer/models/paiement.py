@@ -529,7 +529,7 @@ class PaiementChequeClient(models.Model):
                 journal_id = cheque.bordereau_id.journal_id
                 lines = self.create_accounting_lines(cheque, clt_account_id, bank_acc_account)
             else:
-                bank_liquidity_acc = self.env.ref('account_data_ma.1_pcg_51410000').id
+                bank_liquidity_acc = self.env.ref('l10n_maroc.1_pcg_51410000').id
                 lines_bank = self.create_accounting_lines(cheque, bank_liquidity_acc, bank_acc_account)
                 lines_clt = self.create_accounting_lines(cheque, clt_account_id, bank_liquidity_acc)
                 lines = lines_clt + lines_bank

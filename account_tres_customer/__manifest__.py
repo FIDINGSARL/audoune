@@ -11,7 +11,7 @@
     'website': 'http://www.andemaconsulting.com',
     'images': [],
     'depends': ['account',
-                'account_data_ma',
+                'l10n_maroc',
                 'mail',
                 'account_fiscal_period',
                 'sales_team'

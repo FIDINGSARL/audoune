@@ -5,7 +5,7 @@
 
     <record id="group_tva_encaissement_maroc" model="res.groups">
         <field name="name">Déclaration Tva</field>
-        <field name="category_id" ref="account_data_ma.categorie_security_andema"/>
+        <field name="category_id" ref="l10n_maroc.categorie_security_andema"/>
     </record>
     <record id="tva_declaration_rule_multi_company" model="ir.rule">
         <field name="name">TVA Déclaration</field>

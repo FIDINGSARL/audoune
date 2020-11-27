@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <record id="l10n_ma_temp_chart" model="account.chart.template">
-        <field name="property_account_receivable_id" ref="pcg_34211000"/>
-        <field name="property_account_payable_id" ref="pcg_44111000"/>
-    </record>
-</odoo>

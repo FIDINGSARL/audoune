@@ -12,7 +12,7 @@
     'website': 'http://www.andemaconsulting.com',
     'images': [],
     'depends': ['account',
-                'account_data_ma',
+                'l10n_maroc',
                 'account_fiscal_period'],
     'data': [
         'views/supplier_payment_sequence.xml',
