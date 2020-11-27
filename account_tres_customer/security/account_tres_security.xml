@@ -6,7 +6,7 @@
             <field name="name">Trésorerie</field>
             <field name="description">Trésorerie</field>
             <field name="sequence">10</field>
-            <field name="parent_id" ref="account_data_ma.categorie_security_andema"/>
+            <field name="parent_id" ref="l10n_maroc.categorie_security_andema"/>
         </record>
         <record id="account_tres_read_piece" model="res.groups">
             <field name="name">Lecture</field>
@@ -26,12 +26,12 @@
         </record>
 
         <record id="account_tres_cancel" model="res.groups">
-            <field name="category_id" ref="account_data_ma.categorie_security_andema"/>
+            <field name="category_id" ref="l10n_maroc.categorie_security_andema"/>
             <field name="name">Trésorerie client/Annulation</field>
         </record>
 
         <record id="account_tres_cancel_bordereau" model="res.groups">
-            <field name="category_id" ref="account_data_ma.categorie_security_andema"/>
+            <field name="category_id" ref="l10n_maroc.categorie_security_andema"/>
             <field name="name">Trésorerie client/Annulation bordereau</field>
         </record>
 

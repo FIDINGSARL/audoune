@@ -2,7 +2,7 @@
 <odoo>
     <data noupdate="0">
         <record id="bordereau_cash_back_to_draft" model="res.groups">
-            <field name="category_id" ref="account_data_ma.categorie_security_andema"/>
+            <field name="category_id" ref="l10n_maroc.categorie_security_andema"/>
             <field name="name">Annuler bordereaux espèce</field>
             <field name="users" eval="[(4, ref('base.user_root'))]"/>
         </record>

@@ -6,8 +6,7 @@
     'author': 'Andema',
     'website': 'http://www.andemaconsulting.com',
     "depends": [
-        'account', 'partner_extend', 'account_fiscal_period',
-       'odoo_excel_engin', 'payement_method', 'account_tax_code'
+        'account', 'partner_extend', 'account_fiscal_period', 'payement_method', 'account_tax_code'
     ],
     'data': [
         "views/tva.xml",
