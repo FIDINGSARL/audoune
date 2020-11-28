@@ -394,6 +394,8 @@ code,id,name,user_type_id/id,reconcile,chart_template_id/id
 51132000,pcg_51132000,Effets à l'encaissement,account.tres_actif,FAUX,l10n_ma
 51150000,pcg_51150000,Virement de fonds,account.tres_actif,FAUX,l10n_ma
 51180000,pcg_51180000,Autres valeurs à encaisser,account.tres_actif,FAUX,l10n_ma
+51181000,pcg_51181000,Prise en charge à encaisser,account.tres_actif,FAUX,l10n_ma
+51182000,pcg_51182000,Prise en charge à l'encaissement,account.tres_actif,FAUX,l10n_ma
 51410000,pcg_51410000,Banques (solde débiteur),account.data_account_type_liquidity,FAUX,l10n_ma
 51430000,pcg_51430000,Trésorerie Générale,account.data_account_type_liquidity,FAUX,l10n_ma
 51460000,pcg_51460000,Chèques postaux,account.data_account_type_liquidity,FAUX,l10n_ma

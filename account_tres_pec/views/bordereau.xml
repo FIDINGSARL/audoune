@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+
+		<record model="ir.ui.view" id="pec_client_tree_view_inherit">
+			<field name="name">pec.client.tree.view.inherit</field>
+		    <field name="model">paiement.pec.client</field>
+		    <field name="inherit_id" ref="pec_form_client_view"/>
+		    <field name="arch" type="xml">
+         		<field name="bank_client" position="after">
+			        <field name="bordereau_id"  attrs="{'readonly':[('state','!=','caisse_centrale')]}" domain="[('type', '=', 'cheque')]" context="{'default_type': 'cheque'}"/>
+    		</field>
+			</field>
+		</record>
+
+        <record model="ir.actions.act_window" id="paiement_bordereau_pec_action">
+			<field name="name">Bordereaux PEC</field>
+			<field name="res_model">paiement.bordereau</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('type','=','pec')]</field>
+            <field name="context">{'default_type': 'pec'}</field>
+		</record>
+
+		<!-- Bordereaux  menu -->
+		<menuitem action="paiement_bordereau_pec_action" id="paiement_bordereau_pec_menu" parent="account_tres_customer.bordereaux_menu_root"/>
+
+	</data>
+</odoo>
