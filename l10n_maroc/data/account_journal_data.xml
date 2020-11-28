@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <record model="account.journal" id="account_journal_data_chp">
-        <field name="name" >Chèques en portefeuilles</field>
-        <field name="type" >general</field>
-        <field name="code" >CQPF</field>
-    </record>
-</odoo>

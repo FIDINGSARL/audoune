@@ -16,7 +16,6 @@
         'data/account.group.csv',
         'data/account.account.template.csv',
         'data/property_account.xml',
-        'data/account_journal_data.xml',
         'data/account.tax.template.csv',
         'data/account.chart.template.csv',
         'data/account_chart_template_configuration_data.xml',

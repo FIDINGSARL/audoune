@@ -119,6 +119,24 @@ class PaiementRecord(models.Model):
 
     pec_lines = fields.One2many('paiement.pec.client', 'paiement_record_id', string=u'PEC', readonly=True)
 
+    @api.model
+    def get_model(self, type, company_id):
+        res = False
+        if type == 'cheque':
+            model_id = self.env['paiement.cheque.model.client'].search([('company_id', '=', company_id)], limit=1)
+            if model_id:
+                res = model_id.id
+        if type == 'effet':
+            model_id = self.env['paiement.effet.model.client'].search([('company_id', '=', company_id)], limit=1)
+            if model_id:
+                res = model_id.id
+
+        if type == 'pec':
+            model_id = self.env['paiement.pec.model.client'].search([('company_id', '=', company_id)], limit=1)
+            if model_id:
+                res = model_id.id
+        return res
+
     def create_acc_doc(self,record_line):
         effet_client_obj = self.env['paiement.effet.client']
         cheque_client_obj = self.env['paiement.cheque.client']
@@ -172,6 +190,7 @@ class PaiementRecord(models.Model):
 
         if record_line.type == 'pec':
             vals['due_date'] = record_line.due_date
+            vals['model_id'] = self.get_model('pec', vals['company_id'])
             pec_id = pec_client_obj.create(vals)
             pec_id.action_caisse()
             return pec_id
