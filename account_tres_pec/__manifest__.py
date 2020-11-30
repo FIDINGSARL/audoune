@@ -23,7 +23,8 @@
         'views/paiement_record.xml',
         'views/paiement.xml',
         'views/bordereau.xml',
-        'views/partner_view.xml'
+        'views/partner_view.xml',
+        'views/assurance_views.xml'
     ],
     'demo': [],
     'test': [],
