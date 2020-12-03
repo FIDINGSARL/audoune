@@ -42,64 +42,50 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="paiement_pec_model_id" parent="account_tres_customer.modeles_menu" action="paiement_pec_model_action"/>
+        <menuitem id="paiement_pec_model_id" parent="account_tres_customer.modeles_menu"
+                  action="paiement_pec_model_action"/>
 
-        <!-- pecs Client Form View -->
+        <!-- pec client form view -->
         <record model="ir.ui.view" id="pec_form_client_view">
-            <field name="name">pecs</field>
+            <field name="name">pec</field>
             <field name="model">paiement.pec.client</field>
             <field name="arch" type="xml">
-                <form string="PEC">
+                <form string="pec">
                     <header>
                         <field name="state" widget="statusbar"
-                               statusbar_visible="draft,caisse,caisse_centrale,received,at_bank,payed"/>
+                               statusbar_visible="draft,caisse,caisse_centrale,done,rejected"/>
                         <button name="action_caisse" string="Caisse" states="draft" type="object" class="oe_highlight"/>
-                        <button name="action_caisse_centrale" string="Caisse centrale" states="caisse" type="object"
+                        <button name="action_caisse_centrale" string="Caisse centrale" type="object" states="caisse"
                                 class="oe_highlight"/>
-                        <button name="action_received" states="caisse_centrale" string="Bordereau" type="object"
+                        <button name="action_done" states="caisse_centrale" string="Confirmer" type="object"
                                 class="oe_highlight"/>
-                        <button name="action_payed" states="at_bank" string="Payer" type="object" class="oe_highlight"/>
-                        <button name="action_cancel" string="Annuler" states="draft" type="object"/>
-                        <button name="action_rejected" states="at_bank" string="Rejet" type="object"/>
-                        <button name="action_to_represent" states="rejected" type="object" string="A représenter"
-                                class="oe_highlight"/>
-                        <button name="pec_to_change" states="rejected" type="object" string="A changer"
-                                class="oe_highlight"/>
+                        <button name="action_cancel" states="draft" string="Annuler" type="object"/>
+                        <button name="action_rejected" states="caisse_centrale" string="Rejet" type="object"/>
+
                     </header>
                     <sheet>
                         <group>
                             <group>
                                 <field name="name"/>
-                                <field name="journal_id" required="1" domain="[('type', '=', 'general')]"/>
-                                <field name="date"/>
-                                <field name="client"/>
-                                <field name="caisse_id"/>
-                                <field name="rejete"
-                                       attrs="{'invisible':[('state','not in',['rejected','to_represent','to_change'])]}"/>
+                                <field name="journal_id"/>
+                                <field name="due_date"/>
+                                <field name="amount"/>
+                                <field name="analytic_account_id"/>
+                                <field name="model_id"/>
                             </group>
                             <group>
                                 <field name="company_id" groups="base.group_multi_company"/>
                                 <field name="paiement_record_id"/>
-                                <field name="model_id"/>
-                                <field name="due_date"/>
-                                <field name="amount"/>
-                                <field name="analytic_account_id"/>
-                                <field name="bank_client" domain="[('partner_id','=',client)]"/>
-                                <field name="assurance_id" />
+                                <field name="date"/>
+                                <field name="client"/>
+                                <field name="caisse_id"/>
+                                <field name="assurance_id"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Notes">
                                 <field name="note" nolabel="1"/>
                                 <group>
-                                    <field string="Date d'opération système" name="at_bank_date"
-                                           attrs="{'invisible':[('state','not in', ['at_bank', 'payed'])]}"/>
-                                    <field name="payed_date"
-                                           attrs="{'invisible':[('state','not in', ['at_bank', 'payed'])]}"/>
-                                </group>
-                                <group>
-                                    <field name="pec_origin_id"
-                                           attrs="{'invisible':[('pec_origin_id','=',False)]}"/>
                                     <field name="origin" attrs="{'invisible':[('origin','=',False)]}"/>
                                 </group>
                             </page>
@@ -117,6 +103,17 @@
                                         <field name="credit"/>
                                     </tree>
                                 </field>
+                            </page>
+                            <page string="Frais Bancaires" name="tres_fees_ids">
+                                <field name="tres_fees_ids" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="account_id" attrs="{'readonly':[('state','=','done')]}"/>
+                                        <field name="amount" sum="Total" attrs="{'readonly':[('state','=','done')]}"/>
+                                        <field name="move_id"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                                <button type="object" name="action_post_fees" string="Poster" icon="gtk-ok"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -166,12 +163,12 @@
                     <field name="journal_id"/>
                     <field name="date"/>
                     <field name="due_date"/>
-                    <field name="assurance_id" />
+                    <field name="assurance_id"/>
 
                     <filter string="Confirme" name="done" domain="[('state','=','done')]"/>
                     <filter string="Brouillon" name="draft" domain="[('state','=','draft')]"/>
                     <group expand="0" string="Group By...">
-                        <field string="Assurance" name="assurance_id" />
+                        <field string="Assurance" name="assurance_id"/>
                         <filter string="Client" name="client" domain="[]" context="{'group_by':'client'}"/>
                         <filter string="Banque" name="journal" domain="[]" context="{'group_by':'journal_id'}"/>
                         <filter string="Caisse" name="caisse" domain="[]" context="{'group_by':'caisse_id'}"/>
@@ -201,7 +198,7 @@
                     <field name="due_date"/>
                     <field name="payed_date"/>
                     <field name="bank_client"/>
-                    <field name="assurance_id" />
+                    <field name="assurance_id"/>
                     <field name="state"/>
                 </tree>
             </field>
