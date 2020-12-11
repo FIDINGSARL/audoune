@@ -2,8 +2,8 @@
 
 {
     "name": u"Ajout champs divers dans la fiche partenaire",
-    "version": "13.0",
-    "depends": ['base'],
+    "version": "14.0",
+    "depends": ['base', 'account_tres_pec'],
     "author": "Andema",
     "summary": "IF, RC, CNSS, ICE, TP, ...",
     'website': 'http://www.andemaconsulting.com',
