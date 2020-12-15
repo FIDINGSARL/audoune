@@ -15,6 +15,7 @@
                 ],
     'data': [
         'data/account_journal_data.xml',
+        'data/data.xml',
         'views/account_tres_data.xml',
         'security/account_tres_security.xml',
         'security/ir.model.access.csv',

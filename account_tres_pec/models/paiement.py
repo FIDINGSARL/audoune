@@ -21,6 +21,66 @@ class PaiementPecModelClient(models.Model):
     post = fields.Boolean(string=u'A Poster', default=True)
 
 
+class PaiementChequeClient(models.Model):
+    _inherit = 'paiement.cheque.client'
+
+    name = fields.Char(string=u'Numéro', readonly=True, required=False, states={'payed': [('readonly', True)]})
+
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env.ref('account_tres_pec.seq_tres_customer_cheque').next_by_code('paiement.cheque.client') or ''
+        res = super(PaiementChequeClient, self).create(vals)
+        return res
+
+
+class PaiementOvClient(models.Model):
+    _inherit = 'paiement.ov.client'
+
+    name = fields.Char(string=u'Numéro', readonly=True, required=False, states={'payed': [('readonly', True)]})
+
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env.ref('account_tres_pec.seq_tres_customer_ov').next_by_code('paiement.ov.client') or ''
+        res = super(PaiementOvClient, self).create(vals)
+        return res
+
+
+class PaiementEffetClient(models.Model):
+    _inherit = 'paiement.effet.client'
+
+    name = fields.Char(string=u'Numéro', readonly=True, required=False, states={'payed': [('readonly', True)]})
+
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env.ref('account_tres_pec.seq_tres_customer_effet').next_by_code('paiement.effet.client') or ''
+        res = super(PaiementEffetClient, self).create(vals)
+        return res
+
+
+class PaiementCbClient(models.Model):
+    _inherit = 'paiement.cb.client'
+
+    name = fields.Char(string=u'Numéro', readonly=True, required=False, states={'payed': [('readonly', True)]})
+
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env.ref('account_tres_pec.seq_tres_customer_cb').next_by_code('paiement.cb.client') or ''
+        res = super(PaiementCbClient, self).create(vals)
+        return res
+
+
+class PaiementCashClient(models.Model):
+    _inherit = 'paiement.cash.client'
+
+    name = fields.Char(string=u'Numéro', readonly=True, required=False, states={'payed': [('readonly', True)]})
+
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env.ref('account_tres_pec.seq_tres_customer_cash').next_by_code('paiement.cash.client') or ''
+        res = super(PaiementCashClient, self).create(vals)
+        return res
+
+
 class PaiementPecClient(models.Model):
     _name = 'paiement.pec.client'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -28,9 +88,9 @@ class PaiementPecClient(models.Model):
     _description = 'Pec Client'
     _order = "date desc"
 
-    name = fields.Char(string=u'Numéro', required=True, states={'payed': [('readonly', True)]})
+    name = fields.Char(string=u'Numéro', readonly=True, states={'payed': [('readonly', True)]})
     amount = fields.Float(string='Montant', required=True, states={'payed': [('readonly', True)]})
-    journal_id = fields.Many2one('account.journal', string=u'Banque', states={'payed': [('readonly', True)]})
+    journal_id = fields.Many2one('account.journal', string=u'Journal', states={'payed': [('readonly', True)]})
     date = fields.Date(string="Date", required=True, states={'payed': [('readonly', True)]})
     payed_date = fields.Date('Date encaissment')
     due_date = fields.Date(string=u"Date d'échéance", required=True, states={'payed': [('readonly', True)]})
@@ -81,6 +141,12 @@ class PaiementPecClient(models.Model):
             'paiement_record_id': False,
         })
         return super(PaiementPecClient, self).copy(default)
+
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env.ref('account_tres_pec.seq_tres_customer_pec').next_by_code('paiement.pec.client') or ''
+        res = super(PaiementPecClient, self).create(vals)
+        return res
 
     @api.model
     def get_partner_account(self, part, type):
