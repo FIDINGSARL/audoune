@@ -7,8 +7,6 @@ from datetime import datetime, timedelta
 
 from odoo.exceptions import ValidationError
 
-from odoo.odoo.exceptions import UserError
-
 
 class StockMoveline(models.Model):
     _inherit = 'stock.inventory'
