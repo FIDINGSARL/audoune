@@ -3,7 +3,7 @@
     <record id="seq_tres_customer_pec" model="ir.sequence">
         <field name="name">Prise en charge Client</field>
         <field name="code">paiement.pec.client</field>
-        <field name="prefix">PEC</field>
+        <field name="prefix">PECH</field>
         <field name="padding">5</field>
     </record>
 
