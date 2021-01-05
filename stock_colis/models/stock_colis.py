@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, exceptions
-from odoo.tools import formataddr
-
-from datetime import datetime, timedelta
-
 from odoo.exceptions import ValidationError
 
 
