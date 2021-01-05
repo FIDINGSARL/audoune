@@ -11,6 +11,9 @@
     "description": "Ajouter des infos sup",
     "init_xml": [],
     'data': [
+        'security/groups.xml',
+        'data/rules.xml',
+        'security/rules.xml',
         'views/partner_extend_view.xml',
     ],
     'demo_xml': [],

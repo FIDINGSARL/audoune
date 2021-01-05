@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <template id="br_colis_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <br/>
+                            <br/>
+                            <h4 style="text-align: right;">
+                                Réf. :
+                                <span t-esc="o.name"/>
+                            </h4>
+                            <center>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <h2 style="font-weight:bold;">
+                                    <span>Récapitulatif du colis numéro :
+                                        <span t-esc="o.name"/>
+                                    </span>
+                                </h2>
+
+                            </center>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div id="informations">
+                                <div class="row">
+                                    <table class="table table-sm o_main_table" width="100%">
+                                        <tbody>
+                                            <tr style="border:0;">
+                                                <td style="border:0;">
+                                                    <div class="col-auto mw-100 mb-2" t-if="o.user_id"
+                                                         name="user_id">
+                                                        <strong>Emmeteur:</strong>
+                                                        <p class="m-0" t-field="o.user_id.name"/>
+                                                    </div>
+                                                </td>
+
+                                                <td style="border:0;">
+                                                    <div class="col-auto mw-100 mb-2" name="type">
+                                                        <strong>Sociéte:</strong>
+                                                        <p class="m-0" t-field="o.company_id"/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style="border:0;">
+                                                <td style="border:0;">
+                                                    <div class="col-auto mw-100 mb-2" name="o.company_dest_id">
+                                                        <strong>Société Destinataire:</strong>
+                                                        <p class="m-0" t-field="o.company_dest_id.name"/>
+                                                    </div>
+                                                </td>
+
+                                                <td style="border:0;">
+                                                    <div class="col-auto mw-100 mb-2" t-if="o.create_date" name="date">
+                                                        <strong>Date d'envoi:</strong>
+                                                        <p class="m-0" t-field="o.create_date"/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <h4>Empreintes :</h4>
+                            <table class="table table-sm o_main_table" name="empreintes_table">
+                                <thead>
+                                    <tr>
+                                        <t t-set="colspan" t-value="6"/>
+                                        <th class="text-left">
+                                            <span>Désignation</span>
+                                        </th>
+                                        <th class="text-right">
+                                            <span>Numéro de serie</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="empreinte_table_tbody">
+                                    <t t-foreach="o.empreinte_lot_ids" t-as="line">
+                                        <tr t-att-class="'bg-200 font-weight-bold o_line_section'">
+                                            <td name="empreinte_line_name">
+                                                <span t-field="line.product_id.name"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                            <h4>Articles :</h4>
+                            <table class="table table-sm o_main_table" name="article_table">
+                                <thead>
+                                    <tr>
+                                        <t t-set="colspan" t-value="6"/>
+                                        <th class="text-left">
+                                            <span>Désignation</span>
+                                        </th>
+                                        <th class="text-right">
+                                            <span>Numéro de serie</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="articles_table_tbody">
+                                    <t t-foreach="o.product_lot_ids" t-as="line">
+                                        <tr t-att-class="'bg-200 font-weight-bold o_line_section'">
+                                            <td name="article_line_name">
+                                                <span t-field="line.product_id.name"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                            <h4>Chèques :</h4>
+                            <table class="table table-sm o_main_table" name="cheques_table">
+                                <thead>
+                                    <tr>
+                                        <t t-set="colspan" t-value="6"/>
+                                        <th class="text-left">
+                                            <span>Numéro</span>
+                                        </th>
+                                        <th class="text-left">
+                                            <span>Client</span>
+                                        </th>
+                                        <th class="text-right">
+                                            <span>Montant</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="articles_table_tbody">
+                                    <t t-foreach="o.cheque_ids" t-as="line">
+                                        <tr t-att-class="'bg-200 font-weight-bold o_line_section'">
+                                            <td name="cheque_line_name">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="line.client.name"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-field="line.amount"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                            <h4>Dossier Physique :</h4>
+                            <table class="table table-sm o_main_table" name="cheques_table">
+                                <thead>
+                                    <tr>
+                                        <t t-set="colspan" t-value="6"/>
+                                        <th class="text-left">
+                                            <span>Nom</span>
+                                        </th>
+                                        <th class="text-left">
+                                            <span>Type</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="articles_table_tbody">
+                                    <t t-foreach="o.dossier_physique" t-as="line">
+                                        <tr t-att-class="'bg-200 font-weight-bold o_line_section'">
+                                            <td name="cheque_line_name">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="line.type"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                            <h4>Divers :</h4>
+                            <p><t t-esc="o.divers" /></p>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -188,10 +188,22 @@ class PaiementPecClient(models.Model):
                 'debit': pec.amount,
                 'pec_client_id': pec.id,
                 'journal_id': pec.journal_id.id,
-                'currency_id': False
+                'currency_id': False,
             }
 
             lines = [(0, 0, debit_val), (0, 0, credit_val)]
+
+            # payment_id = self.env['account.payment'].create({
+            #     'name': 'BNK/' + pec.name,
+            #     'amount': pec.amount,
+            #     'payment_type': 'inbound',
+            #     'partner_type': 'customer',
+            #     'date': pec.date,
+            #     'journal_id': pec.journal_id.id,
+            #     'partner_id': pec.client.id,
+            # })
+            #
+            # payment_id.action_post()
 
             move_id = account_move_obj.create({
                 'journal_id': pec.journal_id.id,
@@ -199,8 +211,11 @@ class PaiementPecClient(models.Model):
                 'name': pec.name,
                 'ref': pec.note,
                 'line_ids': lines,
+                # 'payment_id': payment_id.id
             })
+
             move_id.post()
+
         return True
 
     def action_caisse(self):

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="br_colis_report_paperformat" model="report.paperformat">
+        <field name="name">Format d'impression du BR Colis</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">20</field>
+        <field name="margin_right">20</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">30</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <report
+        id="report_stock_colis"
+        string="Colis : Récapitulatif"
+        model="stock.colis"
+        report_type="qweb-pdf"
+        paperformat="br_colis_report_paperformat"
+        name="stock_colis.br_colis_template"
+        file="stock_colis.br_colis_template"
+        menu="True"
+    />
+
+</odoo>
