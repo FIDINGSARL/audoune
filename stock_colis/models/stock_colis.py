@@ -32,14 +32,24 @@ class StockColis(models.Model):
     dossier_physique = fields.Many2many('ir.attachment')
     empreinte_lot_ids = fields.Many2many('stock.production.lot', 'stock_colis_empreinte_lot_rel', 'lot_id')
     product_lot_ids = fields.Many2many('stock.production.lot', 'stock_colis_product_lot_rel', 'lot_id')
-    cheque_ids = fields.Many2many('paiement.cheque.client')
+    cheque_ids = fields.Many2many('paiement.cheque.client', string='Chèques reçus')
     received_cheque_ids = fields.Many2many('paiement.cheque.client', 'colis_received_cheque_rel')
     stock_inventory_source_id = fields.Many2one('stock.inventory', string="Mouvement Source de l'inventaire")
     stock_inventory_dest_id = fields.Many2one('stock.inventory', string="Mouvement Destination de l'inventaire")
+    show_validate = fields.Boolean(
+        compute='_compute_show_validate',
+        help='Technical field used to decide whether the button "Validate" should be displayed.')
 
     def _compute_is_destinataire(self):
         for rec in self:
             rec.is_destinataire = rec.company_dest_id == self.env.user.company_id
+
+    @api.depends('state')
+    def _compute_show_validate(self):
+        for rec in self:
+            rec.show_validate = False
+            if rec.state == 'open' and rec.company_dest_id == self.env.user.company_id:
+                rec.show_validate = True
 
     @api.model
     def create(self, vals):
@@ -122,8 +132,8 @@ class StockColis(models.Model):
         })
         self.stock_inventory_source_id = source_company_mvt
 
-        dest_company_mvt.action_start()
-        dest_company_mvt.action_validate()
+        source_company_mvt.action_start()
+        source_company_mvt.action_validate()
 
     def _process_cheque_lines(self):
         self = self.sudo()

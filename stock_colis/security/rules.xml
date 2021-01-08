@@ -5,7 +5,7 @@
         <record id="stock_colis_manager_rule" model="ir.rule">
             <field name="name">Audoune Gestion de Colis: Règle Utilisateur</field>
             <field name="model_id" ref="stock_colis.model_stock_colis"/>
-            <field name="domain_force">[('company_dest_id', 'in', user.company_ids.ids), ('state', 'in', ('open', 'valid'))]</field>
+            <field name="domain_force">['|', ('company_dest_id', 'in', user.company_ids.ids), ('company_id', '=', user.company_id.id)]</field>
             <field name="groups" eval="[(4, ref('stock_colis.group_stock_colis_user'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
