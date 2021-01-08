@@ -32,6 +32,7 @@ class ResPartner(models.Model):
 
     @api.depends('company_creating_id', 'authorized_company_ids')
     def _compute_partner_visibility(self):
+        self = self.sudo()
         for rec in self:
             if self.env.company.id in rec.authorized_company_ids.mapped('id') \
                     or self.env.company.id == rec.company_creating_id.id\

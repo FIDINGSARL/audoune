@@ -22,7 +22,7 @@
                 <form string="Colis">
                     <header>
                         <button name="action_open" string="Envoyer" type="object"
-                                states="new" class="oe_highlight"/>
+                                 class="oe_highlight" attrs="{'invisible': [('show_send', '!=', True)]}"/>
                         <button name="action_valid" string="Valider" type="object"
                                 class="oe_highlight" attrs="{'invisible': [('show_validate', '!=', True)]}"/>
                         <field name="state" widget="statusbar" readonly="1"/>
@@ -33,6 +33,7 @@
                         </h1>
                         <group>
                             <field name="show_validate" invisible="1"/>
+                            <field name="show_send" invisible="1"/>
                             <field name="user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
                             <field name="company_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
                             <field name="company_dest_id" options="{'no_create': True, 'no_open': True}"
@@ -73,7 +74,12 @@
                                 <field name="cheque_ids" options="{'no_create': True}"/>
                             </page>
                             <page string="Dossier Physique">
-                                <field name="dossier_physique" widget="many2many_binary"/>
+                                <field name="dossier_physique">
+                                    <tree editable="bottom">
+                                        <field name="name" />
+                                        <field name="partner_id" />
+                                    </tree>
+                                </field>
                             </page>
                             <page string="Divers">
                                 <field name="divers"/>

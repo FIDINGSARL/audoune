@@ -29,7 +29,7 @@ class StockColis(models.Model):
     company_id = fields.Many2one('res.company', string='Société', default=lambda self: self.env.company)
     is_destinataire = fields.Boolean('Est un destinataire', compute='_compute_is_destinataire')
     company_dest_id = fields.Many2one('res.company', string='Société de destination')
-    dossier_physique = fields.Many2many('ir.attachment')
+    dossier_physique = fields.One2many('dossier.physique', 'colis_id')
     empreinte_lot_ids = fields.Many2many('stock.production.lot', 'stock_colis_empreinte_lot_rel', 'lot_id')
     product_lot_ids = fields.Many2many('stock.production.lot', 'stock_colis_product_lot_rel', 'lot_id')
     cheque_ids = fields.Many2many('paiement.cheque.client', string='Chèques reçus')
@@ -39,6 +39,9 @@ class StockColis(models.Model):
     show_validate = fields.Boolean(
         compute='_compute_show_validate',
         help='Technical field used to decide whether the button "Validate" should be displayed.')
+    show_send = fields.Boolean(
+        compute='_compute_show_send',
+        help='Technical field used to decide whether the button "Send" should be displayed.')
 
     def _compute_is_destinataire(self):
         for rec in self:
@@ -50,6 +53,13 @@ class StockColis(models.Model):
             rec.show_validate = False
             if rec.state == 'open' and rec.company_dest_id == self.env.user.company_id:
                 rec.show_validate = True
+
+    @api.depends('state')
+    def _compute_show_send(self):
+        for rec in self:
+            rec.show_send = False
+            if rec.state == 'new' and rec.company_id == self.env.user.company_id:
+                rec.show_send = True
 
     @api.model
     def create(self, vals):
@@ -164,3 +174,11 @@ class StockColis(models.Model):
             cheques_arr.append((4, cheque_id.id))
         self.received_cheque_ids = cheques_arr
         self.cheque_ids.unlink()
+
+
+class DossierPhysique(models.Model):
+    _name = 'dossier.physique'
+
+    name = fields.Char('Description')
+    partner_id = fields.Many2one('res.partner', 'Patient')
+    colis_id = fields.Many2one('stock.colis', 'Colis')

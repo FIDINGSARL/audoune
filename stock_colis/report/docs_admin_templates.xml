@@ -158,10 +158,10 @@
                                     <tr>
                                         <t t-set="colspan" t-value="6"/>
                                         <th class="text-left">
-                                            <span>Nom</span>
+                                            <span>Description</span>
                                         </th>
                                         <th class="text-left">
-                                            <span>Type</span>
+                                            <span>Patient</span>
                                         </th>
                                     </tr>
                                 </thead>
@@ -172,7 +172,7 @@
                                                 <span t-field="line.name"/>
                                             </td>
                                             <td class="text-left">
-                                                <span t-field="line.type"/>
+                                                <span t-field="line.partner_id.name"/>
                                             </td>
                                         </tr>
                                     </t>
