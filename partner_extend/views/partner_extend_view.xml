@@ -15,7 +15,8 @@
                     <field name="assurance2"/>
                     <field name="is_partner_visible" invisible="1"/>
                     <field name="is_authorized_company_ids_editable" invisible="1"/>
-                    <field name="authorized_company_ids" widget="many2many_tags" attrs="{'readonly': [('is_authorized_company_ids_editable', '=', False)]}"/>
+                    <field name="authorized_company_ids" widget="many2many_tags"
+                           attrs="{'readonly': [('is_authorized_company_ids_editable', '=', False)]}"/>
                     <field name="company_creating_id"/>
                 </field>
                 <notebook position="inside">
@@ -34,6 +35,10 @@
                     </page>
                 </notebook>
             </field>
+        </record>
+
+        <record id="contacts.action_contacts" model="ir.actions.act_window">
+            <field name="domain">[]</field>
         </record>
     </data>
 </odoo>
