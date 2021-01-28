@@ -17,6 +17,7 @@
         'security/ir.model.access.csv',
         'views/stock_colis_views.xml',
         'views/stock_inventory_views.xml',
+        'views/res_users_view.xml',
         'report/docs_admin_templates.xml',
         'report/report.xml',
     ],

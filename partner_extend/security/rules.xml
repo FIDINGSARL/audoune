@@ -5,7 +5,8 @@
         <record id="res_partner_user_rule" model="ir.rule">
             <field name="name">Audoune Gestion de Partenaires: Règle Utilisateur</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="domain_force">[('is_partner_visible', '=', True)]</field>
+<!--            <field name="domain_force">['|',('user_id', '=', user.id), ('see_all', '=', True)]</field>-->
+            <field name="domain_force">[]</field>
             <field name="groups" eval="[(4, ref('group_client_user'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
