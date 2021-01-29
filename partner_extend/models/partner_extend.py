@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-from odoo import models,fields, api
+from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 
@@ -26,19 +26,11 @@ class ResPartner(models.Model):
     # is_partner_visible = fields.Boolean('Est visible ?', default=False, compute='_compute_partner_visibility')
     is_editable = fields.Boolean('Est modifiable ?', default=False, compute='_compute_partner_visibility')
 
-    def read(self, fields=None, load='_classic_read'):
-        """ Override to explicitely call check_access_rule, that is not called
-            by the ORM. It instead directly fetches ir.rules and apply them. """
-
-        res = super(ResPartner, self.sudo()).read(fields=fields, load=load)
-        print('res', res)
-        return res
-
     @api.constrains('ice')
     def _check_ice(self):
         for rec in self:
             if rec.ice and (len(rec.ice) != 15 or not rec.ice.isdigit()):
-                    raise ValidationError(u"L'ICE doit être constitué de 15 chiffres")
+                raise ValidationError(u"L'ICE doit être constitué de 15 chiffres")
 
     @api.depends('user_id')
     def _compute_partner_visibility(self):
@@ -48,6 +40,3 @@ class ResPartner(models.Model):
                 rec.is_editable = True
             else:
                 rec.is_editable = False
-
-
-

@@ -39,7 +39,7 @@ class StockColis(models.Model):
     empreinte_lot_ids = fields.Many2many('stock.production.lot', 'stock_colis_empreinte_lot_rel', 'lot_id')
     product_lot_ids = fields.Many2many('stock.production.lot', 'stock_colis_product_lot_rel', 'lot_id')
     cheque_ids = fields.Many2many('paiement.cheque.client', string='Chèques reçus')
-    received_cheque_ids = fields.Many2many('paiement.cheque.client', 'colis_received_cheque_rel')
+    received_cheque_ids = fields.Many2many('paiement.cheque.client', 'colis_received_cheque_rel', string="Chèques reçus")
     stock_picking_id = fields.Many2one('stock.picking', string="Mouvement Source de l'inventaire")
     show_validate = fields.Boolean(
         compute='_compute_show_validate',

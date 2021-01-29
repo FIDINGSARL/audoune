@@ -15,7 +15,6 @@ class StockProductionLot(models.Model):
             rec.available_qty = 0
             if self._context.get('location_id', False):
                 location_id = self._context['location_id']
-                print('location')
                 stock_quant = self.env['stock.quant'].search([
                         ('location_id', '=', location_id),
                         ('lot_id', '=', rec.id),
