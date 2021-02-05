@@ -10,14 +10,38 @@
             <field name="arch" type="xml">
                 <field name="salesman_id" position="after">
                     <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                    <field name="lot_id"/>
                 </field>
             </field>
         </record>
 
+        <record id="sale_order_line_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.line.form.inherit</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.sale_order_line_view_form_readonly"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="lot_id" domain="[('product_id', '=', product_id), ('partner_id', '=', False)]"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_sales_order_line_filter_inherit" model="ir.ui.view">
+            <field name="name">sale.order.line.non.affected</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_sales_order_line_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter string="Non affécté" name="not_affected" domain="[('lot_id', '=', False)]"/>
+                </xpath>
+            </field>
+        </record>
 
         <record id="action_sale_order_line_list" model="ir.actions.act_window">
             <field name="name">Lignes de vente</field>
             <field name="type">ir.actions.act_window</field>
+            <field name="domain">[('state', '=', 'sale')]</field>
+            <field name="context">{'search_default_not_affected': 1}</field>
             <field name="res_model">sale.order.line</field>
             <field name="view_mode">tree,form</field>
         </record>

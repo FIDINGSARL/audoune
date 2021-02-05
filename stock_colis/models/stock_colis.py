@@ -4,10 +4,10 @@ from odoo import models, fields, api, exceptions
 from odoo.exceptions import ValidationError
 
 
-class StockMoveline(models.Model):
-    _inherit = 'stock.inventory'
+class ResUsers(models.Model):
+    _inherit = 'res.users'
 
-    colis_id = fields.Many2one('stock.colis', 'Colis d\'origine')
+    default_location_id = fields.Many2many('stock.warehouse', 'res_user_stock_warehouse_rel', string='Emplacements de l\'utilisateur')
 
 
 class PaiementChequeClient(models.Model):
@@ -19,27 +19,58 @@ class PaiementChequeClient(models.Model):
 class StockColis(models.Model):
     _name = "stock.colis"
     _order = 'create_date desc'
+    _inherit = ['mail.thread']
+
+    def _get_user_default_location(self):
+        user_id = self.env.user
+        company_id = self.env.company
+        user_warehouse_id = False
+        if user_id.default_location_id:
+            user_warehouse_id = user_id.default_location_id.filtered(lambda warehouse: company_id == warehouse.company_id)
+        if user_warehouse_id:
+            return user_warehouse_id.id
+        else:
+            return False
 
     name = fields.Char('Référence', readonly=1)
     state = fields.Selection([('new', 'Nouveau'), ('open', 'Envoyé au Centre'),
                               ('valid', 'Validé par le centre')], string=u'État', required=True,
-                             copy=False, default='new')
+                             copy=False, default='new', track_visibility='onchange')
     divers = fields.Text('Divers')
     user_id = fields.Many2one('res.users', string='Emetteur', default=lambda self: self.env.user.id)
-    company_id = fields.Many2one('res.company', string='Société', default=lambda self: self.env.company)
     is_destinataire = fields.Boolean('Est un destinataire', compute='_compute_is_destinataire')
-    company_dest_id = fields.Many2one('res.company', string='Société de destination')
-    dossier_physique = fields.Many2many('ir.attachment')
+    stock_location_id = fields.Many2one('stock.warehouse', string='Société', default=_get_user_default_location)
+    stock_location_dest_id = fields.Many2one('stock.warehouse', string='Société de destination')
+    dossier_physique = fields.One2many('dossier.physique', 'colis_id')
     empreinte_lot_ids = fields.Many2many('stock.production.lot', 'stock_colis_empreinte_lot_rel', 'lot_id')
     product_lot_ids = fields.Many2many('stock.production.lot', 'stock_colis_product_lot_rel', 'lot_id')
-    cheque_ids = fields.Many2many('paiement.cheque.client')
-    received_cheque_ids = fields.Many2many('paiement.cheque.client', 'colis_received_cheque_rel')
-    stock_inventory_source_id = fields.Many2one('stock.inventory', string="Mouvement Source de l'inventaire")
-    stock_inventory_dest_id = fields.Many2one('stock.inventory', string="Mouvement Destination de l'inventaire")
+    cheque_ids = fields.Many2many('paiement.cheque.client', string='Chèques reçus')
+    received_cheque_ids = fields.Many2many('paiement.cheque.client', 'colis_received_cheque_rel', string="Chèques reçus")
+    stock_picking_id = fields.Many2one('stock.picking', string="Mouvement Source de l'inventaire")
+    show_validate = fields.Boolean(
+        compute='_compute_show_validate',
+        help='Technical field used to decide whether the button "Validate" should be displayed.')
+    show_send = fields.Boolean(
+        compute='_compute_show_send',
+        help='Technical field used to decide whether the button "Send" should be displayed.')
 
     def _compute_is_destinataire(self):
         for rec in self:
-            rec.is_destinataire = rec.company_dest_id == self.env.user.company_id
+            rec.is_destinataire = rec.stock_location_dest_id == self.env.user.property_warehouse_id
+
+    @api.depends('state')
+    def _compute_show_validate(self):
+        for rec in self:
+            rec.show_validate = False
+            if rec.state == 'open' and rec.stock_location_dest_id == self.env.user.property_warehouse_id:
+                rec.show_validate = True
+
+    @api.depends('state')
+    def _compute_show_send(self):
+        for rec in self:
+            rec.show_send = False
+            if rec.state == 'new' and rec.stock_location_id in self.env.user.default_location_id:
+                rec.show_send = True
 
     @api.model
     def create(self, vals):
@@ -60,70 +91,56 @@ class StockColis(models.Model):
         self._process_cheque_lines()
 
     def _process_inventory_lines(self):
-        source_arr_ids, dest_arr_ids = [], []
-        inventory_dest_product_ids, inventory_src_product_ids = [], []
+        line_ids_arr = []
+        move_ids_arr = []
         self = self.sudo()
+        picking_obj = self.env['stock.picking']
+        dest_location_stock_id = self.env['stock.warehouse'].browse(self.stock_location_dest_id.id)
+        src_location_stock_id = self.env['stock.warehouse'].browse(self.stock_location_id.id)
+        # picking_type = self.env.ref('stock.picking_type_internal').id
+        picking_type = self.env['stock.picking.type'].search([('code', '=', 'internal'),
+                                                              ('company_id', '=', self.env.company.id),
+                                                              ('warehouse_id', '=', self.stock_location_id.id),
+                                                              ])
         for line in self.empreinte_lot_ids + self.product_lot_ids:
-            dest_location_stock_id = self.env['stock.location'].sudo().search(
-                [('company_id', '=', self.company_dest_id.id), ('usage', '=', 'internal')])
-            src_location_stock_id = self.env['stock.location'].sudo().search(
-                [('company_id', '=', self.company_id.id), ('usage', '=', 'inventory')], limit=1)
 
-            product_id = self.env['product.template'].search([
-                ('name', '=', line.product_id.name)
-            ])
-
-            dest_lot = self.env['stock.production.lot'].create({
+            move_line_ids_without_package = (0, 0, {
+                # 'name': 'Réassort ' + line.name,
                 'product_id': line.product_id.id,
-                'company_id': self.company_dest_id.id,
-                'name': line.name
-            })
-
-            dest_line_ids = (0, 0, {
-                'product_id': product_id.product_variant_id.id,
-                'prod_lot_id': dest_lot.id,
-                'product_uom_id': product_id.uom_id.id,
-                'product_qty': 1,
-                'location_id': dest_location_stock_id.id
-            })
-
-            dest_arr_ids.append(dest_line_ids)
-            inventory_dest_product_ids.append((4, product_id.product_variant_id.id))
-
-            source_line_ids = (0, 0, {
-                'product_id': line.product_id.id,
-                'prod_lot_id': line.id,
+                'lot_id': line.id,
+                'product_uom_qty': 0,
                 'product_uom_id': line.product_id.uom_id.id,
-                'product_qty': 0,
-                'location_id': src_location_stock_id.id
+                'location_dest_id': dest_location_stock_id.lot_stock_id.id,
+                'location_id': src_location_stock_id.lot_stock_id.id
             })
 
-            source_arr_ids.append(source_line_ids)
-            inventory_src_product_ids.append((4, line.product_id.id))
+            move_ids_without_package = (0, 0, {
+                'name': 'Réassort',
+                'product_id': line.product_id.id,
+                'product_uom_qty': 1,
+                'product_uom': line.product_id.uom_id.id,
+                'location_dest_id': dest_location_stock_id.lot_stock_id.id,
+                'location_id': src_location_stock_id.lot_stock_id.id
+            })
 
-        dest_company_mvt = self.sudo().env['stock.inventory'].create({
-            'name': self.name + ' DEST',
-            'product_ids': inventory_dest_product_ids,
-            'company_id': self.company_dest_id.id,
-            'colis_id': self.id,
-            'line_ids': dest_arr_ids
+            line_ids_arr.append(move_line_ids_without_package)
+            move_ids_arr.append(move_ids_without_package)
+
+        picking_id = picking_obj.create({
+            'location_id': src_location_stock_id.lot_stock_id.id,
+            'location_dest_id': dest_location_stock_id.lot_stock_id.id,
+            'picking_type_id': picking_type.id,
+            'move_line_ids_without_package': line_ids_arr,
+            'move_ids_without_package': move_ids_arr,
+            'colis_id': self.id
         })
-        self.stock_inventory_dest_id = dest_company_mvt
-
-        dest_company_mvt.action_start()
-        dest_company_mvt.action_validate()
-
-        source_company_mvt = self.sudo().env['stock.inventory'].create({
-            'name': self.name + ' SRC',
-            'product_ids': inventory_src_product_ids,
-            'company_id': self.company_id.id,
-            'colis_id': self.id,
-            'line_ids': source_arr_ids
+        picking_id.with_context(default_picking_type_id=picking_type).write({
+            'company_id': self.env.company.id
         })
-        self.stock_inventory_source_id = source_company_mvt
-
-        dest_company_mvt.action_start()
-        dest_company_mvt.action_validate()
+        picking_id.action_confirm()
+        picking_id.action_assign()
+        picking_id.button_validate()
+        self.stock_picking_id = picking_id
 
     def _process_cheque_lines(self):
         self = self.sudo()
@@ -133,7 +150,7 @@ class StockColis(models.Model):
         for record_line in self.cheque_ids:
             journal_id = self.env['account.journal'].search([
                 ('name', 'like', record_line.journal_id.name),
-                ('company_id', '=', self.company_dest_id.id),
+                ('company_id', '=', self.env.user.company_id.id),
             ])
             vals = {
                 'name': record_line.name,
@@ -142,11 +159,11 @@ class StockColis(models.Model):
                 'date': record_line.date,
                 'client': record_line.client.id,
                 'caisse_id': record_line.caisse_id.id,
-                'company_id': self.company_dest_id.id,
+                'company_id': self.env.user.company_id.id,
                 'colis_id': self.id,
             }
 
-            if not paiement_record_obj.get_model('cheque', self.company_dest_id.id):
+            if not paiement_record_obj.get_model('cheque', self.env.user.company_id.id):
                 raise ValidationError(u"Vous devez créer un modèle chèque")
             vals['model_id'] = paiement_record_obj.get_model('cheque', vals['company_id'])
             vals['due_date'] = record_line.due_date
@@ -154,3 +171,18 @@ class StockColis(models.Model):
             cheques_arr.append((4, cheque_id.id))
         self.received_cheque_ids = cheques_arr
         self.cheque_ids.unlink()
+
+
+class DossierPhysique(models.Model):
+    _name = 'dossier.physique'
+
+    name = fields.Char('Description')
+    partner_id = fields.Many2one('res.partner', 'Patient')
+    colis_id = fields.Many2one('stock.colis', 'Colis')
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    colis_id = fields.Many2one('stock.colis', 'Colis')
+
