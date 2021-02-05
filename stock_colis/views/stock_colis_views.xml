@@ -8,7 +8,7 @@
                 <tree>
                     <field name="name"/>
                     <field name="user_id"/>
-                    <field name="stock_location_id" />
+                    <field name="stock_location_id"/>
                     <field name="stock_location_dest_id"/>
                     <field name="state"/>
                 </tree>
@@ -22,7 +22,7 @@
                 <form string="Colis">
                     <header>
                         <button name="action_open" string="Envoyer" type="object"
-                                 class="oe_highlight" attrs="{'invisible': [('show_send', '!=', True)]}"/>
+                                class="oe_highlight" attrs="{'invisible': [('show_send', '!=', True)]}"/>
                         <button name="action_valid" string="Valider" type="object"
                                 class="oe_highlight" attrs="{'invisible': [('show_validate', '!=', True)]}"/>
                         <field name="state" widget="statusbar" readonly="1"/>
@@ -35,9 +35,10 @@
                             <field name="show_validate" invisible="1"/>
                             <field name="show_send" invisible="1"/>
                             <field name="user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
-                            <field name="stock_location_id" options="{'no_create': True, 'no_open': True}" domain="[('usage', '=', 'internal')]" readonly="1"/>
+                            <field name="stock_location_id" options="{'no_create': True, 'no_open': True}"
+                                    readonly="1"/>
                             <field name="stock_location_dest_id" options="{'no_create': True, 'no_open': True}"
-                                   domain="[('usage', '=', 'internal')]" attrs="{'readonly': [('state', '!=', 'new')], 'required': True}"/>
+                                   attrs="{'readonly': [('state', '!=', 'new')], 'required': True}"/>
                             <field name="is_destinataire" invisible="1"/>
                         </group>
                         <group states="valid">
@@ -49,7 +50,8 @@
                         </group>
                         <notebook attrs="{'invisible': [('is_destinataire', '=', True)]}">
                             <page string="Empreintes">
-                                <field name="empreinte_lot_ids" domain="[('product_id.name', 'like', 'Emprei')]" context="{'location_id': stock_location_id}"
+                                <field name="empreinte_lot_ids" domain="[('product_id.name', 'like', 'Emprei')]"
+                                       context="{'location_id': stock_location_id}"
                                        options="{'no_create': True}">
                                     <tree>
                                         <field name="name"/>
@@ -61,7 +63,8 @@
                                 </field>
                             </page>
                             <page string="Articles">
-                                <field name="product_lot_ids" domain="[('product_id.name', 'not like', 'Emprei')]" context="{'location_id': stock_location_id}"
+                                <field name="product_lot_ids" domain="[('product_id.name', 'not like', 'Emprei')]"
+                                       context="{'location_id': stock_location_id}"
                                        options="{'no_create': True}">
                                     <tree>
                                         <field name="name"/>
@@ -78,8 +81,8 @@
                             <page string="Dossier Physique">
                                 <field name="dossier_physique">
                                     <tree editable="bottom">
-                                        <field name="name" />
-                                        <field name="partner_id" />
+                                        <field name="name"/>
+                                        <field name="partner_id"/>
                                     </tree>
                                 </field>
                             </page>
@@ -88,6 +91,12 @@
                             </page>
                         </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <!-- Followers view -->
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <!-- Chatter view -->
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>

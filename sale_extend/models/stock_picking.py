@@ -13,6 +13,7 @@ class StockPicking(models.Model):
             for line in self.sudo().move_line_ids:
                 if line.lot_id:
                     lot_id = line.lot_id
+                    print('lot_id.partner_id', lot_id.partner_id)
                     if not lot_id.partner_id:
                         raise ValidationError('Veuillez contactez votre administrateur '
                                               'pour attribuer un client à ce numéro de série')

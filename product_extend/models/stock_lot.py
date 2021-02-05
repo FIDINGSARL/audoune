@@ -14,9 +14,9 @@ class StockProductionLot(models.Model):
         for rec in self:
             rec.available_qty = 0
             if self._context.get('location_id', False):
-                location_id = self._context['location_id']
+                location_id = self.env['stock.warehouse'].browse(self._context['location_id'])
                 stock_quant = self.env['stock.quant'].search([
-                        ('location_id', '=', location_id),
+                        ('location_id', '=', location_id.lot_stock_id.id),
                         ('lot_id', '=', rec.id),
                     ])
                 rec.available_qty = stock_quant.available_quantity

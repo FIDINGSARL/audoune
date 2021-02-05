@@ -240,6 +240,7 @@ class PaiementPecClient(models.Model):
             pec.write({'state': 'cancel'})
 
     def action_rejected(self):
+        print('executed')
         for pec in self:
             move_new_ids = []
             move_ids = pec.move_line_ids.mapped('move_id')

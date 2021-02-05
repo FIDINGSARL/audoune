@@ -8,7 +8,7 @@
     'author': 'Osisoftware',
     'website': '',
     'depends': [
-        'stock', 'account_tres_customer'
+        'stock', 'account_tres_customer', 'product_extend'
     ],
     'data': [
         'data/sequence.xml',
@@ -16,8 +16,8 @@
         'security/rules.xml',
         'security/ir.model.access.csv',
         'views/stock_colis_views.xml',
-        'views/stock_inventory_views.xml',
         'views/res_users_view.xml',
+        'views/stock_picking_views.xml',
         'report/docs_admin_templates.xml',
         'report/report.xml',
     ],

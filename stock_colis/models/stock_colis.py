@@ -7,13 +7,7 @@ from odoo.exceptions import ValidationError
 class ResUsers(models.Model):
     _inherit = 'res.users'
 
-    default_location_id = fields.Many2one('stock.location', string='Emplacement de l\'utilisateur')
-
-
-class StockMoveline(models.Model):
-    _inherit = 'stock.inventory'
-
-    colis_id = fields.Many2one('stock.colis', 'Colis d\'origine')
+    default_location_id = fields.Many2many('stock.warehouse', 'res_user_stock_warehouse_rel', string='Emplacements de l\'utilisateur')
 
 
 class PaiementChequeClient(models.Model):
@@ -25,16 +19,28 @@ class PaiementChequeClient(models.Model):
 class StockColis(models.Model):
     _name = "stock.colis"
     _order = 'create_date desc'
+    _inherit = ['mail.thread']
+
+    def _get_user_default_location(self):
+        user_id = self.env.user
+        company_id = self.env.company
+        user_warehouse_id = False
+        if user_id.default_location_id:
+            user_warehouse_id = user_id.default_location_id.filtered(lambda warehouse: company_id == warehouse.company_id)
+        if user_warehouse_id:
+            return user_warehouse_id.id
+        else:
+            return False
 
     name = fields.Char('Référence', readonly=1)
     state = fields.Selection([('new', 'Nouveau'), ('open', 'Envoyé au Centre'),
                               ('valid', 'Validé par le centre')], string=u'État', required=True,
-                             copy=False, default='new')
+                             copy=False, default='new', track_visibility='onchange')
     divers = fields.Text('Divers')
     user_id = fields.Many2one('res.users', string='Emetteur', default=lambda self: self.env.user.id)
     is_destinataire = fields.Boolean('Est un destinataire', compute='_compute_is_destinataire')
-    stock_location_id = fields.Many2one('stock.location', string='Société', default=lambda self: self.env.user.default_location_id.id)
-    stock_location_dest_id = fields.Many2one('stock.location', string='Société de destination')
+    stock_location_id = fields.Many2one('stock.warehouse', string='Société', default=_get_user_default_location)
+    stock_location_dest_id = fields.Many2one('stock.warehouse', string='Société de destination')
     dossier_physique = fields.One2many('dossier.physique', 'colis_id')
     empreinte_lot_ids = fields.Many2many('stock.production.lot', 'stock_colis_empreinte_lot_rel', 'lot_id')
     product_lot_ids = fields.Many2many('stock.production.lot', 'stock_colis_product_lot_rel', 'lot_id')
@@ -50,20 +56,20 @@ class StockColis(models.Model):
 
     def _compute_is_destinataire(self):
         for rec in self:
-            rec.is_destinataire = rec.stock_location_dest_id == self.env.user.default_location_id
+            rec.is_destinataire = rec.stock_location_dest_id == self.env.user.property_warehouse_id
 
     @api.depends('state')
     def _compute_show_validate(self):
         for rec in self:
             rec.show_validate = False
-            if rec.state == 'open' and rec.stock_location_dest_id == self.env.user.default_location_id:
+            if rec.state == 'open' and rec.stock_location_dest_id == self.env.user.property_warehouse_id:
                 rec.show_validate = True
 
     @api.depends('state')
     def _compute_show_send(self):
         for rec in self:
             rec.show_send = False
-            if rec.state == 'new' and rec.stock_location_id == self.env.user.default_location_id:
+            if rec.state == 'new' and rec.stock_location_id in self.env.user.default_location_id:
                 rec.show_send = True
 
     @api.model
@@ -89,9 +95,13 @@ class StockColis(models.Model):
         move_ids_arr = []
         self = self.sudo()
         picking_obj = self.env['stock.picking']
-        dest_location_stock_id = self.stock_location_dest_id.id
-        src_location_stock_id = self.stock_location_id.id
-        picking_type = self.env.ref('stock.picking_type_internal').id
+        dest_location_stock_id = self.env['stock.warehouse'].browse(self.stock_location_dest_id.id)
+        src_location_stock_id = self.env['stock.warehouse'].browse(self.stock_location_id.id)
+        # picking_type = self.env.ref('stock.picking_type_internal').id
+        picking_type = self.env['stock.picking.type'].search([('code', '=', 'internal'),
+                                                              ('company_id', '=', self.env.company.id),
+                                                              ('warehouse_id', '=', self.stock_location_id.id),
+                                                              ])
         for line in self.empreinte_lot_ids + self.product_lot_ids:
 
             move_line_ids_without_package = (0, 0, {
@@ -100,8 +110,8 @@ class StockColis(models.Model):
                 'lot_id': line.id,
                 'product_uom_qty': 0,
                 'product_uom_id': line.product_id.uom_id.id,
-                'location_dest_id': dest_location_stock_id,
-                'location_id': src_location_stock_id
+                'location_dest_id': dest_location_stock_id.lot_stock_id.id,
+                'location_id': src_location_stock_id.lot_stock_id.id
             })
 
             move_ids_without_package = (0, 0, {
@@ -109,24 +119,27 @@ class StockColis(models.Model):
                 'product_id': line.product_id.id,
                 'product_uom_qty': 1,
                 'product_uom': line.product_id.uom_id.id,
-                'location_dest_id': dest_location_stock_id,
-                'location_id': src_location_stock_id
+                'location_dest_id': dest_location_stock_id.lot_stock_id.id,
+                'location_id': src_location_stock_id.lot_stock_id.id
             })
 
             line_ids_arr.append(move_line_ids_without_package)
             move_ids_arr.append(move_ids_without_package)
 
         picking_id = picking_obj.create({
-            'location_id': src_location_stock_id,
-            'location_dest_id': dest_location_stock_id,
-            'picking_type_id': picking_type,
+            'location_id': src_location_stock_id.lot_stock_id.id,
+            'location_dest_id': dest_location_stock_id.lot_stock_id.id,
+            'picking_type_id': picking_type.id,
             'move_line_ids_without_package': line_ids_arr,
-            'move_ids_without_package': move_ids_arr
+            'move_ids_without_package': move_ids_arr,
+            'colis_id': self.id
         })
-
+        picking_id.with_context(default_picking_type_id=picking_type).write({
+            'company_id': self.env.company.id
+        })
         picking_id.action_confirm()
         picking_id.action_assign()
-        # picking_id.button_validate()
+        picking_id.button_validate()
         self.stock_picking_id = picking_id
 
     def _process_cheque_lines(self):
@@ -166,3 +179,10 @@ class DossierPhysique(models.Model):
     name = fields.Char('Description')
     partner_id = fields.Many2one('res.partner', 'Patient')
     colis_id = fields.Many2one('stock.colis', 'Colis')
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    colis_id = fields.Many2one('stock.colis', 'Colis')
+
