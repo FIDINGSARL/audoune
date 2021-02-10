@@ -3,8 +3,6 @@
 from odoo import models, fields, api, exceptions
 from odoo.exceptions import ValidationError
 
-from odoo.odoo.exceptions import AccessError
-
 
 class ResUsers(models.Model):
     _inherit = 'res.users'
