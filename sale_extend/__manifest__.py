@@ -8,7 +8,7 @@
     'author': 'Osisoftware',
     'website': '',
     'depends': [
-        'base', 'sale'
+        'base', 'sale', 'sale_stock'
     ],
     'data': [
         'views/sale_order_views.xml',
