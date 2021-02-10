@@ -66,8 +66,8 @@
                                     </table>
                                 </div>
                             </div>
-                            <t t-if="o.empreinte_lot_ids">
-                                <h4>Empreintes :</h4>
+                            <t t-if="o.product_lot_ids">
+                                <h4>Numéros de séries :</h4>
                                 <table class="table table-sm o_main_table" name="empreintes_table">
                                     <thead>
                                         <tr>
@@ -81,7 +81,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="empreinte_table_tbody">
-                                        <t t-foreach="o.empreinte_lot_ids" t-as="line">
+                                        <t t-foreach="o.product_lot_ids" t-as="line">
                                             <tr t-att-class="'bg-200 font-weight-bold o_line_section'">
                                                 <td name="empreinte_line_name">
                                                     <span t-field="line.product_id.name"/>
@@ -94,7 +94,7 @@
                                     </tbody>
                                 </table>
                             </t>
-                            <t t-if="o.product_lot_ids">
+                            <t t-if="o.product_line_ids">
                                 <h4>Articles :</h4>
                                 <table class="table table-sm o_main_table" name="article_table">
                                     <thead>
@@ -104,18 +104,18 @@
                                                 <span>Désignation</span>
                                             </th>
                                             <th class="text-right">
-                                                <span>Numéro de serie</span>
+                                                <span>Quantité</span>
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody class="articles_table_tbody">
-                                        <t t-foreach="o.product_lot_ids" t-as="line">
+                                        <t t-foreach="o.product_line_ids" t-as="line">
                                             <tr t-att-class="'bg-200 font-weight-bold o_line_section'">
                                                 <td name="article_line_name">
                                                     <span t-field="line.product_id.name"/>
                                                 </td>
                                                 <td class="text-right">
-                                                    <span t-field="line.name"/>
+                                                    <span t-field="line.product_qty"/>
                                                 </td>
                                             </tr>
                                         </t>
@@ -184,12 +184,7 @@
                                     </tbody>
                                 </table>
                             </t>
-                            <t t-if="o.divers">
-                                <h4>Divers :</h4>
-                                <p>
-                                    <t t-esc="o.divers"/>
-                                </p>
-                            </t>
+
                         </div>
                     </t>
                 </t>

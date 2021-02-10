@@ -9,6 +9,12 @@ class StockProductionLot(models.Model):
 
     partner_id = fields.Many2one('res.partner', 'Client')
     available_qty = fields.Float('Quantité disponible', compute='_compute_available_qty')
+    is_dp = fields.Boolean('Est un dossier physique')
+    is_admin = fields.Boolean('Est un admin', compute='_is_admin')
+
+    def _is_admin(self):
+        for rec in self:
+            rec.is_admin = self.env.user.has_group('base.group_system')
 
     def _compute_available_qty(self):
         for rec in self:

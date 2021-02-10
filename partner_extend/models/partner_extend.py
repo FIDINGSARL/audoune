@@ -7,6 +7,11 @@ from odoo.exceptions import ValidationError
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    company_type = fields.Selection(string='Company Type',
+                                    selection=[('person', 'Individual'), ('company', 'Company')],
+                                    default='person',
+                                    compute='_compute_company_type', inverse='_write_company_type')
+
     id_fisc = fields.Char(string=u'Identifiant Fiscal')
     rc = fields.Char(string=u'RC')
     cnss = fields.Char(string=u'Numéro de la sécurité sociale')

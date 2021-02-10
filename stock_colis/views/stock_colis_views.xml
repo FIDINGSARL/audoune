@@ -35,6 +35,7 @@
                             <field name="show_validate" invisible="1"/>
                             <field name="show_send" invisible="1"/>
                             <field name="user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                            <field name="company_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
                             <field name="stock_location_id" options="{'no_create': True, 'no_open': True}"
                                     readonly="1"/>
                             <field name="stock_location_dest_id" options="{'no_create': True, 'no_open': True}"
@@ -49,8 +50,8 @@
 
                         </group>
                         <notebook attrs="{'invisible': [('is_destinataire', '=', True)]}">
-                            <page string="Empreintes">
-                                <field name="empreinte_lot_ids" domain="[('product_id.name', 'like', 'Emprei')]"
+                            <page string="Numéros de série">
+                                <field name="product_lot_ids" domain="[('partner_id', '=', False), ('company_id', '=', company_id), ('is_dp', '=', False)]"
                                        context="{'location_id': stock_location_id}"
                                        options="{'no_create': True}">
                                     <tree>
@@ -62,32 +63,23 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Articles">
-                                <field name="product_lot_ids" domain="[('product_id.name', 'not like', 'Emprei')]"
+                            <page string="Articles Génériques">
+                                <field name="product_line_ids"
                                        context="{'location_id': stock_location_id}"
-                                       options="{'no_create': True}">
-                                    <tree>
-                                        <field name="name"/>
-                                        <field name="available_qty"/>
-                                        <field name="partner_id"/>
-                                        <field name="ref"/>
-                                        <field name="product_id"/>
+                                       options="{'no_create': True}" >
+                                    <tree editable="bottom">
+                                        <field name="product_id" domain="[('tracking', '=', 'none')]"/>
+                                        <field name="product_uom_id" />
+                                        <field name="product_qty" />
                                     </tree>
                                 </field>
                             </page>
                             <page string="Chèques">
-                                <field name="cheque_ids" options="{'no_create': True}"/>
+                                <field name="cheque_ids" options="{'no_create': True}" domain="[('company_id', '=', company_id)]"/>
                             </page>
-                            <page string="Dossier Physique">
-                                <field name="dossier_physique">
-                                    <tree editable="bottom">
-                                        <field name="name"/>
-                                        <field name="partner_id"/>
-                                    </tree>
-                                </field>
-                            </page>
-                            <page string="Divers">
-                                <field name="divers"/>
+                            <page string="Dossier Physique et Divers">
+                                <field name="dossier_physique" domain="[('partner_id', '=', False),
+                                 ('company_id', '=', company_id), ('is_dp', '=', True)]"/>
                             </page>
                         </notebook>
                     </sheet>

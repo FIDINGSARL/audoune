@@ -7,7 +7,9 @@
             <field name="inherit_id" ref="stock.view_production_lot_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//form/sheet/group[1]/group[1]/field[@name='ref']" position="after">
-                    <field name="partner_id" groups="base.group_system"/>
+                    <field name="is_dp"/>
+                    <field name="is_admin" invisible="1"/>
+                    <field name="partner_id" attrs="{'readonly': [('is_admin', '=', False)]}"/>
                 </xpath>
             </field>
         </record>
