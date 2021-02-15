@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_stock_colis_request_tree" model="ir.ui.view">
+            <field name="name">stock.colis.request.tree</field>
+            <field name="model">stock.colis.request</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="user_id"/>
+                    <field name="stock_location_id"/>
+                    <field name="stock_location_dest_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_stock_colis_request_form" model="ir.ui.view">
+            <field name="name">stock.colis.request.form</field>
+            <field name="model">stock.colis.request</field>
+            <field name="arch" type="xml">
+                <form string="Colis">
+                    <header>
+                        <button name="action_open" string="Envoyer" type="object"
+                                class="oe_highlight" attrs="{'invisible': [('show_send', '!=', True)]}"/>
+                        <button name="action_valid" string="Valider" type="object"
+                                class="oe_highlight" attrs="{'invisible': [('show_validate', '!=', True)]}"/>
+                        <field name="state" widget="statusbar" readonly="1"/>
+                    </header>
+                    <sheet>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <group>
+                            <field name="show_validate" invisible="1"/>
+                            <field name="show_send" invisible="1"/>
+                            <field name="request_date" readonly="0"/>
+                            <field name="company_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                            <field name="stock_location_id" options="{'no_create': True, 'no_open': True}"
+                                   attrs="{'readonly': [('state', '!=', 'new')], 'required': True}"/>
+                            <field name="user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                            <field name="user_requested_id" options="{'no_create': True, 'no_open': True}" readonly="1"
+                                   required="1"/>
+                            <field name="stock_location_dest_id" options="{'no_create': True, 'no_open': True}"
+                                   attrs="{'readonly': [('state', '!=', 'new')], 'required': True}"/>
+                            <field name="is_destinataire" invisible="1"/>
+                            <field name="stock_colis_id" options="{'no_create': True}" states="valid"/>
+                        </group>
+                        <notebook>
+                            <page string="Articles Génériques">
+                                <field name="product_line_ids"
+                                       context="{'location_id': stock_location_id}"
+                                       options="{'no_create': True}">
+                                    <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="product_uom_id"/>
+                                        <field name="product_qty"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Chèques">
+                                <field name="cheque_ids" options="{'no_create': True}"
+                                       domain="[('company_id', '=', company_id)]"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <!-- Followers view -->
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <!-- Chatter view -->
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_stock_colis_request_kanban" model="ir.ui.view">
+            <field name="name">stock.colis.request.kanban</field>
+            <field name="model">stock.colis.request</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="stock_location_dest_id">
+                    <field name="name"/>
+                    <field name="request_date"/>
+                    <field name="activity_state"/>
+                    <field name="activity_ids"/>
+                    <progressbar field="activity_state" colors="{&quot;planned&quot;: &quot;success&quot;, &quot;today&quot;: &quot;warning&quot;, &quot;overdue&quot;: &quot;danger&quot;}"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_content">
+                                <div class="oe_kanban_global_click">
+                                    <div class="o_kanban_record_title">
+                                        <strong>
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <div class="o_kanban_record_subtitle">
+                                        <t>
+                                            <span>
+                                                <strong>Date demande :</strong>
+                                            </span>
+                                            <field name="request_date"/>
+                                            <br/>
+                                            <span>
+                                                <strong>Source :</strong>
+                                            </span>
+                                            <field name="stock_location_id"/>
+                                            <br/>
+                                            <span>
+                                                <strong>Destination :</strong>
+                                            </span>
+                                            <field name="stock_location_dest_id"/>
+                                        </t>
+                                    </div>
+                                    <div class="o_kanban_record_bottom">
+                                        <div class="oe_kanban_bottom_left">
+                                            <field name="activity_ids" widget="kanban_activity"/>
+                                        </div>
+                                        <div class="oe_kanban_bottom_right">
+                                            <field name="user_id" widget="many2one_avatar_user"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+
+                </kanban>
+            </field>
+        </record>
+
+        <record id="view_stock_colis_request_activity" model="ir.ui.view">
+            <field name="name">stock.colis.request.activity</field>
+            <field name="model">stock.colis.request</field>
+            <field name="arch" type="xml">
+                <activity string="Tâches">
+                    <field name="name"/>
+                    <field name="user_id"/>
+                    <templates>
+                        <div t-name="activity-box">
+                            <div>
+                                <field name="name" display="full"/>
+                                <field name="stock_location_dest_id" display="full" muted="1"/>
+                            </div>
+                        </div>
+                    </templates>
+                </activity>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_stock_colis_request">
+            <field name="name">Demande de Colis</field>
+            <field name="res_model">stock.colis.request</field>
+            <field name="view_mode">tree,kanban,form,activity</field>
+        </record>
+
+        <menuitem
+                id="menu_stock_colis_request"
+                sequence="2"
+                action="action_stock_colis_request"
+                name="Demande de Colis"
+                parent="stock.menu_stock_warehouse_mgmt"
+        />
+
+
+    </data>
+</odoo>

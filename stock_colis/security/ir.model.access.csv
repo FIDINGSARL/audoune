@@ -1,4 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_stock_colis_user,stock_colis_access_user,model_stock_colis,stock_colis.group_stock_colis_user,1,1,1,0
+access_stock_colis_request_user,stock_colis_request_user,model_stock_colis_request,stock_colis.group_stock_colis_user,1,1,1,1
 access_stock_product_colis_user,product_colis_access_user,model_product_colis,stock_colis.group_stock_colis_user,1,1,1,1
 access_stock_colis_manager,stock_colis_access_manager,model_stock_colis,stock_colis.group_stock_colis_manager,1,1,1,1
