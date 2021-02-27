@@ -15,7 +15,7 @@
         <record id="seq_paiement_cash" model="ir.sequence">
             <field name="name">Cash Sequence</field>
             <field name="code">paiement.cash.client</field>
-             <field name="prefix">Cash/</field>
+             <field name="prefix">Esp/</field>
             <field eval="1" name="number_next"/>
             <field eval="1" name="number_increment"/>
             <field name="padding">5</field>

@@ -200,3 +200,4 @@ class ColisProduct(models.Model):
     product_id = fields.Many2one('product.product', 'Article')
     product_uom_id = fields.Many2one('uom.uom', related='product_id.uom_id', stirng='Unité de mesure')
     product_qty = fields.Float('Quantité')
+    partner_id = fields.Many2one('res.partner', string="Patient")

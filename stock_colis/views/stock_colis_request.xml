@@ -23,6 +23,8 @@
                     <header>
                         <button name="action_open" string="Envoyer" type="object"
                                 class="oe_highlight" attrs="{'invisible': [('show_send', '!=', True)]}"/>
+                        <button name="action_draft" string="Remettre en Brouillon" type="object"
+                                class="oe_highlight" attrs="{'invisible': [('show_draft', '!=', True)]}"/>
                         <button name="action_valid" string="Valider" type="object"
                                 class="oe_highlight" attrs="{'invisible': [('show_validate', '!=', True)]}"/>
                         <field name="state" widget="statusbar" readonly="1"/>
@@ -34,17 +36,19 @@
                         <group>
                             <field name="show_validate" invisible="1"/>
                             <field name="show_send" invisible="1"/>
+                            <field name="show_draft" invisible="1"/>
                             <field name="request_date" readonly="0"/>
                             <field name="company_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
                             <field name="stock_location_id" options="{'no_create': True, 'no_open': True}"
                                    attrs="{'readonly': [('state', '!=', 'new')], 'required': True}"/>
-                            <field name="user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
-                            <field name="user_requested_id" options="{'no_create': True, 'no_open': True}" readonly="1"
+                            <field name="user_requested_id" options="{'no_create': True, 'no_open': True}" readonly="0"
                                    required="1"/>
+                            <field name="user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
                             <field name="stock_location_dest_id" options="{'no_create': True, 'no_open': True}"
-                                   attrs="{'readonly': [('state', '!=', 'new')], 'required': True}"/>
+                                   attrs="{'readonly': True, 'required': True}"/>
                             <field name="is_destinataire" invisible="1"/>
                             <field name="stock_colis_id" options="{'no_create': True}" states="valid"/>
+                            <field name="reliquat_id" options="{'no_create': True}" readonly="1"/>
                         </group>
                         <notebook>
                             <page string="Articles Génériques">
@@ -53,6 +57,7 @@
                                        options="{'no_create': True}">
                                     <tree editable="bottom">
                                         <field name="product_id"/>
+                                        <field name="partner_id"/>
                                         <field name="product_uom_id"/>
                                         <field name="product_qty"/>
                                     </tree>

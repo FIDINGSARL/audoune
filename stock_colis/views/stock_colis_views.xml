@@ -47,7 +47,6 @@
                                    attrs="{'readonly': True}"/>
                             <field name="received_cheque_ids" attrs="{'invisible': [('is_destinataire', '=', False)]}"
                                    options="{'no_create': True}"/>
-
                         </group>
                         <notebook attrs="{'invisible': [('is_destinataire', '=', True)]}">
                             <page string="Numéros de série">
