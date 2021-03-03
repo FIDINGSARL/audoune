@@ -13,7 +13,6 @@
     'data': [
         'views/stock_lot_view.xml',
         'views/partner_view.xml',
-        'views/mrp_views.xml',
     ],
     'demo_xml': [],
     'installable': True,

@@ -74,7 +74,7 @@
                             <page string="Articles Génériques">
                                 <field name="product_line_ids"
                                        context="{'location_id': stock_location_id}"
-                                       options="{'no_create': True}">
+                                       options="{'no_create': True}" attrs="{'readonly': [('is_destinataire', '=', False)]}">
                                     <tree editable="bottom">
                                         <field name="product_id"/>
                                         <field name="partner_id"/>
@@ -84,8 +84,8 @@
                                 </field>
                             </page>
                             <page string="Chèques">
-                                <field name="cheque_ids" options="{'no_create': True}"
-                                       domain="[('company_id', '=', company_id), ('caisse_id', '=', user_id)]"/>
+                                <field name="cheque_ids" options="{'no_create': True}" attrs="{'readonly': [('is_destinataire', '=', False)]}"
+                                       domain="[('company_id', '=', company_id), ('caisse_id', '=', caisse_id)]"/>
                             </page>
                         </notebook>
                     </sheet>

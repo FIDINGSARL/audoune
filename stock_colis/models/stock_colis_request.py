@@ -74,6 +74,7 @@ class StockColisRequest(models.Model):
         res['domain'] = {'user_requested_id': ([('property_warehouse_id', '=', self.stock_location_id.id)])}
         return res
 
+    @api.depends('stock_location_dest_id')
     def _compute_is_destinataire(self):
         for rec in self:
             rec.is_destinataire = rec.stock_location_dest_id == self.env.user.property_warehouse_id
