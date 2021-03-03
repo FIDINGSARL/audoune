@@ -70,7 +70,6 @@ class StockColis(models.Model):
         self = self.sudo()
         res = {}
         res['domain'] = {'user_requesting_id': ([('property_warehouse_id', '=', self.stock_location_dest_id.id)])}
-        print('res', res)
         return res
 
     @api.depends('state')
@@ -176,33 +175,40 @@ class StockColis(models.Model):
 
     def _process_cheque_lines(self):
         self = self.sudo()
-        cheque_client_obj = self.env['paiement.cheque.client']
-        paiement_record_obj = self.env['paiement.record']
-        cheques_arr = []
-        for record_line in self.cheque_ids:
-            journal_id = self.env['account.journal'].search([
-                ('name', 'like', record_line.journal_id.name),
-                ('company_id', '=', self.env.user.company_id.id),
-            ])
-            vals = {
-                'name': record_line.name,
-                'amount': record_line.amount,
-                'journal_id': journal_id.id,
-                'date': record_line.date,
-                'client': record_line.client.id,
-                'caisse_id': self.user_requesting_id.caisse_id.id,
-                'company_id': self.env.user.company_id.id,
-                'colis_id': self.id,
-            }
+        for cheque in self.cheque_ids:
+            cheque.write({
+                'caisse_id': self.user_requesting_id.caisse_id.id
+            })
 
-            if not paiement_record_obj.get_model('cheque', self.env.user.company_id.id):
-                raise ValidationError(u"Vous devez créer un modèle chèque")
-            vals['model_id'] = paiement_record_obj.get_model('cheque', vals['company_id'])
-            vals['due_date'] = record_line.due_date
-            cheque_id = cheque_client_obj.create(vals)
-            cheques_arr.append((4, cheque_id.id))
-        self.received_cheque_ids = cheques_arr
-        self.cheque_ids.unlink()
+    # def _process_cheque_lines(self):
+    #     self = self.sudo()
+    #     cheque_client_obj = self.env['paiement.cheque.client']
+    #     paiement_record_obj = self.env['paiement.record']
+    #     cheques_arr = []
+    #     for record_line in self.cheque_ids:
+    #         journal_id = self.env['account.journal'].search([
+    #             ('name', 'like', record_line.journal_id.name),
+    #             ('company_id', '=', self.env.user.company_id.id),
+    #         ])
+    #         vals = {
+    #             'name': record_line.name,
+    #             'amount': record_line.amount,
+    #             'journal_id': journal_id.id,
+    #             'date': record_line.date,
+    #             'client': record_line.client.id,
+    #             'caisse_id': self.user_requesting_id.caisse_id.id,
+    #             'company_id': self.env.user.company_id.id,
+    #             'colis_id': self.id,
+    #         }
+    #
+    #         if not paiement_record_obj.get_model('cheque', self.env.user.company_id.id):
+    #             raise ValidationError(u"Vous devez créer un modèle chèque")
+    #         vals['model_id'] = paiement_record_obj.get_model('cheque', vals['company_id'])
+    #         vals['due_date'] = record_line.due_date
+    #         cheque_id = cheque_client_obj.create(vals)
+    #         cheques_arr.append((4, cheque_id.id))
+    #     self.received_cheque_ids = cheques_arr
+    #     self.cheque_ids.unlink()
 
 
 class StockPicking(models.Model):
