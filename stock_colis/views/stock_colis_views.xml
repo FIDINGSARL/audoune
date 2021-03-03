@@ -48,8 +48,9 @@
                         <group states="valid">
                             <field name="stock_picking_id" options="{'no_create': True}"
                                    attrs="{'readonly': True , 'invisible': [('is_cheque_only', '=', True)]}"/>
-                            <field name="received_cheque_ids" attrs="{'invisible': [('is_destinataire', '=', False)]}"
-                                   options="{'no_create': True}"/>
+                            <field name="cheque_ids" options="{'no_create': True}"
+                                   domain="[('company_id', '=', company_id)]"
+                                   attrs="{'invisible': [('is_destinataire', '=', False)]}"/>
                         </group>
                         <notebook attrs="{'invisible': [('is_destinataire', '=', True)]}">
                             <page string="Numéros de série">
