@@ -36,10 +36,11 @@ class StockColis(models.Model):
             return False
 
     name = fields.Char('Référence', readonly=1)
-    state = fields.Selection([('new', 'Nouveau'), ('open', 'Envoyé au Centre'),
-                              ('valid', 'Validé par le centre')], string=u'État', required=True,
+    state = fields.Selection([('new', 'Nouveau'), ('open', 'Envoyé au Demandeur'),
+                              ('valid', 'Validé par le Demandeur')], string=u'État', required=True,
                              copy=False, default='new', track_visibility='onchange')
     user_id = fields.Many2one('res.users', string='Emetteur', default=lambda self: self.env.user.id)
+    user_requesting_id = fields.Many2one('res.users', string='Destinataire')
     is_destinataire = fields.Boolean('Est un destinataire', compute='_compute_is_destinataire')
     # company_id = fields.Many2one('res.company', default=lambda self: self.env.company, string='Société')
     company_id = fields.Many2one('res.company', default=lambda self: self.env['res.company']._company_default_get('stock.colis'), string='Société')
@@ -52,6 +53,7 @@ class StockColis(models.Model):
     received_cheque_ids = fields.Many2many('paiement.cheque.client', 'colis_received_cheque_rel',
                                            string="Chèques reçus")
     stock_picking_id = fields.Many2one('stock.picking', string="Mouvement Source de l'inventaire")
+    is_cheque_only = fields.Boolean(string="Contient juste des chèques", compute='compute_is_cheque_only')
     show_validate = fields.Boolean(
         compute='_compute_show_validate',
         help='Technical field used to decide whether the button "Validate" should be displayed.')
@@ -62,6 +64,14 @@ class StockColis(models.Model):
     def _compute_is_destinataire(self):
         for rec in self:
             rec.is_destinataire = rec.stock_location_dest_id == self.env.user.property_warehouse_id
+
+    @api.onchange('stock_location_dest_id')
+    def _compute_user_requested_id(self):
+        self = self.sudo()
+        res = {}
+        res['domain'] = {'user_requesting_id': ([('property_warehouse_id', '=', self.stock_location_dest_id.id)])}
+        print('res', res)
+        return res
 
     @api.depends('state')
     def _compute_show_validate(self):
@@ -83,6 +93,13 @@ class StockColis(models.Model):
         res = super(StockColis, self).create(vals)
         return res
 
+    @api.depends('product_lot_ids', 'dossier_physique', 'product_line_ids')
+    def compute_is_cheque_only(self):
+        for rec in self:
+            rec.is_cheque_only = False
+            if not rec.product_lot_ids and not rec.dossier_physique and not rec.product_line_ids:
+                rec.is_cheque_only = True
+
     def action_open(self):
         self.write({
             'state': 'open'
@@ -92,8 +109,9 @@ class StockColis(models.Model):
         self.write({
             'state': 'valid'
         })
-        self._process_lot_lines()
         self._process_cheque_lines()
+        if not self.is_cheque_only:
+            self._process_lot_lines()
 
     def _process_lot_lines(self):
         line_ids_arr = []
@@ -172,7 +190,7 @@ class StockColis(models.Model):
                 'journal_id': journal_id.id,
                 'date': record_line.date,
                 'client': record_line.client.id,
-                'caisse_id': record_line.caisse_id.id,
+                'caisse_id': self.user_requesting_id.caisse_id.id,
                 'company_id': self.env.user.company_id.id,
                 'colis_id': self.id,
             }

@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="view_stock_colis_request_tree" model="ir.ui.view">
+        <record id="view_stock_colis_my_requests_tree" model="ir.ui.view">
             <field name="name">stock.colis.request.tree</field>
             <field name="model">stock.colis.request</field>
             <field name="arch" type="xml">
                 <tree>
+                    <field name="name"/>
+                    <field name="user_id"/>
+                    <field name="stock_location_id"/>
+                    <field name="stock_location_dest_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_stock_colis_request_tree" model="ir.ui.view">
+            <field name="name">stock.colis.request.to.do.tree</field>
+            <field name="model">stock.colis.request</field>
+            <field name="arch" type="xml">
+                <tree decoration-danger="state=='open'" decoration-warning="state=='valid'"
+                      decoration-success="state=='done'" create="false">
                     <field name="name"/>
                     <field name="user_id"/>
                     <field name="stock_location_id"/>
@@ -25,7 +40,7 @@
                                 class="oe_highlight" attrs="{'invisible': [('show_send', '!=', True)]}"/>
                         <button name="action_draft" string="Remettre en Brouillon" type="object"
                                 class="oe_highlight" attrs="{'invisible': [('show_draft', '!=', True)]}"/>
-                        <button name="action_valid" string="Valider" type="object"
+                        <button name="action_valid" string="Créer le Colis" type="object"
                                 class="oe_highlight" attrs="{'invisible': [('show_validate', '!=', True)]}"/>
                         <field name="state" widget="statusbar" readonly="1"/>
                     </header>
@@ -34,21 +49,26 @@
                             <field name="name"/>
                         </h1>
                         <group>
-                            <field name="show_validate" invisible="1"/>
-                            <field name="show_send" invisible="1"/>
-                            <field name="show_draft" invisible="1"/>
-                            <field name="request_date" readonly="0"/>
-                            <field name="company_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
-                            <field name="stock_location_id" options="{'no_create': True, 'no_open': True}"
-                                   attrs="{'readonly': [('state', '!=', 'new')], 'required': True}"/>
-                            <field name="user_requested_id" options="{'no_create': True, 'no_open': True}" readonly="0"
-                                   required="1"/>
-                            <field name="user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
-                            <field name="stock_location_dest_id" options="{'no_create': True, 'no_open': True}"
-                                   attrs="{'readonly': True, 'required': True}"/>
-                            <field name="is_destinataire" invisible="1"/>
-                            <field name="stock_colis_id" options="{'no_create': True}" states="valid"/>
-                            <field name="reliquat_id" options="{'no_create': True}" readonly="1"/>
+                            <group>
+                                <field name="show_validate" invisible="1"/>
+                                <field name="show_send" invisible="1"/>
+                                <field name="show_draft" invisible="1"/>
+                                <field name="request_date" readonly="0"/>
+                                <field name="company_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                                <field name="user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                                <field name="stock_location_dest_id" options="{'no_create': True, 'no_open': True}"
+                                       attrs="{'readonly': True, 'required': True}"/>
+                            </group>
+                            <group>
+                                <field name="stock_location_id" options="{'no_create': True, 'no_open': True}"
+                                       attrs="{'readonly': [('state', '!=', 'new')], 'required': True}"/>
+                                <field name="user_requested_id" options="{'no_create': True, 'no_open': True}"
+                                       readonly="0" required="1"/>
+                                <field name="caisse_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
+                                <field name="is_destinataire" invisible="1"/>
+                                <field name="stock_colis_id" options="{'no_create': True}" states="valid"/>
+                                <field name="reliquat_id" options="{'no_create': True}" readonly="1"/>
+                            </group>
                         </group>
                         <notebook>
                             <page string="Articles Génériques">
@@ -65,7 +85,7 @@
                             </page>
                             <page string="Chèques">
                                 <field name="cheque_ids" options="{'no_create': True}"
-                                       domain="[('company_id', '=', company_id)]"/>
+                                       domain="[('company_id', '=', company_id), ('caisse_id', '=', user_id)]"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -88,7 +108,8 @@
                     <field name="request_date"/>
                     <field name="activity_state"/>
                     <field name="activity_ids"/>
-                    <progressbar field="activity_state" colors="{&quot;planned&quot;: &quot;success&quot;, &quot;today&quot;: &quot;warning&quot;, &quot;overdue&quot;: &quot;danger&quot;}"/>
+                    <progressbar field="activity_state"
+                                 colors="{&quot;planned&quot;: &quot;success&quot;, &quot;today&quot;: &quot;warning&quot;, &quot;overdue&quot;: &quot;danger&quot;}"/>
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_content">
@@ -152,18 +173,55 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="action_stock_colis_request">
-            <field name="name">Demande de Colis</field>
+        <record model="ir.actions.act_window" id="action_stock_colis_my_requests">
+            <field name="name">Mes Demandes</field>
             <field name="res_model">stock.colis.request</field>
             <field name="view_mode">tree,kanban,form,activity</field>
+            <field name="domain">[('user_id','=',uid)]</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_stock_colis_request_to_do">
+            <field name="name">Demandes À traiter</field>
+            <field name="res_model">stock.colis.request</field>
+            <field name="view_mode">tree,kanban,form,activity</field>
+            <field name="domain">[('user_id','!=',uid)]</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_colis_request_to_do_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_stock_colis_request_tree"/>
+            <field name="act_window_id" ref="action_stock_colis_request_to_do"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_colis_my_request_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_stock_colis_my_requests_tree"/>
+            <field name="act_window_id" ref="action_stock_colis_my_requests"/>
         </record>
 
         <menuitem
-                id="menu_stock_colis_request"
+                id="menu_stock_colis_requests"
                 sequence="2"
-                action="action_stock_colis_request"
-                name="Demande de Colis"
+                name="Demandes de colis"
                 parent="stock.menu_stock_warehouse_mgmt"
+        />
+
+        <menuitem
+                id="menu_stock_colis_my_requests"
+                sequence="2"
+                action="action_stock_colis_my_requests"
+                name="Mes Demandes"
+                parent="menu_stock_colis_requests"
+        />
+
+        <menuitem
+                id="menu_stock_colis_request_to_do"
+                sequence="2"
+                action="action_stock_colis_request_to_do"
+                name="Demandes à traiter"
+                parent="menu_stock_colis_requests"
         />
 
 

@@ -157,7 +157,7 @@
                                 </table>
                             </t>
                             <t t-if="o.dossier_physique">
-                                <h4>Dossier Physique :</h4>
+                                <h4>Dossiers Physiques :</h4>
                                 <table class="table table-sm o_main_table" name="cheques_table">
                                     <thead>
                                         <tr>

@@ -21,9 +21,9 @@
             <field name="arch" type="xml">
                 <form string="Colis">
                     <header>
-                        <button name="action_open" string="Envoyer" type="object"
+                        <button name="action_open" string="Envoyer le Colis" type="object"
                                 class="oe_highlight" attrs="{'invisible': [('show_send', '!=', True)]}"/>
-                        <button name="action_valid" string="Valider" type="object"
+                        <button name="action_valid" string="Valider La récéption" type="object"
                                 class="oe_highlight" attrs="{'invisible': [('show_validate', '!=', True)]}"/>
                         <field name="state" widget="statusbar" readonly="1"/>
                     </header>
@@ -34,23 +34,27 @@
                         <group>
                             <field name="show_validate" invisible="1"/>
                             <field name="show_send" invisible="1"/>
+                            <field name="is_cheque_only" invisible="0"/>
                             <field name="user_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
                             <field name="company_id" options="{'no_create': True, 'no_open': True}" readonly="1"/>
                             <field name="stock_location_id" options="{'no_create': True, 'no_open': True}"
-                                    readonly="1"/>
+                                   readonly="1"/>
                             <field name="stock_location_dest_id" options="{'no_create': True, 'no_open': True}"
                                    attrs="{'readonly': [('state', '!=', 'new')], 'required': True}"/>
+                            <field name="user_requesting_id" options="{'no_create': True, 'no_open': True}" readonly="0"/>
+
                             <field name="is_destinataire" invisible="1"/>
                         </group>
                         <group states="valid">
                             <field name="stock_picking_id" options="{'no_create': True}"
-                                   attrs="{'readonly': True}"/>
+                                   attrs="{'readonly': True , 'invisible': [('is_cheque_only', '=', True)]}"/>
                             <field name="received_cheque_ids" attrs="{'invisible': [('is_destinataire', '=', False)]}"
                                    options="{'no_create': True}"/>
                         </group>
                         <notebook attrs="{'invisible': [('is_destinataire', '=', True)]}">
                             <page string="Numéros de série">
-                                <field name="product_lot_ids" domain="[('partner_id', '=', False), ('company_id', '=', company_id), ('is_dp', '=', False)]"
+                                <field name="product_lot_ids"
+                                       domain="[('partner_id', '=', False), ('company_id', '=', company_id), ('is_dp', '=', False)]"
                                        context="{'location_id': stock_location_id}"
                                        options="{'no_create': True}">
                                     <tree>
@@ -65,16 +69,17 @@
                             <page string="Articles Génériques">
                                 <field name="product_line_ids"
                                        context="{'location_id': stock_location_id}"
-                                       options="{'no_create': True}" >
+                                       options="{'no_create': True}">
                                     <tree editable="bottom">
                                         <field name="product_id" domain="[('tracking', '=', 'none')]"/>
-                                        <field name="product_uom_id" />
-                                        <field name="product_qty" />
+                                        <field name="product_uom_id"/>
+                                        <field name="product_qty"/>
                                     </tree>
                                 </field>
                             </page>
                             <page string="Chèques">
-                                <field name="cheque_ids" options="{'no_create': True}" domain="[('company_id', '=', company_id)]"/>
+                                <field name="cheque_ids" options="{'no_create': True}"
+                                       domain="[('company_id', '=', company_id)]"/>
                             </page>
                             <page string="Dossier Physique et Divers">
                                 <field name="dossier_physique" domain="[('partner_id', '=', False),

@@ -4,13 +4,26 @@ from odoo import models,fields, api
 from odoo.exceptions import ValidationError
 
 
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    is_dp = fields.Boolean(string='Est un dossier physique')
+
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    is_dp = fields.Boolean(related="product_tmpl_id.is_dp", string='Est un dossier physique')
+
+
 class StockProductionLot(models.Model):
     _inherit = 'stock.production.lot'
 
     partner_id = fields.Many2one('res.partner', 'Client')
     available_qty = fields.Float('Quantité disponible', compute='_compute_available_qty')
-    is_dp = fields.Boolean('Est un dossier physique')
-    is_admin = fields.Boolean('Est un admin', compute='_is_admin')
+    is_dp = fields.Boolean(related='product_id.is_dp', string='Est un dossier physique')
+    # is_admin = fields.Boolean('Est un admin', compute='_is_admin')
+    is_admin = fields.Boolean('Est un admin', default=lambda self: self.env.user.has_group('base.group_system'))
 
     def _is_admin(self):
         for rec in self:
