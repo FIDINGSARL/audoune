@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
 {
-    'name': u'Audoune -- Ventes',
+    'name': u'Audoune -- Projets',
     'version': '1.0',
     'summary': u'',
-    'category': 'Gestion Commerciale',
+    'category': 'Projets',
     'author': 'Osisoftware',
     'website': '',
     'depends': [
-        'base', 'stock', 'sale', 'sale_stock'
+        'base', 'project', 'account_tres_pec'
     ],
     'data': [
-        'views/sale_order_views.xml',
-        'views/stock_picking_views.xml',
-        # 'report/report.xml',
+        'data/data.xml',
+        'data/cron.xml',
+        'views/project_task_views.xml',
     ],
     'installable': True,
     'application': True,

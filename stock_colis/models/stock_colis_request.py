@@ -36,7 +36,7 @@ class StockColisRequest(models.Model):
             return False
 
     name = fields.Char('Référence', readonly=1)
-    state = fields.Selection([('new', 'Nouveau'), ('open', 'Envoyé'),
+    state = fields.Selection([('new', 'Nouveau'), ('open', 'Soumis'),
                               ('valid', 'Colis en Traitement'),
                               ('done', 'Términé'),
                               ], string=u'État', required=True,

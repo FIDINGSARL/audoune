@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="view_pec_task_inherit_form2" model="ir.ui.view">
+            <field name="name">pec.form.view.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='project_id']" position='after'>
+                    <field name="pec_id" readonly="1" />
+                    <field name="assurance_id" readonly="1" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

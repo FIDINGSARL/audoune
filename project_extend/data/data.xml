@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="ns_stage_1" model="project.task.type">
+            <field name="sequence">1</field>
+            <field name="name">Attente Prescription</field>
+        </record>
+        <record id="ns_stage_2" model="project.task.type">
+            <field name="sequence">2</field>
+            <field name="name">Attente Depot</field>
+        </record>
+        <record id="ns_stage_3" model="project.task.type">
+            <field name="sequence">3</field>
+            <field name="name">Attente remboursement</field>
+        </record>
+        <record id="ns_stage_4" model="project.task.type">
+            <field name="sequence">4</field>
+            <field name="name">Compteur remboursement</field>
+        </record>
+        <record id="ns_stage_5" model="project.task.type">
+            <field name="sequence">5</field>
+            <field name="name">En cours de traitement</field>
+        </record>
+        <record id="ns_stage_6" model="project.task.type">
+            <field name="sequence">6</field>
+            <field name="name">En cours de paiement</field>
+        </record>
+        <record id="ns_stage_7" model="project.task.type">
+            <field name="sequence">7</field>
+            <field name="name">En cours de paiement</field>
+        </record>
+        <record id="ns_stage_8" model="project.task.type">
+            <field name="sequence">8</field>
+            <field name="name">Remboursé</field>
+        </record>
+        <record id="ns_stage_9" model="project.task.type">
+            <field name="sequence">9</field>
+            <field name="name">Rejeté</field>
+        </record>
+        <record id="ns_stage_10" model="project.task.type">
+            <field name="sequence">10</field>
+            <field name="name">Payé</field>
+        </record>
+        <record id="ns_stage_11" model="project.task.type">
+            <field name="sequence">11</field>
+            <field name="name">Refus de paiement</field>
+        </record>
+        <record id="ns_stage_12" model="project.task.type">
+            <field name="sequence">12</field>
+            <field name="name">Attente prothèse</field>
+        </record>
+        <record id="ns_stage_13" model="project.task.type">
+            <field name="sequence">13</field>
+            <field name="name">Procédure amiable</field>
+        </record>
+        <record id="ns_stage_14" model="project.task.type">
+            <field name="sequence">14</field>
+            <field name="name">Procédure pénale</field>
+        </record>
+
+        <record id="project_non_soumise" model="project.project">
+            <field name="name">Assurances non soumises</field>
+            <field name="color">3</field>
+            <field name="type_ids"
+                   eval="[(4, ref('ns_stage_1')),(4, ref('ns_stage_2')),(4, ref('ns_stage_3')),(4, ref('ns_stage_4')),(4, ref('ns_stage_5')),(4, ref('ns_stage_6')),(4, ref('ns_stage_7')),(4, ref('ns_stage_8')),(4, ref('ns_stage_9')),(4, ref('ns_stage_10')),(4, ref('ns_stage_11')),(4, ref('ns_stage_12')),(4, ref('ns_stage_13')),(4, ref('ns_stage_14'))]"/>
+        </record>
+
+        <record id="s_stage_1" model="project.task.type">
+            <field name="sequence">1</field>
+            <field name="name">Attente Prescription</field>
+        </record>
+        <record id="s_stage_2" model="project.task.type">
+            <field name="sequence">2</field>
+            <field name="name">Attente Depot</field>
+        </record>
+        <record id="s_stage_3" model="project.task.type">
+            <field name="sequence">3</field>
+            <field name="name">Attente Accord</field>
+        </record>
+        <record id="s_stage_4" model="project.task.type">
+            <field name="sequence">4</field>
+            <field name="name">Compteur accord</field>
+        </record>
+        <record id="s_stage_5" model="project.task.type">
+            <field name="sequence">5</field>
+            <field name="name">Rejeté</field>
+        </record>
+        <record id="s_stage_6" model="project.task.type">
+            <field name="sequence">6</field>
+            <field name="name">Accordé</field>
+        </record>
+        <record id="s_stage_7" model="project.task.type">
+            <field name="sequence">7</field>
+            <field name="name">Payé</field>
+        </record>
+
+        <record id="project_soumise" model="project.project">
+            <field name="name">Assurance soumises à l'accord préalable</field>
+            <field name="color">4</field>
+            <field name="type_ids"
+                   eval="[(4, ref('s_stage_1')),(4, ref('s_stage_2')),(4, ref('s_stage_3')),(4, ref('s_stage_4')),(4, ref('s_stage_5')),(4, ref('s_stage_6')),(4, ref('s_stage_7'))]"/>
+        </record>
+    </data>
+</odoo>

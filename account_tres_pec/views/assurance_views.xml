@@ -8,6 +8,8 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
+                    <field name="type"/>
+                    <field name="compteur"/>
                 </tree>
             </field>
         </record>
@@ -20,6 +22,8 @@
                     <sheet>
                         <group>
                             <field name="name"/>
+                            <field name="type"/>
+                            <field name="compteur"/>
                         </group>
                     </sheet>
                 </form>

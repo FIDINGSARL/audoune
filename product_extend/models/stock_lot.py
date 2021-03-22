@@ -52,7 +52,6 @@ class ResPartner(models.Model):
 
     def _lots_count(self):
         for rec in self:
-
             rec.count_lots_client = len(rec.lot_client_ids.filtered(lambda serial: serial.is_dp is True))
 
     count_lots_client = fields.Integer(compute='_lots_count', string=u'Nbre de dossier physiques')
