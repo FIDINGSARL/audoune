@@ -11,7 +11,7 @@
         </record>
         <record id="ns_stage_3" model="project.task.type">
             <field name="sequence">3</field>
-            <field name="name">Attente Depot</field>
+            <field name="name">Retour pour complément</field>
         </record>
         <record id="ns_stage_4" model="project.task.type">
             <field name="sequence">4</field>
