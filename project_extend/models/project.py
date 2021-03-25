@@ -7,8 +7,9 @@ from datetime import datetime
 class ProjectTask(models.Model):
     _inherit = 'project.task'
 
-    pec_id = fields.Many2one('paiement.pec.client', string="Prise en charge")
-    assurance_id = fields.Many2one('pec.assurance', related='pec_id.assurance_id', string="Assurance")
+    dr_id = fields.Many2one('dossier.rembourssement', string="Dossier de Rembourssement")
+    assurance_id = fields.Many2one('pec.assurance', related='dr_id.assurance_id', string="Assurance")
+    accorde_task_id = fields.Many2one('project.task', 'Provenant de l\'accord')
 
     @api.model
     def _attente_remboursement_cron(self):
@@ -35,3 +36,28 @@ class ProjectTask(models.Model):
                 minutes = seconds / 60
                 if minutes >= 2:
                     task.stage_id = next_stage_id
+
+    def write(self, vals):
+        if vals.get('stage_id'):
+            stage_id = self.env['project.task.type'].browse(vals['stage_id'])
+            self.sudo().activity_schedule(
+                 activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
+                 summary=stage_id.name + ' ' + self.partner_id.name,
+                 user_id=self.user_id.id)
+            project_non_soumise_id = self.env.ref('project_extend.project_non_soumise')
+            project_soumise_id = self.env.ref('project_extend.project_soumise')
+            accorde_stage_id = self.env.ref('project_extend.s_stage_6')
+            stage_id = self.env.ref('project_extend.ns_stage_1')
+            if self.project_id == project_soumise_id and self.stage_id == accorde_stage_id:
+                task_id = self.env['project.task'].create({
+                    'project_id': project_non_soumise_id.id,
+                    'name': self.partner_id.name + ' ' + self.assurance_id.name,
+                    'partner_id': self.partner_id.id,
+                    'stage_id': stage_id.id,
+                    'accorde_task_id': self.id
+                })
+                task_id.activity_schedule(
+                 activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
+                 summary=stage_id.name + ' ' + self.partner_id.name,
+                 user_id=self.user_id.id)
+        return super(ProjectTask, self).write(vals)

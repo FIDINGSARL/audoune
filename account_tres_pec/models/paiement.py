@@ -90,20 +90,20 @@ class PaiementPecClient(models.Model):
 
     name = fields.Char(string=u'Numéro', readonly=True, states={'payed': [('readonly', True)]})
     amount = fields.Float(string='Montant', required=True, states={'payed': [('readonly', True)]})
-    journal_id = fields.Many2one('account.journal', string=u'Journal', states={'payed': [('readonly', True)]})
-    date = fields.Date(string="Date", required=True, states={'payed': [('readonly', True)]})
+    journal_id = fields.Many2one('account.journal', string=u'Journal', states={'payed': [('readonly', True)]}, default=lambda self: self.env.ref('account_tres_customer.account_journal_data_chp'))
+    date = fields.Date(string="Date", required=True, states={'payed': [('readonly', True)]}, default=fields.date.today())
     payed_date = fields.Date('Date encaissment')
-    due_date = fields.Date(string=u"Date d'échéance", required=True, states={'payed': [('readonly', True)]})
+    due_date = fields.Date(string=u"Date d'échéance", required=True, states={'payed': [('readonly', True)]}, default=fields.date.today())
     note = fields.Text("Notes")
     bank_client = fields.Many2one("res.partner.bank", string="Banque client")
     client = fields.Many2one('res.partner', string='Client', required=True, states={'payed': [('readonly', True)]})
     model_id = fields.Many2one('paiement.pec.model.client', string=u'Modèle Comptable',
-                               required=True, states={'payed': [('readonly', True)]})
+                               required=True, states={'payed': [('readonly', True)]}, default=lambda self: self.env.ref('account_tres_pec.paiement_pec_model_client1'))
 
     move_line_ids = fields.One2many('account.move.line', 'pec_client_id', string=u'Lignes Comptables',
                                     states={'payed': [('readonly', True)]})
     tres_fees_ids = fields.One2many('tres.fees', 'pec_client_id', string=u'Frais Bancaires')
-    caisse_id = fields.Many2one('paiement.caisse', string=u'Caisse')
+    caisse_id = fields.Many2one('paiement.caisse', string=u'Caisse', default=lambda self: self.env.user.caisse_id)
     paiement_record_id = fields.Many2one('paiement.record', string=u'Reçu de Paiement', ondelete='cascade')
     company_id = fields.Many2one('res.company', u'Société', required=True,
                                  default=lambda self: self.env['res.company']._company_default_get(
@@ -112,7 +112,6 @@ class PaiementPecClient(models.Model):
                                           states={'payed': [('readonly', True)]})
     origin = fields.Char('Origine')
     assurance_id = fields.Many2one('pec.assurance', string="Assurance")
-    task_id = fields.Many2one('project.task', string="Fiche Client")
     state = fields.Selection([('draft', 'Brouillon'),
                               ('caisse', 'Caisse'),
                               ('caisse_centrale', 'Caisse centrale'),
@@ -153,23 +152,23 @@ class PaiementPecClient(models.Model):
     @api.model
     def create(self, vals):
         vals['name'] = self.env.ref('account_tres_pec.seq_tres_customer_pec').next_by_code('paiement.pec.client') or ''
-        if vals.get('assurance_id'):
-            assurance_id = self.env['pec.assurance'].browse(vals['assurance_id'])
-            partner_id = self.env['res.partner'].browse(vals['client'])
-            project_id = self.env.ref('project_extend.project_non_soumise') if assurance_id.type == 'non_soumise' else self.env.ref('project_extend.project_soumise')
-            stage_id = self.env.ref('project_extend.ns_stage_1') if assurance_id.type == 'non_soumise' else self.env.ref('project_extend.s_stage_1')
-            task_id = self.env['project.task'].create({
-                'project_id': project_id.id,
-                'name': partner_id.name,
-                'partner_id': partner_id.id,
-                'stage_id': stage_id.id,
-                # 'pec_id': vals['id']
-            })
-            vals['task_id'] = task_id.id
+        # if vals.get('assurance_id'):
+        #     assurance_id = self.env['pec.assurance'].browse(vals['assurance_id'])
+        #     partner_id = self.env['res.partner'].browse(vals['client'])
+        #     project_id = self.env.ref('project_extend.project_non_soumise') if assurance_id.type == 'non_soumise' else self.env.ref('project_extend.project_soumise')
+        #     stage_id = self.env.ref('project_extend.ns_stage_1') if assurance_id.type == 'non_soumise' else self.env.ref('project_extend.s_stage_1')
+        #     task_id = self.env['project.task'].create({
+        #         'project_id': project_id.id,
+        #         'name': partner_id.name,
+        #         'partner_id': partner_id.id,
+        #         'stage_id': stage_id.id,
+        #         # 'pec_id': vals['id']
+        #     })
+        #     vals['task_id'] = task_id.id
+        # task_id.write({
+        #     'pec_id': res.id
+        # })
         res = super(PaiementPecClient, self).create(vals)
-        task_id.write({
-            'pec_id': res.id
-        })
         return res
 
     @api.model

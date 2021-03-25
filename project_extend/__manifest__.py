@@ -8,7 +8,7 @@
     'author': 'Osisoftware',
     'website': '',
     'depends': [
-        'base', 'project', 'account_tres_pec'
+        'base', 'project', 'dossier_rembourssement'
     ],
     'data': [
         'data/data.xml',

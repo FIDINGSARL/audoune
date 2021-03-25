@@ -7,7 +7,8 @@
             <field name="inherit_id" ref="project.view_task_form2"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='project_id']" position='after'>
-                    <field name="pec_id" readonly="1" />
+                    <field name="dr_id" readonly="1" />
+                    <field name="accorde_task_id" readonly="1" />
                     <field name="assurance_id" readonly="1" />
                 </xpath>
             </field>
