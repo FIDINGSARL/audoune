@@ -47,13 +47,13 @@ class ProjectTask(models.Model):
             project_non_soumise_id = self.env.ref('project_extend.project_non_soumise')
             project_soumise_id = self.env.ref('project_extend.project_soumise')
             accorde_stage_id = self.env.ref('project_extend.s_stage_5')
-            stage_id = self.env.ref('project_extend.ns_stage_1')
-            if self.project_id == project_soumise_id and self.stage_id == accorde_stage_id:
+            ns_stage_2_id = self.env.ref('project_extend.ns_stage_1')
+            if self.project_id == project_soumise_id and stage_id == accorde_stage_id:
                 task_id = self.env['project.task'].create({
                     'project_id': project_non_soumise_id.id,
                     'name': self.partner_id.name + ' ' + self.assurance_id.name,
                     'partner_id': self.partner_id.id,
-                    'stage_id': stage_id.id,
+                    'stage_id': ns_stage_2_id.id,
                     'accorde_task_id': self.id
                 })
                 task_id.activity_schedule(
