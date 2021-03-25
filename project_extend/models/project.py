@@ -46,8 +46,8 @@ class ProjectTask(models.Model):
                  user_id=self.user_id.id)
             project_non_soumise_id = self.env.ref('project_extend.project_non_soumise')
             project_soumise_id = self.env.ref('project_extend.project_soumise')
-            accorde_stage_id = self.env.ref('project_extend.s_stage_5')
-            ns_stage_2_id = self.env.ref('project_extend.ns_stage_1')
+            accorde_stage_id = self.env.ref('project_extend.s_stage_6')
+            ns_stage_2_id = self.env.ref('project_extend.ns_stage_2')
             if self.project_id == project_soumise_id and stage_id == accorde_stage_id:
                 task_id = self.env['project.task'].create({
                     'project_id': project_non_soumise_id.id,
