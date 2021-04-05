@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="inherit_payment_cheque_form" model="ir.ui.view">
+            <field name="name">inherit.payment.cheque.form</field>
+            <field name="model">paiement.cheque.client</field>
+            <field name="inherit_id" ref="account_tres_customer.cheque_form_client_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Pièces">
+                        <group>
+                            <field name="engagement_id"/>
+                            <field name="pc_id"/>
+                        </group>
+                    </page>
+                </xpath>
+                <field name="client" position="after">
+                    <field name="in_name_of_id" />
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

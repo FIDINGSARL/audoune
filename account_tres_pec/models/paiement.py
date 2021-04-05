@@ -123,7 +123,7 @@ class PaiementPecClient(models.Model):
     def _compute_parent_assurances(self):
         self.assurance_id = False
         res = {'domain': {}}
-        res['domain'] = {'assurance_id': [('id', 'in', self.client.assurance_ids.ids)]}
+        res['domain'] = {'assurance_id': [('id', 'in', self.client.assurance_ids.mapped('assurance_id').ids)]}
         return res
 
     def unlink(self):

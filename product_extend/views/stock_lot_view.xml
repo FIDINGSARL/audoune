@@ -13,6 +13,9 @@
                         <label for="is_dp"/>
                     </div>
                 </xpath>
+                <field name="type" position="after">
+                    <field name="product_variant_id" />
+                </field>
             </field>
         </record>
 

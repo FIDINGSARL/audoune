@@ -25,10 +25,10 @@
                             <field name="name"/>
                         </h1>
                         <group>
-                            <field name="partner_id"/>
+                            <field name="partner_id" readonly="1" options="{'no_create':True, 'no_open':True}"/>
                             <field name="date"/>
                             <field name="amount"/>
-                            <field name="assurance_id"/>
+                            <field name="assurance_id" options="{'no_create':True, 'no_open':True}"/>
                             <field name="task_id" readonly="1"/>
                         </group>
                     </sheet>

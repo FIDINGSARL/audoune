@@ -12,14 +12,14 @@ class DossierRembourssement(models.Model):
     amount = fields.Float('Montant')
     assurance_id = fields.Many2one('pec.assurance', string="Assurance")
     date = fields.Date('Date')
-    task_id = fields.Many2one('project.task', string="Fiche Client")
+    task_id = fields.Many2one('project.task', string="Dossier de rembourssement")
 
     @api.model
     def create(self, vals):
         vals['name'] = self.env.ref('dossier_rembourssement.seq_dr').next_by_code('dossier.rembourssement') or ''
         if vals.get('assurance_id'):
             assurance_id = self.env['pec.assurance'].browse(vals['assurance_id'])
-            partner_id = self.env['res.partner'].browse(vals['partner_id'])
+            partner_id = self.env['res.partner'].browse(self._context.get('default_partner_id'))
             project_id = self.env.ref(
                 'project_extend.project_non_soumise') if assurance_id.type == 'non_soumise' else self.env.ref(
                 'project_extend.project_soumise')
@@ -48,5 +48,5 @@ class DossierRembourssement(models.Model):
     def _compute_parent_assurances(self):
         self.assurance_id = False
         res = {'domain': {}}
-        res['domain'] = {'assurance_id': [('id', 'in', self.partner_id.assurance_ids.ids)]}
+        res['domain'] = {'assurance_id': [('id', 'in', self.partner_id.assurance_ids.mapped('assurance_id').ids)]}
         return res

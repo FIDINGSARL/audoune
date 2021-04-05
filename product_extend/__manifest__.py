@@ -3,7 +3,7 @@
 {
     "name": u"Audoune: Produits et Numéro de séries",
     "version": "14.0",
-    "depends": ['base', 'stock', 'mrp'],
+    "depends": ['base', 'stock', 'mrp', 'account_tres_customer'],
     "author": "Osisoftware",
     "summary": "",
     'website': '',
@@ -11,6 +11,7 @@
     "description": "Ajouter des infos sup",
     "init_xml": [],
     'data': [
+        # 'data/data.xml',
         'views/stock_lot_view.xml',
         'views/partner_view.xml',
     ],

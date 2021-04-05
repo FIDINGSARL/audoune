@@ -12,6 +12,7 @@
     "init_xml": [],
     'data': [
         'security/groups.xml',
+        'security/ir.model.access.csv',
         'data/rules.xml',
         'security/rules.xml',
         'views/partner_extend_view.xml',

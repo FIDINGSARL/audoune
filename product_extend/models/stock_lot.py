@@ -13,7 +13,7 @@ class ProductTemplate(models.Model):
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
-    is_dp = fields.Boolean(related="product_tmpl_id.is_dp", string='Est un dossier physique')
+    is_dp = fields.Boolean(string='Est un dossier physique')
 
 
 class StockProductionLot(models.Model):

@@ -14,7 +14,7 @@
                 <field name="vat" position="before">
                     <field name="fax" widget="phone"/>
                     <field name="cin"/>
-                    <field name="assurance_ids" widget="many2many_tags"/>
+                    <field name="password"/>
                     <field name="is_editable" invisible="1"/>
                     <field name="see_all" attrs="{'readonly': [('is_editable', '=', False)]}"/>
                     <field name="user_id" attrs="{'readonly': [('is_editable', '=', False)]}"/>
@@ -34,6 +34,23 @@
                             <field name="itp"/>
                             <field name="activites"/>
                             <field name="nationalite"/>
+                        </group>
+                    </page>
+                    <page string="Assurances">
+                        <field name="assurance_ids">
+                            <tree editable="bottom">
+                                <field name="assurance_id" />
+                                <field name="num_affi" />
+                                <field name="num_imma" />
+                                <field name="num_fonda" />
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Pièces">
+                        <group>
+                            <field name="cin_attachment_id"/>
+                            <field name="mut_attachment_id"/>
+                            <field name="comp_attachment_id"/>
                         </group>
                     </page>
                 </notebook>
