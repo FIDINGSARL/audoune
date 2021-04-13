@@ -11,6 +11,8 @@
     "description": "",
     "init_xml": [],
     'data': [
+        'data/data.xml',
+        'security/ir.model.access.csv',
         'views/payment_views.xml',
     ],
     'demo_xml': [],

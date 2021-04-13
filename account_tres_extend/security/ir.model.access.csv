@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_accord_cheque_client,paiement_cheque_client_access_accord,model_accord_cheque_client,account_tres_customer.account_tres_user,1,1,1,1

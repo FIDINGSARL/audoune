@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+         <record model="accord.cheque.client" id="isaccorde_tags_yes">
+             <field name="name">Accordé</field>
+             <field name="color">10</field>
+         </record>
+        <record model="accord.cheque.client" id="isaccorde_tags_no">
+             <field name="name">Non Accordé</field>
+             <field name="color">9</field>
+         </record>
+    </data>
+</odoo>

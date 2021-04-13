@@ -21,3 +21,28 @@ class SaleOrderLine(models.Model):
             else:
                 raise ValidationError('Ce numéro de série est déjà affécté')
         return super(SaleOrderLine, self).write(vals)
+
+
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    def action_confirm(self):
+        res = super(SaleOrder, self).action_confirm()
+
+        dr_obj = self.env['dossier.rembourssement']
+        for assurance in self.partner_id.assurance_ids:
+            dr_obj.create({
+                'partner_id': self.partner_id.id,
+                'date': fields.Date.today(),
+                'assurance_id': assurance.assurance_id.id,
+                'amount': 0.0
+            })
+        dr_obj.create({
+            'partner_id': self.partner_id.id,
+            'date': fields.Date.today(),
+            'assurance_id': False,
+            'amount': 0.0
+        })
+
+        return res
+

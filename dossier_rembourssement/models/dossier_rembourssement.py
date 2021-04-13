@@ -17,23 +17,22 @@ class DossierRembourssement(models.Model):
     @api.model
     def create(self, vals):
         vals['name'] = self.env.ref('dossier_rembourssement.seq_dr').next_by_code('dossier.rembourssement') or ''
-        if vals.get('assurance_id'):
-            assurance_id = self.env['pec.assurance'].browse(vals['assurance_id'])
-            partner_id = self.env['res.partner'].browse(self._context.get('default_partner_id'))
-            project_id = self.env.ref(
-                'project_extend.project_non_soumise') if assurance_id.type == 'non_soumise' else self.env.ref(
-                'project_extend.project_soumise')
-            stage_id = self.env.ref(
-                'project_extend.ns_stage_1') if assurance_id.type == 'non_soumise' else self.env.ref(
-                'project_extend.s_stage_1')
-            task_id = self.env['project.task'].create({
-                'project_id': project_id.id,
-                'name': partner_id.name + ' ' + assurance_id.name,
-                'partner_id': partner_id.id,
-                'stage_id': stage_id.id,
-                # 'pec_id': vals['id']
-            })
-            vals['task_id'] = task_id.id
+        assurance_id = self.env['pec.assurance'].browse(vals['assurance_id'])
+        partner_id = self.env['res.partner'].browse(self._context.get('default_partner_id'))
+        project_id = self.env.ref(
+            'project_extend.project_non_soumise') if assurance_id.type == 'non_soumise' else self.env.ref(
+            'project_extend.project_soumise')
+        stage_id = self.env.ref(
+            'project_extend.ns_stage_1') if assurance_id.type == 'non_soumise' else self.env.ref(
+            'project_extend.s_stage_1')
+        task_id = self.env['project.task'].create({
+            'project_id': project_id.id,
+            'name': partner_id.name + ' ' + assurance_id.name if assurance_id else partner_id.name + ' partie client',
+            'partner_id': partner_id.id,
+            'stage_id': stage_id.id,
+            # 'pec_id': vals['id']
+        })
+        vals['task_id'] = task_id.id
         res = super(DossierRembourssement, self).create(vals)
         task_id.write({
             'dr_id': res.id

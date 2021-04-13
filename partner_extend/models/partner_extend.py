@@ -30,6 +30,7 @@ class ResPartner(models.Model):
     cin_attachment_id = fields.Binary('Photocopie CIN')
     mut_attachment_id = fields.Binary('Photocopie Mutuelle')
     comp_attachment_id = fields.Binary('Photocopie Complémentaire')
+    delapartde_id = fields.Many2one('res.partner', 'De la part de')
 
     @api.constrains('ice')
     def _check_ice(self):
@@ -94,7 +95,7 @@ class ResPartner(models.Model):
 class PartnerAssurance(models.Model):
     _name = 'partner.assurance'
 
-    assurance_id = fields.Many2one('pec.assurance', 'Assurance')
+    assurance_id = fields.Many2one('pec.assurance', 'Assurance', required=1)
     partner_id = fields.Many2one('res.partner', 'Patient')
     num_affi = fields.Char('Numéro d\'affiliation')
     num_imma = fields.Char('Numéro d\'immatriculation')
