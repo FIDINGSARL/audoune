@@ -37,6 +37,7 @@ class SaleOrder(models.Model):
                 'assurance_id': assurance.assurance_id.id,
                 'amount': 0.0
             })
+
         dr_obj.create({
             'partner_id': self.partner_id.id,
             'date': fields.Date.today(),

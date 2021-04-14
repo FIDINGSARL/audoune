@@ -9,7 +9,7 @@
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="date"/>
-                    <field name="amount"/>
+                    <field name="amount" sum="Total"/>
                     <field name="assurance_id"/>
                 </tree>
             </field>
