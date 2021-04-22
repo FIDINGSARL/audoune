@@ -30,7 +30,11 @@ class ResPartner(models.Model):
     cin_attachment_id = fields.Binary('Photocopie CIN')
     mut_attachment_id = fields.Binary('Photocopie Mutuelle')
     comp_attachment_id = fields.Binary('Photocopie Complémentaire')
-    delapartde_id = fields.Many2one('res.partner', 'De la part de')
+    delapartun_id = fields.Many2one('res.partner', 'De la part un')
+    plateforme = fields.Many2one('utm.medium', 'Plateforme')
+    delapartdeux_id = fields.Many2one('res.partner', 'De la part deux')
+    is_autres = fields.Boolean('Autres')
+    autres = fields.Many2one('utm.medium', 'Autres')
 
     @api.constrains('ice')
     def _check_ice(self):

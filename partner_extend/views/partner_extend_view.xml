@@ -18,7 +18,12 @@
                     <field name="is_editable" invisible="1"/>
                     <field name="see_all" attrs="{'readonly': [('is_editable', '=', False)]}"/>
                     <field name="user_id" attrs="{'readonly': [('is_editable', '=', False)]}"/>
-                    <field name="delapartde_id" options="{'no_create': 1, 'no_open': 1}"/>
+                    <field name="delapartun_id" options="{'no_create': 1, 'no_open': 1}"/>
+                    <field name="plateforme" options="{'no_create': 1, 'no_open': 1}"/>
+                    <field name="delapartdeux_id" options="{'no_create': 1, 'no_open': 1}"/>
+                    <field name="is_autres" />
+                    <field name="autres" options="{'no_create': 1, 'no_open': 1}"
+                           attrs="{'invisible': [('is_autres', '=', False)], 'required': [('is_autres', '=', True)]}"/>
                 </field>
                 <xpath expr="//page[@name='sales_purchases']/group/group[1]" position="attributes">
                     <attribute name="invisible">1</attribute>

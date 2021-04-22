@@ -104,5 +104,22 @@
             <field name="type_ids"
                    eval="[(4, ref('s_stage_1')),(4, ref('s_stage_2')),(4, ref('s_stage_3')),(4, ref('s_stage_4')),(4, ref('s_stage_5')),(4, ref('s_stage_6')),(4, ref('s_stage_7'))]"/>
         </record>
+
+        <record id="pc_stage_1" model="project.task.type">
+            <field name="sequence">1</field>
+            <field name="name">En cours de paiement</field>
+        </record>
+
+        <record id="pc_stage_2" model="project.task.type">
+            <field name="sequence">2</field>
+            <field name="name">Payé</field>
+        </record>
+
+        <record id="project_partie_client" model="project.project">
+            <field name="name">Partie Client</field>
+            <field name="color">5</field>
+            <field name="type_ids"
+                   eval="[(4, ref('pc_stage_1')),(4, ref('pc_stage_2'))]"/>
+        </record>
     </data>
 </odoo>
