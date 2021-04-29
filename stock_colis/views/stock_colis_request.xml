@@ -76,8 +76,8 @@
                                        context="{'location_id': stock_location_id}"
                                        options="{'no_create': True}" attrs="{'readonly': [('is_destinataire', '=', False)]}">
                                     <tree editable="bottom">
-                                        <field name="product_id"/>
-                                        <field name="partner_id"/>
+                                        <field name="product_id" required="1"/>
+                                        <field name="partner_id" required="1"/>
                                         <field name="product_uom_id"/>
                                         <field name="product_qty"/>
                                     </tree>

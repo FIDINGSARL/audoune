@@ -11,7 +11,6 @@ class CrmLead(models.Model):
 
     @api.model
     def create(self, vals):
-        print('vals', vals)
         vals['user_id'] = False
         return super(CrmLead, self).create(vals)
 
@@ -30,9 +29,7 @@ class CrmLead(models.Model):
                     'type': 'contact'
                 })
                 self.partner_id = partner_id
-            print('stage_id', stage_id.name)
             if stage_id == quali_stage_id:
-                print('quali')
                 self.user_id = self.env.user.id
         return super(CrmLead, self).write(vals)
 

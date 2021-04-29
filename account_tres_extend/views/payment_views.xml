@@ -16,12 +16,12 @@
                     </page>
                 </xpath>
                 <field name="client" position="after">
-                    <field name="in_name_of_id" />
+                    <field name="in_name_of_id"/>
                 </field>
                 <field name="bordereau_id" position="after">
                     <field name="accord_ids"
                            options="{'color_field': 'color', 'no_create':1, 'no_open':1}"
-                    widget="many2many_tags"/>
+                           widget="many2many_tags"/>
                 </field>
                 <field name="journal_id" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -43,5 +43,26 @@
                 </field>
             </field>
         </record>
+
+        <record id="inherit_payment_cash_form" model="ir.ui.view">
+            <field name="name">inherit.payment.cash.form</field>
+            <field name="model">paiement.cash.client</field>
+            <field name="inherit_id" ref="account_tres_customer.cash_form_client_view"/>
+            <field name="arch" type="xml">
+                <field name="journal_id" position="attributes">
+                    <attribute name="search">[('name','like','Esp%')]</attribute>
+                </field>
+                <field name="company_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="paiement_record_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="analytic_account_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
     </data>
+
 </odoo>

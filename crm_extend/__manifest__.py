@@ -12,7 +12,9 @@
     ],
     'data': [
         'data/data.xml',
+        'security/groups.xml',
         'views/crm_views.xml',
+        'views/activity_wizard.xml',
     ],
     'installable': True,
     'application': True,

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="activity_view_form_popup_moderate_inherit" model="ir.ui.view">
+            <field name="name">activity.view.form.popup.moderate.inherit</field>
+            <field name="model">mail.activity</field>
+            <field name="inherit_id" ref="mail.mail_activity_view_form_popup"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='summary']" position="after">
+                    <field name="can_write" invisible="1"/>
+                </xpath>
+                <xpath expr="//button[@name='action_done']" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|', '|', ('activity_category', '=', 'tax_report'), ('force_next',
+                        '=', True), ('can_write', '=', False)]}
+                    </attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_done_schedule_next']" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|', '|', ('activity_category', '=', 'tax_report'), ('force_next',
+                        '=', True), ('can_write', '=', False)]}
+                    </attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

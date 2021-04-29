@@ -84,7 +84,15 @@
                             </page>
                             <page string="Dossier Physique et Divers">
                                 <field name="dossier_physique" domain="[('partner_id', '=', False),
-                                 ('company_id', '=', company_id), ('is_dp', '=', True)]"/>
+                                 ('company_id', '=', company_id), ('is_dp', '=', True)]">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="available_qty"/>
+                                        <field name="partner_id"/>
+                                        <field name="ref"/>
+                                        <field name="product_id"/>
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>

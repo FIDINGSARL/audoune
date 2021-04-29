@@ -45,3 +45,12 @@ class AccordChequeClient(models.Model):
     name = fields.Char('Nom')
     color = fields.Integer('Color Index')
 
+
+class PaiementCashClient(models.Model):
+    _inherit = 'paiement.cash.client'
+
+    journal_id = fields.Many2one('account.journal', string=u'Journal', states={'payed': [('readonly', True)]}, default=lambda self: self.env['account.journal'].search([('name', 'like', 'Esp%')]))
+    caisse_id = fields.Many2one('paiement.caisse', string=u'Caisse', default=lambda self: self.env.user.caisse_id)
+    date = fields.Date(string="Date", required=True, states={'payed': [('readonly', True)]}, default=fields.date.today())
+
+

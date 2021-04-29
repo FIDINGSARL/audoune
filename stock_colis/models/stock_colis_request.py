@@ -159,7 +159,6 @@ class StockColisRequest(models.Model):
         backorder_items_arr = []
         used_serial_numbers = []
         for line in self.product_line_ids:
-
             if line.product_id.tracking == 'serial':
                 """
                     Fetch Stock.quant for any available lot_id in the dest_location_stock_id
@@ -167,7 +166,7 @@ class StockColisRequest(models.Model):
                 """
                 domain = [
                     ('product_id', '=', line.product_id.id),
-                    # ('available_quantity', '>', 0),
+                    # ('available_quantity', '>=', 1),
                     ('location_id', '=', src_location_stock_id.lot_stock_id.id),
                     ('company_id', '=', self.company_id.id),
                     ('id', 'not in', tuple(used_serial_numbers) if used_serial_numbers else []),
@@ -184,10 +183,13 @@ class StockColisRequest(models.Model):
                         ('product_id.is_dp', '=', True),
                         ('lot_id.partner_id', '=', line.partner_id.id)
                     ]
-                quant_ids = self.env['stock.quant'].search(domain, limit=qty_needed)
+                quant_ids = self.env['stock.quant'].search(domain)
+                available_qty = sum(quant_ids.mapped('available_quantity'))
+                print('available_qty', available_qty)
                 used_serial_numbers.append(quant_ids.mapped('id')[0] if quant_ids.mapped('id') else False)
-                if quant_ids:
-                    for quant_id in quant_ids:
+                for quant_id in quant_ids:
+                    print('quant_id.available_quantity', quant_id.available_quantity)
+                    if quant_id.available_quantity > 0:
                         lot_id = quant_id.lot_id
                         if lot_id:
                             if line.partner_id:
@@ -196,7 +198,7 @@ class StockColisRequest(models.Model):
                                 lot_line_ids_arr.append((4, lot_id.id))
                             else:
                                 dp_line_ids_arr.append((4, lot_id.id))
-                qty_to_backorder = line.product_qty - len(quant_ids)
+                qty_to_backorder = line.product_qty - available_qty
 
                 if qty_to_backorder:
                     backorder_items_arr.append((0, 0, {
@@ -255,11 +257,8 @@ class StockColisRequest(models.Model):
         else:
             if not self.is_cheque_only:
                 raise ValidationError('Aucune quantité disponible')
-            else:
-
-                stock_colis_dict.update({
-                    'cheque_ids': cheque_ids_arr
-                })
-
+        stock_colis_dict.update({
+            'cheque_ids': cheque_ids_arr
+        })
         stock_colis_id = stock_colis_obj.create(stock_colis_dict)
         self.stock_colis_id = stock_colis_id

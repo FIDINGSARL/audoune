@@ -100,6 +100,10 @@ class StockColis(models.Model):
                 rec.is_cheque_only = True
 
     def action_open(self):
+        lot_partner_missing = self.product_lot_ids.filtered(lambda line: not line.partner_id)
+        dp_partner_missing = self.dossier_physique.filtered(lambda line: not line.partner_id)
+        if lot_partner_missing or dp_partner_missing:
+            raise ValidationError('Veuillez remplir le champs client dans les lignes des prothèses ou dossiers physiques')
         self.write({
             'state': 'open'
         })
