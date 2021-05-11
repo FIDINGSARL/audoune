@@ -28,7 +28,7 @@
                     <field name="is_dp"/>
                     <field name="is_admin" invisible="1"/>
                     <field name="partner_id"
-                           attrs="{'readonly': [('is_admin', '=', False)], 'required': [('is_dp', '=', True)]}"/>
+                           attrs="{'readonly': [('is_admin', '=', False)]}"/>
                 </xpath>
             </field>
         </record>

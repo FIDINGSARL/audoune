@@ -1,13 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-         <record model="accord.cheque.client" id="isaccorde_tags_yes">
-             <field name="name">Accordé</field>
-             <field name="color">10</field>
-         </record>
+        <record model="accord.cheque.client" id="isaccorde_tags_yes">
+            <field name="name">Accordé</field>
+            <field name="color">10</field>
+        </record>
         <record model="accord.cheque.client" id="isaccorde_tags_no">
-             <field name="name">Non Accordé</field>
-             <field name="color">9</field>
-         </record>
+            <field name="name">Non Accordé</field>
+            <field name="color">9</field>
+        </record>
+
+        <record id="seq_tres_supplier_cash" model="ir.sequence">
+            <field name="name">Cash Fournisseur</field>
+            <field name="code">paiement.cash.supplier</field>
+            <field name="prefix">CASH</field>
+            <field name="padding">5</field>
+        </record>
+
+        <record id="seq_tres_supplier_cheque" model="ir.sequence">
+            <field name="name">Cheque Fournisseur</field>
+            <field name="code">paiement.cheque.supplier</field>
+            <field name="prefix">CHK</field>
+            <field name="padding">5</field>
+        </record>
+
+        <record id="seq_tres_supplier_effet" model="ir.sequence">
+            <field name="name">Effet Fournisseur</field>
+            <field name="code">paiement.effet.supplier</field>
+            <field name="prefix">EFF</field>
+            <field name="padding">5</field>
+        </record>
+
+        <record id="seq_tres_supplier_ov" model="ir.sequence">
+            <field name="name">Ov Fournisseur</field>
+            <field name="code">paiement.ov.supplier</field>
+            <field name="prefix">OV</field>
+            <field name="padding">5</field>
+        </record>
     </data>
 </odoo>

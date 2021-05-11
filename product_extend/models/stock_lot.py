@@ -20,10 +20,10 @@ class StockProductionLot(models.Model):
     _inherit = 'stock.production.lot'
 
     partner_id = fields.Many2one('res.partner', 'Client')
-    available_qty = fields.Float('Quantité disponible', compute='_compute_available_qty')
+    available_qty = fields.Float('Quantité disponible', compute='_compute_available_qty', store=True)
     is_dp = fields.Boolean(related='product_id.is_dp', string='Est un dossier physique')
     # is_admin = fields.Boolean('Est un admin', compute='_is_admin')
-    is_admin = fields.Boolean('Est un admin', default=lambda self: self.env.user.has_group('base.group_system'))
+    is_admin = fields.Boolean('Est un admin', compute='_is_admin')
 
     def _is_admin(self):
         for rec in self:
@@ -42,9 +42,21 @@ class StockProductionLot(models.Model):
 
 
 class MrpProduction(models.Model):
-    _inherit = 'stock.production.lot'
+    _inherit = 'mrp.production'
 
-    partner_id = fields.Many2one('res.partner', string='Client', store=True)
+    partner_id = fields.Many2one('res.partner', string='Client', required=True)
+
+    def action_generate_serial(self):
+        self.ensure_one()
+        self.lot_producing_id = self.env['stock.production.lot'].create({
+            'product_id': self.product_id.id,
+            'company_id': self.company_id.id,
+            'partner_id': self.partner_id.id
+        })
+        if self.move_finished_ids.filtered(lambda m: m.product_id == self.product_id).move_line_ids:
+            self.move_finished_ids.filtered(lambda m: m.product_id == self.product_id).move_line_ids.lot_id = self.lot_producing_id
+        if self.product_id.tracking == 'serial':
+            self._set_qty_producing()
 
 
 class ResPartner(models.Model):
@@ -52,9 +64,12 @@ class ResPartner(models.Model):
 
     def _lots_count(self):
         for rec in self:
-            rec.count_lots_client = len(rec.lot_client_ids.filtered(lambda serial: serial.is_dp is True))
+            rec.count_lots_client = len(rec.lot_client_ids)
+            rec.count_prod_client = len(rec.prod_client_ids)
 
-    count_lots_client = fields.Integer(compute='_lots_count', string=u'Nbre de dossier physiques')
-    lot_client_ids = fields.One2many('stock.production.lot', 'partner_id', string=u'Dossiers Physiques', readonly=True)
+    count_lots_client = fields.Integer(compute='_lots_count', string=u'Nbre de numéros de séries')
+    count_prod_client = fields.Integer(compute='_lots_count', string=u'Nbre de productions')
+    lot_client_ids = fields.One2many('stock.production.lot', 'partner_id', string=u'Numéros de séries', readonly=True)
+    prod_client_ids = fields.One2many('mrp.production', 'partner_id', string=u'Productions', readonly=True)
 
 

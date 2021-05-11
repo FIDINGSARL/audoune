@@ -35,6 +35,7 @@ class ResPartner(models.Model):
     delapartdeux_id = fields.Many2one('res.partner', 'De la part deux')
     is_autres = fields.Boolean('Autres')
     autres = fields.Many2one('utm.medium', 'Autres')
+    medecin_id = fields.Many2one('res.partner', string='Médecin')
 
     @api.constrains('ice')
     def _check_ice(self):
@@ -68,6 +69,14 @@ class ResPartner(models.Model):
             missing.append("<li id='checklist-id-2'><p>Photocopie Mutuelle</p></li>")
         if not vals.get('comp_attachment_id', False):
             missing.append("<li id='checklist-id-3'><p>Photocopie Complémentaire</p></li>")
+        if not vals.get('delapartun_id', False):
+            missing.append("<li id='checklist-id-3'><p>De la part un</p></li>")
+        if not vals.get('plateforme', False):
+            missing.append("<li id='checklist-id-3'><p>Plateforme</p></li>")
+        if not vals.get('delapartdeux_id', False):
+            missing.append("<li id='checklist-id-3'><p>De la part deux</p></li>")
+        if not vals.get('autres', False):
+            missing.append("<li id='checklist-id-3'><p>autres</p></li>")
 
         if vals.get('assurance_ids', False):
             for line in vals['assurance_ids']:
@@ -86,14 +95,99 @@ class ResPartner(models.Model):
 
         res = super(ResPartner, self).create(vals)
         if missing:
-            res.activity_schedule(
-                activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
-                summary='Champs à renseigner pour la fiche du patient ' + vals['name'],
-                note="<ul class='o_checklist'>" +
+            # res.activity_schedule(
+            #     activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
+            #     summary='Champs à renseigner pour la fiche du patient ' + vals['name'],
+            #     note="<ul class='o_checklist'>" +
+            #          ' '.join(missing)
+            #          + "</ul>",
+            #     user_id=self.env.user.id)
+            activity_id = self.env['mail.activity'].with_user(self.env.ref('base.user_admin')).create({
+                'summary': 'Champs à renseigner pour la fiche du patient ' + vals['name'],
+                'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
+                'res_model_id': self.env['ir.model'].search([('model', '=', 'res.partner')], limit=1).id,
+                'note': "<ul class='o_checklist'>" +
                      ' '.join(missing)
                      + "</ul>",
-                user_id=self.env.user.id)
+                'res_id': res.id,
+                'user_id': self.env.user.id
+            })
         return res
+
+    def creer_consultation(self):
+        if not self.medecin_id:
+            raise ValidationError('Veuillez renseigner le médecin pour pouvoir créer la consultation')
+        sale_order_obj = self.env['sale.order']
+        purchase_order_obj = self.env['purchase.order']
+        invoice_obj = self.env['account.move']
+        consultation_product_id = self.env.ref('product_extend.product_product_consultation')
+        nblk_journal_id = self.env.ref('journal_nblk.account_journal_data_nblk')
+        sale_order_line = (0, 0, {
+            'product_id': consultation_product_id.id,
+            'product_uom_qty': 1,
+        })
+        purchase_order_line = (0, 0, {
+            'product_id': consultation_product_id.id,
+            'product_qty': 1,
+            'price_unit': consultation_product_id.standard_price,
+        })
+        invoice_line = (0, 0, {
+            'product_id': consultation_product_id.id,
+            'quantity': 1,
+            'price_unit': consultation_product_id.list_price,
+        })
+        purchase_id = purchase_order_obj.create({
+            'partner_id': self.medecin_id.id,
+            'order_line': [purchase_order_line]
+        })
+        purchase_id.button_confirm()
+        invoice_id = invoice_obj.create({
+            'partner_id': self.id,
+            'invoice_line_ids': [invoice_line],
+            'move_type': 'out_invoice',
+            'journal_id': nblk_journal_id.id
+        })
+        invoice_id.action_post()
+        sale_order_id = sale_order_obj.create({
+            'partner_id': self.id,
+            'order_line': [sale_order_line],
+            'cons_purchase_id': purchase_id.id,
+            'cons_invoice_id': invoice_id.id,
+            'is_cons_purchase': True
+        })
+        sale_order_id.action_confirm()
+
+    def _compute_for_followup(self):
+        """
+        Compute the fields 'total_due', 'total_overdue','followup_level' and 'followup_status'
+        """
+        first_followup_level = self.env['account_followup.followup.line'].search(
+            [('company_id', '=', self.env.company.id)], order="delay asc", limit=1)
+        followup_data = self._query_followup_level()
+        today = fields.Date.context_today(self)
+        for record in self:
+            total_due = 0
+            total_overdue = 0
+            followup_status = "no_action_needed"
+            for aml in record.unreconciled_aml_ids:
+                if aml.company_id == self.env.company:
+                    amount = aml.amount_residual
+                    print('aml', aml)
+                    print('aml', aml.amount_residual)
+                    if not aml.move_id.journal_id.code == 'NBL':
+                        total_due += amount
+                        is_overdue = today > aml.date_maturity if aml.date_maturity else today > aml.date
+                        if is_overdue and not aml.blocked:
+                            total_overdue += amount
+            record.total_due = total_due
+            record.total_overdue = total_overdue
+            if record.id in followup_data:
+                record.followup_status = followup_data[record.id]['followup_status']
+                record.followup_level = self.env['account_followup.followup.line'].browse(
+                    followup_data[record.id]['followup_level']) or first_followup_level
+            else:
+                record.followup_status = 'no_action_needed'
+                record.followup_level = first_followup_level
 
 
 class PartnerAssurance(models.Model):

@@ -11,9 +11,11 @@
     "description": "Ajouter des infos sup",
     "init_xml": [],
     'data': [
-        # 'data/data.xml',
+        'data/data.xml',
+        'security/groups.xml',
         'views/stock_lot_view.xml',
         'views/partner_view.xml',
+        'views/mrp_views.xml',
     ],
     'demo_xml': [],
     'installable': True,

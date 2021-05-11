@@ -51,7 +51,8 @@ class StockColisRequest(models.Model):
     stock_location_id = fields.Many2one('stock.warehouse', string='Emplacement du responsable')
     stock_location_dest_id = fields.Many2one('stock.warehouse', string='Emplacement du demandeur',
                                              default=_get_user_default_location)
-    caisse_id = fields.Many2one('paiement.caisse', string='Caisse du responsable', related='user_requested_id.caisse_id')
+    caisse_id = fields.Many2one('paiement.caisse', string='Caisse du responsable',
+                                related='user_requested_id.caisse_id')
     product_line_ids = fields.One2many('product.colis', 'colis_request_id', copy=True)
     cheque_ids = fields.Many2many('paiement.cheque.client', string='Chèques reçus', copy=True)
     stock_colis_id = fields.Many2one('stock.colis', string="Colis", copy=False)
@@ -170,9 +171,9 @@ class StockColisRequest(models.Model):
                     ('location_id', '=', src_location_stock_id.lot_stock_id.id),
                     ('company_id', '=', self.company_id.id),
                     ('id', 'not in', tuple(used_serial_numbers) if used_serial_numbers else []),
-                    ('product_id.is_dp', '=', False)
+                    ('product_id.is_dp', '=', False),
+                    ('lot_id.partner_id', '=', False)
                 ]
-                qty_needed = line.product_qty
                 if line.product_id.is_dp and line.partner_id:
                     domain = [
                         ('product_id', '=', line.product_id.id),
@@ -185,19 +186,22 @@ class StockColisRequest(models.Model):
                     ]
                 quant_ids = self.env['stock.quant'].search(domain)
                 available_qty = sum(quant_ids.mapped('available_quantity'))
-                print('available_qty', available_qty)
                 used_serial_numbers.append(quant_ids.mapped('id')[0] if quant_ids.mapped('id') else False)
                 for quant_id in quant_ids:
-                    print('quant_id.available_quantity', quant_id.available_quantity)
                     if quant_id.available_quantity > 0:
                         lot_id = quant_id.lot_id
+                        line_dict = {
+                            'product_id': line.product_id.id,
+                            'lot_id': lot_id.id,
+                            'partner_id': line.partner_id.id
+                        }
                         if lot_id:
                             if line.partner_id:
                                 lot_id.partner_id = line.partner_id
                             if not lot_id.is_dp:
-                                lot_line_ids_arr.append((4, lot_id.id))
+                                lot_line_ids_arr.append((0, 0, line_dict))
                             else:
-                                dp_line_ids_arr.append((4, lot_id.id))
+                                dp_line_ids_arr.append((0, 0, line_dict))
                 qty_to_backorder = line.product_qty - available_qty
 
                 if qty_to_backorder:
@@ -234,7 +238,7 @@ class StockColisRequest(models.Model):
         if backorder_items_arr:
             stock_reliquat_id = self.copy()
             stock_reliquat_id.product_line_ids.unlink()
-            stock_reliquat_id.cheque_ids.unlink()
+            # stock_reliquat_id.cheque_ids = [(3, ck.id) for ck in self.cheque_ids]
             stock_reliquat_id.state = 'open'
             stock_reliquat_id.name = 'REL/' + self.name
             stock_reliquat_id.product_line_ids = backorder_items_arr
@@ -248,6 +252,7 @@ class StockColisRequest(models.Model):
             'is_cheque_only': self.is_cheque_only,
             'user_requesting_id': self.user_id.id
         }
+
         if lot_line_ids_arr or product_line_ids_arr or dp_line_ids_arr:
             stock_colis_dict.update({
                 'product_lot_ids': lot_line_ids_arr,

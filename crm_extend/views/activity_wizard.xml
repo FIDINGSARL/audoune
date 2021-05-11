@@ -8,7 +8,16 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='summary']" position="after">
                     <field name="can_write" invisible="1"/>
+                    <field name="is_my_activity" invisible="1"/>
                 </xpath>
+                <field name="activity_type_id" position="attributes">
+                    <attribute name="attrs">{'readonly': [('res_model', '=', 'res.partner'),
+                        ('is_my_activity', '!=', True)]}</attribute>
+                </field>
+                <!--<field name="user_id" position="attributes">
+                    <attribute name="attrs">{'readonly': [('res_model', '=', 'res.partner'),
+                        ('is_my_activity', '!=', True)]}</attribute>
+                </field>-->
                 <xpath expr="//button[@name='action_done']" position="attributes">
                     <attribute name="attrs">{'invisible': ['|', '|', ('activity_category', '=', 'tax_report'), ('force_next',
                         '=', True), ('can_write', '=', False)]}

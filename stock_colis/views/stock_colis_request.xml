@@ -77,7 +77,8 @@
                                        options="{'no_create': True}" attrs="{'readonly': [('is_destinataire', '=', False)]}">
                                     <tree editable="bottom">
                                         <field name="product_id" required="1"/>
-                                        <field name="partner_id" required="1"/>
+                                        <field name="tracking" invisible="1"/>
+                                        <field name="partner_id" attrs="{'required' : [('tracking', '=', 'serial')]}"/>
                                         <field name="product_uom_id"/>
                                         <field name="product_qty"/>
                                     </tree>

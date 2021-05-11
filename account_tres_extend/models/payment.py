@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 
 from odoo import models, fields, api
-from odoo.exceptions import ValidationError
 
 
 class PaiementChequeClient(models.Model):
@@ -53,4 +52,71 @@ class PaiementCashClient(models.Model):
     caisse_id = fields.Many2one('paiement.caisse', string=u'Caisse', default=lambda self: self.env.user.caisse_id)
     date = fields.Date(string="Date", required=True, states={'payed': [('readonly', True)]}, default=fields.date.today())
 
+
+class SupplierPaymentCash(models.Model):
+    _inherit = "paiement.cash.supplier"
+
+    name = fields.Char(string=u'Numéro', readonly=True, required=False)
+    patient_id = fields.Many2one('res.partner', string="Patient")
+    journal_id = fields.Many2one('account.journal', string=u'Journal', states={'payed': [('readonly', True)]}, default=lambda self: self.env['account.journal'].search([('name', 'like', 'Esp%')]))
+    date = fields.Date(string="Date", required=True, states={'payed': [('readonly', True)]}, default=fields.date.today())
+
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env.ref('account_tres_extend.seq_tres_supplier_cash').next_by_code('paiement.cash.supplier') or ''
+        res = super(SupplierPaymentCash, self).create(vals)
+        return res
+
+
+class SupplierPaymentEffet(models.Model):
+    _inherit = "paiement.effet.supplier"
+
+    name = fields.Char(string=u'Numéro', readonly=True, required=False)
+
+    journal_id = fields.Many2one('account.journal', string=u'Journal', states={'payed': [('readonly', True)]},
+                                 default=lambda self: self.env['account.journal'].search([('name', 'like', 'Esp%')]))
+    date = fields.Date(string="Date", required=True, states={'payed': [('readonly', True)]},
+                       default=fields.date.today())
+
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env.ref('account_tres_extend.seq_tres_supplier_effet').next_by_code(
+            'paiement.effet.supplier') or ''
+        res = super(SupplierPaymentEffet, self).create(vals)
+        return res
+
+
+class SupplierPaymentOv(models.Model):
+    _inherit = "paiement.ov.supplier"
+
+    name = fields.Char(string=u'Numéro', readonly=True, required=False)
+
+    journal_id = fields.Many2one('account.journal', string=u'Journal', states={'payed': [('readonly', True)]},
+                                 default=lambda self: self.env['account.journal'].search([('name', 'like', 'Esp%')]))
+    date = fields.Date(string="Date", required=True, states={'payed': [('readonly', True)]},
+                       default=fields.date.today())
+
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env.ref('account_tres_extend.seq_tres_supplier_effet').next_by_code(
+            'paiement.effet.supplier') or ''
+        res = super(SupplierPaymentOv, self).create(vals)
+        return res
+
+
+class SupplierPaymentCheque(models.Model):
+    _inherit = "paiement.cheque.supplier"
+
+    name = fields.Char(string=u'Numéro', readonly=True, required=False)
+    journal_id = fields.Many2one('account.journal', string=u'Journal', states={'payed': [('readonly', True)]},
+                                 default=lambda self: self.env['account.journal'].search([('name', 'like', 'Esp%')]))
+    date = fields.Date(string="Date", required=True, states={'payed': [('readonly', True)]},
+                       default=fields.date.today())
+
+    @api.model
+    def create(self, vals):
+        vals['name'] = self.env.ref('account_tres_extend.seq_tres_supplier_cheque').next_by_code(
+            'paiement.cheque.supplier') or ''
+        res = super(SupplierPaymentCheque, self).create(vals)
+        return res
 

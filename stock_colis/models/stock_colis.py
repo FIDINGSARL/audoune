@@ -46,8 +46,8 @@ class StockColis(models.Model):
     company_id = fields.Many2one('res.company', default=lambda self: self.env['res.company']._company_default_get('stock.colis'), string='Société')
     stock_location_id = fields.Many2one('stock.warehouse', string='Emplacement', default=_get_user_default_location)
     stock_location_dest_id = fields.Many2one('stock.warehouse', string='Emplacement de destination')
-    dossier_physique = fields.Many2many('stock.production.lot', 'stock_colis_dp_lot_rel', 'colis_id')
-    product_lot_ids = fields.Many2many('stock.production.lot', 'stock_colis_product_lot_rel', 'lot_id')
+    dossier_physique = fields.One2many('stock.colis.line', 'dp_colis_id', string='Dossiers physiques')
+    product_lot_ids = fields.One2many('stock.colis.line', 'lot_colis_id', string='Numéros de série')
     product_line_ids = fields.One2many('product.colis', 'colis_id')
     cheque_ids = fields.Many2many('paiement.cheque.client', string='Chèques reçus')
     received_cheque_ids = fields.Many2many('paiement.cheque.client', 'colis_received_cheque_rel',
@@ -128,9 +128,12 @@ class StockColis(models.Model):
                                                               ('warehouse_id', '=', self.stock_location_id.id),
                                                               ])
         for line in self.product_lot_ids + self.dossier_physique:
+
+            line.lot_id.partner_id = line.partner_id
+
             move_line_ids_without_package = (0, 0, {
                 'product_id': line.product_id.id,
-                'lot_id': line.id,
+                'lot_id': line.lot_id.id,
                 'product_uom_qty': 0,
                 'product_uom_id': line.product_id.uom_id.id,
                 'location_dest_id': dest_location_stock_id.lot_stock_id.id,
@@ -184,36 +187,6 @@ class StockColis(models.Model):
                 'caisse_id': self.user_requesting_id.caisse_id.id
             })
 
-    # def _process_cheque_lines(self):
-    #     self = self.sudo()
-    #     cheque_client_obj = self.env['paiement.cheque.client']
-    #     paiement_record_obj = self.env['paiement.record']
-    #     cheques_arr = []
-    #     for record_line in self.cheque_ids:
-    #         journal_id = self.env['account.journal'].search([
-    #             ('name', 'like', record_line.journal_id.name),
-    #             ('company_id', '=', self.env.user.company_id.id),
-    #         ])
-    #         vals = {
-    #             'name': record_line.name,
-    #             'amount': record_line.amount,
-    #             'journal_id': journal_id.id,
-    #             'date': record_line.date,
-    #             'client': record_line.client.id,
-    #             'caisse_id': self.user_requesting_id.caisse_id.id,
-    #             'company_id': self.env.user.company_id.id,
-    #             'colis_id': self.id,
-    #         }
-    #
-    #         if not paiement_record_obj.get_model('cheque', self.env.user.company_id.id):
-    #             raise ValidationError(u"Vous devez créer un modèle chèque")
-    #         vals['model_id'] = paiement_record_obj.get_model('cheque', vals['company_id'])
-    #         vals['due_date'] = record_line.due_date
-    #         cheque_id = cheque_client_obj.create(vals)
-    #         cheques_arr.append((4, cheque_id.id))
-    #     self.received_cheque_ids = cheques_arr
-    #     self.cheque_ids.unlink()
-
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -221,11 +194,23 @@ class StockPicking(models.Model):
     colis_id = fields.Many2one('stock.colis', 'Colis')
 
 
+class StockProductionLot(models.Model):
+    _name = 'stock.colis.line'
+
+    lot_colis_id = fields.Many2one('stock.colis', 'Colis lot')
+    dp_colis_id = fields.Many2one('stock.colis', 'Colis dp')
+    product_id = fields.Many2one('product.product', 'Article')
+    lot_id = fields.Many2one('stock.production.lot', 'Numéro de série')
+    partner_id = fields.Many2one('res.partner', 'Patient', related='lot_id.partner_id', readonly=False)
+    available_qty = fields.Float(related='lot_id.available_qty', string='Quantité disponible')
+
+
 class ColisProduct(models.Model):
     _name = 'product.colis'
 
     colis_id = fields.Many2one('stock.colis', 'Colis')
     product_id = fields.Many2one('product.product', 'Article')
+    tracking = fields.Selection(string='Product Tracking', readonly=True, related="product_id.tracking")
     product_uom_id = fields.Many2one('uom.uom', related='product_id.uom_id', stirng='Unité de mesure')
-    product_qty = fields.Float('Quantité')
+    product_qty = fields.Float('Quantité', default=1.0)
     partner_id = fields.Many2one('res.partner', string="Patient")

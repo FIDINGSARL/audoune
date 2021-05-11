@@ -14,7 +14,7 @@
                 <field name="vat" position="before">
                     <field name="fax" widget="phone"/>
                     <field name="cin"/>
-                    <field name="password"/>
+                    <field name="password" groups="base.group_system"/>
                     <field name="is_editable" invisible="1"/>
                     <field name="see_all" attrs="{'readonly': [('is_editable', '=', False)]}"/>
                     <field name="user_id" attrs="{'readonly': [('is_editable', '=', False)]}"/>
@@ -22,6 +22,7 @@
                     <field name="plateforme" options="{'no_create': 1, 'no_open': 1}"/>
                     <field name="delapartdeux_id" options="{'no_create': 1, 'no_open': 1}"/>
                     <field name="is_autres" />
+                    <field name="medecin_id" />
                     <field name="autres" options="{'no_create': 1, 'no_open': 1}"
                            attrs="{'invisible': [('is_autres', '=', False)], 'required': [('is_autres', '=', True)]}"/>
                 </field>
@@ -60,6 +61,26 @@
                         </group>
                     </page>
                 </notebook>
+                <field name="vat" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="function" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="website" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+
+                <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='accounting']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='image_1920']" position="before">
+                    <button name="creer_consultation" string="Créer Consultation" type="object"
+                                class="oe_highlight"/>
+                </xpath>
             </field>
         </record>
 
