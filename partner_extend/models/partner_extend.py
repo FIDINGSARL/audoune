@@ -172,8 +172,6 @@ class ResPartner(models.Model):
             for aml in record.unreconciled_aml_ids:
                 if aml.company_id == self.env.company:
                     amount = aml.amount_residual
-                    print('aml', aml)
-                    print('aml', aml.amount_residual)
                     if not aml.move_id.journal_id.code == 'NBL':
                         total_due += amount
                         is_overdue = today > aml.date_maturity if aml.date_maturity else today > aml.date
@@ -188,6 +186,30 @@ class ResPartner(models.Model):
             else:
                 record.followup_status = 'no_action_needed'
                 record.followup_level = first_followup_level
+
+    def _invoice_total(self):
+        self.total_invoiced = 0
+        if not self.ids:
+            return True
+
+        all_partners_and_children = {}
+        all_partner_ids = []
+        for partner in self.filtered('id'):
+            # price_total is in the company currency
+            all_partners_and_children[partner] = self.with_context(active_test=False).search(
+                [('id', 'child_of', partner.id)]).ids
+            all_partner_ids += all_partners_and_children[partner]
+
+        domain = [
+            ('partner_id', 'in', all_partner_ids),
+            ('state', 'not in', ['draft', 'cancel']),
+            ('move_type', 'in', ('out_invoice', 'out_refund')),
+            ('journal_id.code', '!=', 'NBL'),
+        ]
+        price_totals = self.env['account.invoice.report'].read_group(domain, ['price_subtotal'], ['partner_id'])
+        for partner, child_ids in all_partners_and_children.items():
+            partner.total_invoiced = sum(
+                price['price_subtotal'] for price in price_totals if price['partner_id'][0] in child_ids)
 
 
 class PartnerAssurance(models.Model):
