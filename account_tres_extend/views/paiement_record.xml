@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--  Caisse tree view -->
+        <record id="caisse_view_tree_supp_inherit" model="ir.ui.view">
+            <field name="name">paiement.caisse.supp.inherit.tree</field>
+            <field name="model">paiement.caisse</field>
+            <field name="inherit_id" ref="account_tres_customer.caisse_view_tree"/>
+            <field name="arch" type="xml">
+                <field name="nb_cb" position="after">
+                    <field name="nb_cheque_supplier" sum="Total_chk_supp"/>
+                    <field name="nb_cash_supplier" sum="Total_cash_supp"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Caisse form view -->
+        <record id="caisse_view_form_supp_inherit" model="ir.ui.view">
+            <field name="name">caisse.view.form.pec.inherit</field>
+            <field name="model">paiement.caisse</field>
+            <field name="inherit_id" ref="account_tres_customer.caisse_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group/group[1]" position="inside">
+                    <field name="nb_cheque_supplier"/>
+                    <field name="nb_cash_supplier"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Chèques Fournisseurs">
+                        <field name="supplier_cheque_lines" nolabel="1"/>
+                    </page>
+                    <page string="Éspèces Fournisseurs">
+                        <field name="supplier_cash_lines" nolabel="1"/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

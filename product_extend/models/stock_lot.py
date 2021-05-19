@@ -25,6 +25,19 @@ class StockProductionLot(models.Model):
     # is_admin = fields.Boolean('Est un admin', compute='_is_admin')
     is_admin = fields.Boolean('Est un admin', compute='_is_admin')
 
+    @api.onchange('is_dp')
+    def on_change_dp(self):
+        if self.is_dp:
+            self.note = "<ul class='o_checklist'> " \
+                        "<li id='checklist-id-1'><p>Mutuelle</p></li>" \
+                        "<li id='checklist-id-2'><p>Certificat médical</p></li>" \
+                        "<li id='checklist-id-3'><p>Prescription</p></li>" \
+                        "<li id='checklist-id-4'><p>Audiogramme</p></li>" \
+                        "<li id='checklist-id-5'><p>Audiométrie vocale</p></li>" \
+                        "</ul>"
+        else:
+            self.note = ""
+
     def _is_admin(self):
         for rec in self:
             rec.is_admin = self.env.user.has_group('base.group_system')

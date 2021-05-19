@@ -3,7 +3,7 @@
 {
     "name": u"Audoune: Chèques",
     "version": "14.0",
-    "depends": ['base', 'account_tres_customer', 'account_tres_supplier'],
+    "depends": ['base', 'account_tres_customer', 'account_tres_supplier', 'partner_extend'],
     "author": "Osisoftware",
     "summary": "",
     'website': '',
@@ -14,7 +14,8 @@
         'data/data.xml',
         'security/ir.model.access.csv',
         'views/customer_payment_views.xml',
-        'views/supplier_payment_views.xml'
+        'views/supplier_payment_views.xml',
+        'views/paiement_record.xml'
     ],
     'demo_xml': [],
     'installable': True,

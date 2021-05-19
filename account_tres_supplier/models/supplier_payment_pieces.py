@@ -185,7 +185,6 @@ class PaiementChequeSupplier(models.Model):
                 'debit': cheque.amount,
                 'cheque_supplier_id': cheque.id,
                 'journal_id': cheque.journal_id.id,
-                'period_id': cheque.period_id.id,
                 'analytic_account_id': cheque.analytic_account_id and cheque.analytic_account_id.id or False,
             }
 
@@ -200,14 +199,12 @@ class PaiementChequeSupplier(models.Model):
                 'debit': 0.0,
                 'cheque_supplier_id': cheque.id,
                 'journal_id': cheque.journal_id.id,
-                'period_id': cheque.period_id.id,
                 'analytic_account_id': cheque.analytic_account_id and cheque.analytic_account_id.id or False,
             }
             lines = [(0, 0, debit_val), (0, 0, credit_val)]
 
             move_id = account_move_obj.create({
                 'journal_id': cheque.journal_id.id,
-                'period_id': cheque.period_id.id,
                 'date': cheque.date,
                 'name': cheque.name,
                 'ref': cheque.note,
@@ -248,7 +245,7 @@ class PaiementChequeSupplier(models.Model):
     amount = fields.Float(string=u'Montant', required=True, states={'done': [('readonly', True)]})
     amount_text = fields.Char(compute='_get_amount_text', string='Montant en lettre')
     journal_id = fields.Many2one('account.journal', string=u'Journal', states={'done': [('readonly', True)]})
-    period_id = fields.Many2one('date.range', string=u'Période', required=True)
+    period_id = fields.Many2one('date.range', string=u'Période', required=False)
     date = fields.Date(string="Date", required=True, states={'done': [('readonly', True)]})
     due_date = fields.Date(string=u"Date d'échéance", states={'done': [('readonly', True)]})
     date_paiement = fields.Date(string=u'Date de paiement', readonly=True)

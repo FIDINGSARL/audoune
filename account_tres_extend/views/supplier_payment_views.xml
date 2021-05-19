@@ -2,17 +2,6 @@
 <odoo>
     <data>
 
-
-        <record id="act_res_partner_2_consultation" model="ir.actions.act_window">
-            <field name="name">Consultations Achetées</field>
-            <field name="res_model">paiement.cash.supplier</field>
-            <field name="view_mode">tree,form</field>
-            <field name="domain">[('patient_id', '=', active_id)]</field>
-            <!--            <field name="context">{'search_default_partner_id': active_id, 'default_is_dp': True}</field>-->
-            <field name="context">{'default_patient_id': active_id}</field>
-        </record>
-
-
         <record id="res_partner_rm_buttons" model="ir.ui.view">
             <field name="name">res.partner.rm.buttons</field>
             <field name="model">res.partner</field>
@@ -25,34 +14,6 @@
             </field>
         </record>
 
-        <record id="res_partner_view_consultation_buttons" model="ir.ui.view">
-            <field name="name">res.partner.view.consultation.buttons</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="account_tres_customer.res_partner_view_buttons"/>
-            <field name="priority" eval="20"/>
-            <field name="arch" type="xml">
-                <div name="paiements_client_buttons" position="inside">
-                    <button class="oe_stat_button" type="action"
-                            name="%(account_tres_extend.act_res_partner_2_consultation)d"
-                            icon="fa-sitemap">
-                        <field string="Consultations Achetées" name="count_cons_client" widget="statinfo"/>
-                    </button>
-                </div>
-                <xpath expr="//div[@name='paiements_client_buttons']/button[4]" position="replace">
-
-                </xpath>
-                <xpath expr="//div[@name='paiements_client_buttons']/button[3]" position="replace">
-
-                </xpath>
-
-                <xpath expr="//div[@name='paiements_client_buttons']/button[2]" position="replace">
-
-                </xpath>
-                <!--<xpath expr="//div[@name='paiements_client_buttons']/button[4]" position="replace">
-
-                </xpath>-->
-            </field>
-        </record>
 
         <record id="inherit_supplier_payment_cash_form" model="ir.ui.view">
             <field name="name">inherit.supplier.payment.cash.form</field>
@@ -60,6 +21,9 @@
             <field name="inherit_id" ref="account_tres_supplier.cash_form_supplier_view"/>
             <field name="arch" type="xml">
                 <field name="journal_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="period_id" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </field>
                 <field name="name" position="attributes">
@@ -76,17 +40,6 @@
                 </field>
                 <field name="analytic_account_id" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </field>
-            </field>
-        </record>
-
-        <record id="inherit_supplier_payment_cash_tree" model="ir.ui.view">
-            <field name="name">inherit.supplier.payment.cash.tree</field>
-            <field name="model">paiement.cash.supplier</field>
-            <field name="inherit_id" ref="account_tres_supplier.cash_supplier_tree_view"/>
-            <field name="arch" type="xml">
-                <field name="name" position="after">
-                    <field name="patient_id"/>
                 </field>
             </field>
         </record>

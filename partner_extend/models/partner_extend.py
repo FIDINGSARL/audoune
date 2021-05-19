@@ -157,59 +157,66 @@ class ResPartner(models.Model):
         })
         sale_order_id.action_confirm()
 
-    def _compute_for_followup(self):
-        """
-        Compute the fields 'total_due', 'total_overdue','followup_level' and 'followup_status'
-        """
-        first_followup_level = self.env['account_followup.followup.line'].search(
-            [('company_id', '=', self.env.company.id)], order="delay asc", limit=1)
-        followup_data = self._query_followup_level()
-        today = fields.Date.context_today(self)
-        for record in self:
-            total_due = 0
-            total_overdue = 0
-            followup_status = "no_action_needed"
-            for aml in record.unreconciled_aml_ids:
-                if aml.company_id == self.env.company:
-                    amount = aml.amount_residual
-                    if not aml.move_id.journal_id.code == 'NBL':
-                        total_due += amount
-                        is_overdue = today > aml.date_maturity if aml.date_maturity else today > aml.date
-                        if is_overdue and not aml.blocked:
-                            total_overdue += amount
-            record.total_due = total_due
-            record.total_overdue = total_overdue
-            if record.id in followup_data:
-                record.followup_status = followup_data[record.id]['followup_status']
-                record.followup_level = self.env['account_followup.followup.line'].browse(
-                    followup_data[record.id]['followup_level']) or first_followup_level
-            else:
-                record.followup_status = 'no_action_needed'
-                record.followup_level = first_followup_level
+    # def _compute_for_followup(self):
+    #     """
+    #     Compute the fields 'total_due', 'total_overdue','followup_level' and 'followup_status'
+    #     """
+    #     first_followup_level = self.env['account_followup.followup.line'].search(
+    #         [('company_id', '=', self.env.company.id)], order="delay asc", limit=1)
+    #     followup_data = self._query_followup_level()
+    #     today = fields.Date.context_today(self)
+    #     for record in self:
+    #         total_due = 0
+    #         total_overdue = 0
+    #         followup_status = "no_action_needed"
+    #         for aml in record.unreconciled_aml_ids:
+    #             if aml.company_id == self.env.company:
+    #                 amount = aml.amount_residual
+    #                 if not aml.move_id.journal_id.code == 'NBL':
+    #                     total_due += amount
+    #                     is_overdue = today > aml.date_maturity if aml.date_maturity else today > aml.date
+    #                     if is_overdue and not aml.blocked:
+    #                         total_overdue += amount
+    #         record.total_due = total_due
+    #         record.total_overdue = total_overdue
+    #         if record.id in followup_data:
+    #             record.followup_status = followup_data[record.id]['followup_status']
+    #             record.followup_level = self.env['account_followup.followup.line'].browse(
+    #                 followup_data[record.id]['followup_level']) or first_followup_level
+    #         else:
+    #             record.followup_status = 'no_action_needed'
+    #             record.followup_level = first_followup_level
+    #
+    # def _invoice_total(self):
+    #     self.total_invoiced = 0
+    #     if not self.ids:
+    #         return True
+    #
+    #     all_partners_and_children = {}
+    #     all_partner_ids = []
+    #     for partner in self.filtered('id'):
+    #         # price_total is in the company currency
+    #         all_partners_and_children[partner] = self.with_context(active_test=False).search(
+    #             [('id', 'child_of', partner.id)]).ids
+    #         all_partner_ids += all_partners_and_children[partner]
+    #
+    #     domain = [
+    #         ('partner_id', 'in', all_partner_ids),
+    #         ('state', 'not in', ['draft', 'cancel']),
+    #         ('move_type', 'in', ('out_invoice', 'out_refund')),
+    #         ('journal_id.code', '!=', 'NBL'),
+    #     ]
+    #     price_totals = self.env['account.invoice.report'].read_group(domain, ['price_subtotal'], ['partner_id'])
+    #     for partner, child_ids in all_partners_and_children.items():
+    #         partner.total_invoiced = sum(
+    #             price['price_subtotal'] for price in price_totals if price['partner_id'][0] in child_ids)
 
-    def _invoice_total(self):
-        self.total_invoiced = 0
-        if not self.ids:
-            return True
+    def _cons_count(self):
+        for rec in self:
+            rec.count_cons_client = len(rec.cons_client_ids)
 
-        all_partners_and_children = {}
-        all_partner_ids = []
-        for partner in self.filtered('id'):
-            # price_total is in the company currency
-            all_partners_and_children[partner] = self.with_context(active_test=False).search(
-                [('id', 'child_of', partner.id)]).ids
-            all_partner_ids += all_partners_and_children[partner]
-
-        domain = [
-            ('partner_id', 'in', all_partner_ids),
-            ('state', 'not in', ['draft', 'cancel']),
-            ('move_type', 'in', ('out_invoice', 'out_refund')),
-            ('journal_id.code', '!=', 'NBL'),
-        ]
-        price_totals = self.env['account.invoice.report'].read_group(domain, ['price_subtotal'], ['partner_id'])
-        for partner, child_ids in all_partners_and_children.items():
-            partner.total_invoiced = sum(
-                price['price_subtotal'] for price in price_totals if price['partner_id'][0] in child_ids)
+    count_cons_client = fields.Integer(compute='_cons_count', string=u'Nbre de consultations achetées')
+    cons_client_ids = fields.One2many('account.move.line', 'patient_id', string=u'Consultations achetées', readonly=True)
 
 
 class PartnerAssurance(models.Model):
@@ -220,3 +227,27 @@ class PartnerAssurance(models.Model):
     num_affi = fields.Char('Numéro d\'affiliation')
     num_imma = fields.Char('Numéro d\'immatriculation')
     num_fonda = fields.Char('Numéro de la fondation')
+
+
+class AccountMoveLine(models.Model):
+    _inherit = 'account.move.line'
+
+    patient_id = fields.Many2one('res.partner', string="Patient")
+    show_info = fields.Boolean('Montrer onglet infos', compute='_compute_show_info')
+
+    def _compute_show_info(self):
+        for rec in self:
+            rec.show_info = True
+            if self._context.get('default_patient_id', False):
+                rec.show_info = False
+
+    @api.constrains('patient_id')
+    def _check_ice(self):
+        for rec in self:
+            exists = self.env['account.move.line'].search([
+                ('patient_id', '=', rec.patient_id.id),
+                ('id', '!=', rec.id),
+                ('move_id.move_type', '=', 'in_invoice'),
+            ])
+            if exists and rec.patient_id:
+                raise ValidationError("Un patient ne peux pas avoir plus que deux consultations")
