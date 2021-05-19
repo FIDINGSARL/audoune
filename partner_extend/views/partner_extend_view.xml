@@ -77,10 +77,10 @@
                 <xpath expr="//page[@name='accounting']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
-                <xpath expr="//field[@name='image_1920']" position="before">
+                <!--<xpath expr="//field[@name='image_1920']" position="before">
                     <button name="creer_consultation" string="Créer Consultation" type="object"
                                 class="oe_highlight"/>
-                </xpath>
+                </xpath>-->
             </field>
         </record>
 
