@@ -87,7 +87,7 @@
                                                     <span t-field="line.product_id.name"/>
                                                 </td>
                                                 <td class="text-right">
-                                                    <span t-field="line.name"/>
+                                                    <span t-field="line.lot_id.name"/>
                                                 </td>
                                             </tr>
                                         </t>
@@ -174,7 +174,7 @@
                                         <t t-foreach="o.dossier_physique" t-as="line">
                                             <tr t-att-class="'bg-200 font-weight-bold o_line_section'">
                                                 <td name="cheque_line_name">
-                                                    <span t-field="line.name"/>
+                                                    <span t-field="line.lot_id.name"/>
                                                 </td>
                                                 <td class="text-left">
                                                     <span t-field="line.partner_id.name"/>

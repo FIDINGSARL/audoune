@@ -31,6 +31,10 @@
             <field name="sequence">6</field>
             <field name="name">Rendez-vous (Centre)</field>
         </record>
+        <record id="lead_stage_non_arrive" model="crm.stage">
+            <field name="sequence">6</field>
+            <field name="name">Non arrivé</field>
+        </record>
         <record id="lead_stage_relance" model="crm.stage">
             <field name="sequence">7</field>
             <field name="name">Relance</field>

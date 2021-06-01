@@ -234,6 +234,7 @@ class AccountMoveLine(models.Model):
 
     patient_id = fields.Many2one('res.partner', string="Patient")
     show_info = fields.Boolean('Montrer onglet infos', compute='_compute_show_info')
+    payment_state = fields.Selection(related='move_id.payment_state', string='État de paiement')
 
     def _compute_show_info(self):
         for rec in self:

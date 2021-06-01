@@ -10,6 +10,9 @@
                 <field name="user_id" position="after">
                     <field name="responsable_centre_id"/>
                 </field>
+                <field name="user_id" position="attributes">
+                    <attribute name="string">Centre Appel</attribute>
+                </field>
             </field>
         </record>
 

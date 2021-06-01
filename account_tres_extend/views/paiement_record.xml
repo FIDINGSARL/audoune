@@ -8,6 +8,7 @@
             <field name="inherit_id" ref="account_tres_customer.caisse_view_tree"/>
             <field name="arch" type="xml">
                 <field name="nb_cb" position="after">
+                    <field name="total_cash" sum="total_cash_supp"/>
                     <field name="nb_cheque_supplier" sum="Total_chk_supp"/>
                     <field name="nb_cash_supplier" sum="Total_cash_supp"/>
                 </field>
@@ -32,6 +33,9 @@
                         <field name="supplier_cash_lines" nolabel="1"/>
                     </page>
                 </xpath>
+                <field name="total_amount" position="after">
+                    <field name="total_cash"/>
+                </field>
             </field>
         </record>
     </data>

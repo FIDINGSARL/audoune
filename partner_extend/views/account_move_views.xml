@@ -11,6 +11,7 @@
                     <field name="partner_id" string="Medecin"/>
                     <field name="debit" string="Montant"/>
                     <field name="date"/>
+                    <field name="payment_state"/>
                 </tree>
             </field>
         </record>
@@ -75,6 +76,7 @@
                     <field name="patient_id"/>
                     <field name="debit" string="Montant"/>
                     <field name="date"/>
+                    <field name="payment_state"/>
                 </field>
                 <xpath expr="//notebook" position="attributes">
                     <attribute name="attrs">{'invisible': [('show_info', '=', False)]}</attribute>

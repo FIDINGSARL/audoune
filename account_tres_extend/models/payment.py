@@ -150,6 +150,7 @@ class PaiementCaisse(models.Model):
             rec.nb_pec = len(rec.pec_lines)
             rec.nb_cheque_supplier = len(rec.supplier_cheque_lines)
             rec.nb_cash_supplier = len(rec.supplier_cash_lines)
+            rec.total_cash = sum(cash.amount for cash in rec.cash_lines)
             rec.total_amount = sum(cheque.amount for cheque in rec.cheque_lines) + sum(
                 effet.amount for effet in rec.effet_lines) + \
                                sum(ov.amount for ov in rec.ov_lines) + sum(
@@ -164,3 +165,4 @@ class PaiementCaisse(models.Model):
                                           readonly=True)
     nb_cheque_supplier = fields.Float(compute='_calc_total_amount', string=u"Nombre de chèques fournisseur")
     nb_cash_supplier = fields.Float(compute='_calc_total_amount', string=u"Nombre de cash fournisseur")
+    total_cash = fields.Float('Total Éspèce', compute='_calc_total_amount')

@@ -111,7 +111,7 @@ class PaiementCaisse(models.Model):
                                 + sum(cb.amount for cb in rec.pec_lines)
 
     pec_lines = fields.One2many('paiement.pec.client', 'caisse_id', string=u'Prises en charge', readonly=True)
-    nb_pec = fields.Float(compute='_calc_total_amount', string=u"Nombre de PES")
+    nb_pec = fields.Float(compute='_calc_total_amount', string=u"Nombre de PEC")
 
 
 class PaiementRecord(models.Model):

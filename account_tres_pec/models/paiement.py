@@ -13,8 +13,8 @@ class PaiementPecModelClient(models.Model):
     company_id = fields.Many2one('res.company', string=u'Société',
                                  default=lambda self: self.env['res.company']._company_default_get(
                                      'paiement.pec.model.client'))
-    received_account = fields.Many2one('account.account', string=u'Compte: PES Client à recevoir', required=True)
-    at_bank_account = fields.Many2one('account.account', string=u"Compte: PES à l'encaissement", required=True)
+    received_account = fields.Many2one('account.account', string=u'Compte: PEC Client à recevoir', required=True)
+    at_bank_account = fields.Many2one('account.account', string=u"Compte: PEC à l'encaissement", required=True)
     bank_account = fields.Many2one('account.account', string=u"Compte: Banque", required=True)
     bank_journal_id = fields.Many2one('account.journal', string=u"Journal: Banque")
 
