@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record model="ir.module.category" id="dossier_rembourssement_category">
+            <field name="name">Audoune : Dossier Rembourssement</field>
+        </record>
+
+        <record id="group_dossier_rembourssement_user" model="res.groups">
+            <field name="name">Consultant</field>
+            <field name="category_id" ref="dossier_rembourssement_category"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_dossier_rembourssement_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="dossier_rembourssement_category"/>
+            <field name="implied_ids" eval="[(4, ref('group_dossier_rembourssement_user'))]"/>
+        </record>
+
+    </data>
+</odoo>

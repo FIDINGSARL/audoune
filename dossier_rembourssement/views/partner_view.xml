@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="act_res_partner_2_dossier_rembourssement_client" model="ir.actions.act_window">
+            <field name="name">Dossier Rembourssement</field>
+            <field name="res_model">dossier.rembourssement</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('partner_id', '=', active_id)]</field>
+            <field name="context">{'default_partner_id': active_id, 'search_default_partner_id': active_id}</field>
+        </record>
+
+        <record id="res_partner_view_buttons_dossier_rembourssement" model="ir.ui.view">
+            <field name="name">res.partner.view.buttons.dossier_rembourssement</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account_tres_customer.res_partner_view_buttons"/>
+            <field name="arch" type="xml">
+                <div name="paiements_client_buttons" position="inside">
+                    <button class="oe_stat_button" type="action" groups="account_tres_customer.account_tres_user"
+                            name="%(dossier_rembourssement.act_res_partner_2_dossier_rembourssement_client)d"
+                            icon="fa-money">
+                        <field string="Dossier Rembourssement" name="count_dr_client" widget="statinfo"/>
+                    </button>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

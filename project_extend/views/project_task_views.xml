@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="view_pec_task_inherit_form2" model="ir.ui.view">
+            <field name="name">pec.form.view.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='project_id']" position='after'>
+                    <field name="dr_id" readonly="1"/>
+                    <field name="accorde_task_id" readonly="1"/>
+                    <field name="assurance_id" readonly="1"/>
+                    <field name="cin" readonly="1"/>
+                    <field name="password" readonly="1"/>
+                    <field name="phone" readonly="1"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Assurances">
+                        <field name="assurance_ids">
+                            <tree>
+                                <field name="assurance_id"/>
+                                <field name="num_affi"/>
+                                <field name="num_imma"/>
+                                <field name="num_fonda"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="crm_lead_form_inherit" model="ir.ui.view">
+            <field name="name">crm.lead.form.inherit</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="responsable_centre_id"/>
+                </field>
+                <field name="user_id" position="attributes">
+                    <attribute name="string">Centre Appel</attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="crm_lead_kanban_inherit" model="ir.ui.view">
+            <field name="name">crm.lead.kanban.inherit</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='oe_kanban_content']/div[2]" position="inside">
+                    <t t-if="record.responsable_centre_id">
+                        <span>Responsable du centre :</span>
+                        <field name="responsable_centre_id"/>
+                    </t>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

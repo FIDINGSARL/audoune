@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+
+        <record id="mail_activity_colis" model="mail.activity.type">
+            <field name="name">Activité Colis</field>
+            <field name="icon">fa-tasks</field>
+            <field name="delay_count">0</field>
+            <field name="sequence">99</field>
+            <field name="res_model_id" ref="stock_colis.model_stock_colis_request"/>
+            <field name="decoration_type">warning</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="group_can_write_partner_lot" model="res.groups">
+            <field name="name">Peut changer le patient dans les numéros de lots </field>
+        </record>
+    </data>
+</odoo>

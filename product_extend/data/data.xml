@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data noupdate="0">
+        <!--<record id="product_product_dp" model="product.product">
+            <field name="name">Dossier Physique</field>
+            <field name="type">product</field>
+            <field name="is_dp">True</field>
+            <field name="tracking">serial</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+        </record>
+        <record id="product_template_dp" model="product.template">
+            <field name="name">Dossier Physique</field>
+            <field name="type">product</field>
+            <field name="is_dp">True</field>
+            <field name="invoice_policy">order</field>
+            <field name="tracking">serial</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="product_variant_id" ref="product_product_dp"/>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+        </record>-->
+        <record id="product_product_consultation" model="product.product">
+            <field name="name">Consultation</field>
+            <field name="type">service</field>
+            <field name="list_price">500</field>
+            <field name="standard_price">500</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="taxes_id" eval='[(5,)]'/>
+            <field name="supplier_taxes_id" eval='[(5,)]'/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+        </record>
+    </data>
+</odoo>
+

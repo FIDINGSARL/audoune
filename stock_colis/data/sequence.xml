@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="sequence_stock_colis" model="ir.sequence">
+            <field name="name">Audoune : Séquence Colis</field>
+            <field name="code">stock.colis</field>
+            <field name="prefix">COL</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="sequence_stock_colis_request" model="ir.sequence">
+            <field name="name">Audoune : Séquence Demande Colis</field>
+            <field name="code">stock.colis.request</field>
+            <field name="prefix">DCOL</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <!-- Partner form view inherte-->
+        <record id="inherit_res_partner_extend_form" model="ir.ui.view">
+            <field name="name">inherit.res.partner.extend.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <button name="client_to_valid" string="Valider" states="non_valid" type="object" class="oe_highlight"/>
+                        <button name="client_to_non_valid" string="Annuler la validation" type="object" states="valid"
+                                class="oe_highlight"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                </xpath>
+                <field name="vat" position="before">
+                    <field name="fax" widget="phone"/>
+                    <field name="cin"/>
+                    <field name="password" groups="base.group_system"/>
+                    <field name="is_editable" invisible="1"/>
+                    <field name="see_all" attrs="{'readonly': [('is_editable', '=', False)]}"/>
+                    <field name="user_id" attrs="{'readonly': [('is_editable', '=', False)]}"/>
+                    <field name="delapartun_id" options="{'no_create': 1, 'no_open': 1}"/>
+                    <field name="plateforme" options="{'no_create': 1, 'no_open': 1}"/>
+                    <field name="delapartdeux_id" options="{'no_create': 1, 'no_open': 1}"/>
+                    <field name="is_autres"/>
+                    <field name="medecin_id"/>
+                    <field name="autres" options="{'no_create': 1, 'no_open': 1}"
+                           attrs="{'invisible': [('is_autres', '=', False)], 'required': [('is_autres', '=', True)]}"/>
+                </field>
+                <xpath expr="//page[@name='sales_purchases']/group/group[1]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <notebook position="inside">
+                    <page string="Autres infos"
+                          attrs="{'invisible': [('is_company','=', False)],'required': [('is_company','=', True)]}">
+                        <group col="4">
+                            <field name="id_fisc"/>
+                            <field name="rc"/>
+                            <field name="cnss"/>
+                            <field name="capital_social"/>
+                            <field name="ice"/>
+                            <field name="itp"/>
+                            <field name="activites"/>
+                            <field name="nationalite"/>
+                        </group>
+                    </page>
+                    <page string="Assurances">
+                        <field name="assurance_ids">
+                            <tree editable="bottom">
+                                <field name="assurance_id"/>
+                                <field name="num_affi"/>
+                                <field name="num_imma"/>
+                                <field name="num_fonda"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Pièces">
+                        <group>
+                            <field name="cin_attachment_id"/>
+                            <field name="mut_attachment_id"/>
+                            <field name="comp_attachment_id"/>
+                        </group>
+                    </page>
+                </notebook>
+                <field name="vat" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="function" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="website" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+
+                <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='accounting']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//span[@name='address_name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//div[@class='o_address_format']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!--<xpath expr="//field[@name='image_1920']" position="before">
+                    <button name="creer_consultation" string="Créer Consultation" type="object"
+                                class="oe_highlight"/>
+                </xpath>-->
+            </field>
+        </record>
+
+        <record id="contacts.action_contacts" model="ir.actions.act_window">
+            <field name="domain">[]</field>
+        </record>
+    </data>
+</odoo>
