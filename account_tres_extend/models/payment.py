@@ -19,7 +19,7 @@ class PaiementChequeClient(models.Model):
                                default=lambda self: self.env.ref('account_tres_customer.paiement_cheque_model_client1'))
     due_date = fields.Date(string=u"Date d'échéance", required=True, states={'payed': [('readonly', True)]},
                            default=fields.date.today())
-    accord_ids = fields.Many2many('accord.cheque.client', string='Accord Chèque')
+    accord = fields.Boolean(string='Accord Chèque', track_visibility='onchange', default=False)
 
     @api.model
     def create(self, vals):

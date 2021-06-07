@@ -19,9 +19,7 @@
                     <field name="in_name_of_id"/>
                 </field>
                 <field name="bordereau_id" position="after">
-                    <field name="accord_ids"
-                           options="{'color_field': 'color', 'no_create':1, 'no_open':1}"
-                           widget="many2many_tags"/>
+                    <field name="accord"/>
                 </field>
                 <field name="journal_id" position="attributes">
                     <attribute name="invisible">1</attribute>

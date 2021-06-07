@@ -25,6 +25,7 @@ class CrmLead(models.Model):
             stage_id = self.env['crm.stage'].browse(vals['stage_id'])
             centre_stage_id = self.env.ref('crm_extend.lead_stage_centre')
             quali_stage_id = self.env.ref('crm_extend.lead_stage_qualification')
+            relance_stage_id = self.env.ref('crm_extend.lead_stage_relance')
             if stage_id == centre_stage_id:
                 if not resp_id:
                     raise ValidationError('Veuillez remplir le champs Résponsable du centre')
@@ -37,10 +38,15 @@ class CrmLead(models.Model):
                     'type': 'contact'
                 })
                 self.activity_schedule(
-                    activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
+                    activity_type_id=self.env.ref('mail.mail_activity_data_meeting').id,
                     summary=('RDV avec le client %s' % self.name),
                     user_id=resp_id.id)
                 self.partner_id = partner_id
             if stage_id == quali_stage_id:
                 self.user_id = self.env.user.id
+            if stage_id == relance_stage_id:
+                self.activity_schedule(
+                    activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
+                    summary=('Relance du client %s' % self.name),
+                    user_id=resp_id.id)
         return super(CrmLead, self).write(vals)

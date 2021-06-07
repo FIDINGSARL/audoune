@@ -30,23 +30,23 @@ class SaleOrder(models.Model):
     cons_invoice_id = fields.Many2one('account.move', string="Facture de le consultation")
     is_cons_purchase = fields.Boolean('Achat relatif à une consultation', default=False)
 
-    def action_confirm(self):
-        res = super(SaleOrder, self).action_confirm()
-        if not self.is_cons_purchase:
-            dr_obj = self.env['dossier.rembourssement']
-            for assurance in self.partner_id.assurance_ids:
-                dr_obj.create({
-                    'partner_id': self.partner_id.id,
-                    'date': fields.Date.today(),
-                    'assurance_id': assurance.assurance_id.id,
-                    'amount': 0.0
-                })
-
-            dr_obj.create({
-                'partner_id': self.partner_id.id,
-                'date': fields.Date.today(),
-                'assurance_id': False,
-                'amount': 0.0
-            })
-        return res
+    # def action_confirm(self):
+    #     res = super(SaleOrder, self).action_confirm()
+    #     if not self.is_cons_purchase:
+    #         dr_obj = self.env['dossier.rembourssement']
+    #         for assurance in self.partner_id.assurance_ids:
+    #             dr_obj.create({
+    #                 'partner_id': self.partner_id.id,
+    #                 'date': fields.Date.today(),
+    #                 'assurance_id': assurance.assurance_id.id,
+    #                 'amount': 0.0
+    #             })
+    #
+    #         dr_obj.create({
+    #             'partner_id': self.partner_id.id,
+    #             'date': fields.Date.today(),
+    #             'assurance_id': False,
+    #             'amount': 0.0
+    #         })
+    #     return res
 

@@ -10,6 +10,10 @@ class ProjectTask(models.Model):
     dr_id = fields.Many2one('dossier.rembourssement', string="Dossier de Rembourssement")
     assurance_id = fields.Many2one('pec.assurance', related='dr_id.assurance_id', string="Assurance")
     accorde_task_id = fields.Many2one('project.task', 'Provenant de l\'accord')
+    assurance_ids = fields.One2many('partner.assurance', related='partner_id.assurance_ids', string="Assurances")
+    cin = fields.Char(string='CIN', related='partner_id.cin')
+    password = fields.Char(string='Mot de passe', related='partner_id.password')
+    phone = fields.Char(string='Téléphone', related='partner_id.phone')
 
     @api.model
     def _attente_remboursement_cron(self):
@@ -26,9 +30,10 @@ class ProjectTask(models.Model):
     @api.model
     def _attente_remboursement_cron_test(self):
         tasks = self.env['project.task'].search([])
+
         for task in tasks:
-            current_stage_id = self.env.ref('project_extend.ns_stage_3') if task.assurance_id.type == 'non_soumise' else self.env.ref('project_extend.s_stage_3')
-            next_stage_id = self.env.ref('project_extend.ns_stage_4') if task.assurance_id.type == 'non_soumise' else self.env.ref('project_extend.s_stage_4')
+            current_stage_id = self.env.ref('project_extend.ns_stage_7') if task.assurance_id.type == 'non_soumise' else  self.env.ref('project_extend.s_stage_3')
+            next_stage_id = self.env.ref('project_extend.ns_stage_8') if task.assurance_id.type == 'non_soumise' else self.env.ref('project_extend.s_stage_4')
             if task.stage_id and task.stage_id == current_stage_id:
                 date_last_stage_update = task.date_last_stage_update
                 today = datetime.today()

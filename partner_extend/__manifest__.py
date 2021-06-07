@@ -11,6 +11,7 @@
     "description": "Ajouter des infos sup",
     "init_xml": [],
     'data': [
+        'data/cron.xml',
         'security/groups.xml',
         'security/ir.model.access.csv',
         'data/rules.xml',

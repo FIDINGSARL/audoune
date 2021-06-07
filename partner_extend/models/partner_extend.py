@@ -1,7 +1,8 @@
 # -*- encoding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from odoo.tools.misc import formatLang, format_date, get_lang
 
 
 class ResPartner(models.Model):
@@ -36,6 +37,36 @@ class ResPartner(models.Model):
     is_autres = fields.Boolean('Autres')
     autres = fields.Many2one('utm.medium', 'Autres')
     medecin_id = fields.Many2one('res.partner', string='Médecin')
+    state = fields.Selection([('non_valid', 'Non validé'),
+                              ('valid', u'Validé')], 'Etat', default='non_valid', readonly=True, required=True)
+
+    def client_to_valid(self):
+        if self.count_cheque_client == 0 and self.count_cash_client == 0:
+            raise ValidationError('Le client ne peut pas être validé sans donner d\'avance')
+        if self.opportunity_ids:
+            opportunity_id = self.opportunity_ids[0]
+            opportunity_id.write({
+                'stage_id': self.env.ref('crm.stage_lead4').id
+            })
+        self.write({
+            'state': 'valid'
+        })
+
+    def client_to_non_valid(self):
+        self.write({
+            'state': 'non_valid'
+        })
+
+    def update_crm_partner_extend(self):
+        recs = self.env['res.partner'].search([])
+        for rec in recs:
+            if rec.state == 'non_valid':
+                if rec.opportunity_ids:
+                    print('inside', rec.opportunity_ids)
+                    if rec.opportunity_ids[0].stage_id in [self.env.ref('crm_extend.lead_stage_centre'), self.env.ref('crm_extend.lead_stage_non_arrive')]:
+                        rec.opportunity_ids[0].write({
+                            'stage_id': self.env.ref('crm_extend.lead_stage_relance').id
+                        })
 
     @api.constrains('ice')
     def _check_ice(self):
@@ -55,7 +86,7 @@ class ResPartner(models.Model):
     @api.model
     def create(self, vals):
         missing = []
-
+        dr_obj = self.env['dossier.rembourssement']
         missing.append("<li id='checklist-id-1'><p>Dossier Physique</p></li>")
         if not vals.get('phone', False):
             missing.append("<li id='checklist-id-1'><p>Numéro de Téléphone</p></li>")
@@ -75,12 +106,24 @@ class ResPartner(models.Model):
             missing.append("<li id='checklist-id-3'><p>Plateforme</p></li>")
         if not vals.get('delapartdeux_id', False):
             missing.append("<li id='checklist-id-3'><p>De la part deux</p></li>")
-        if not vals.get('autres', False):
-            missing.append("<li id='checklist-id-3'><p>autres</p></li>")
 
+        res = super(ResPartner, self).create(vals)
+        print('res', res)
+        dr_obj.create({
+            'partner_id': res.id,
+            'date': fields.Date.today(),
+            'assurance_id': False,
+            'amount': 0.0
+        })
         if vals.get('assurance_ids', False):
             for line in vals['assurance_ids']:
                 assurance_id = self.env['pec.assurance'].browse(line[2]['assurance_id'])
+                dr_obj.create({
+                    'partner_id': res.id,
+                    'date': fields.Date.today(),
+                    'assurance_id': assurance_id.id,
+                    'amount': 0.0
+                })
                 if not line[2]['num_affi']:
                     missing.append("<li id='checklist-id-3'><p>Numéro d'affiliation relatif à l'assurance "
                                    + assurance_id.name + "</p></li>")
@@ -91,9 +134,9 @@ class ResPartner(models.Model):
                     missing.append("<li id='checklist-id-3'><p>Numéro de la fondation relatif à l'assurance "
                                    + assurance_id.name + "</p></li>")
         else:
-            missing.append("<li id='checklist-id-3'><p>La liste des assurances du patient " + vals['name'] + "</p></li>")
+            missing.append(
+                "<li id='checklist-id-3'><p>La liste des assurances du patient " + vals['name'] + "</p></li>")
 
-        res = super(ResPartner, self).create(vals)
         if missing:
             # res.activity_schedule(
             #     activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
@@ -107,8 +150,8 @@ class ResPartner(models.Model):
                 'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
                 'res_model_id': self.env['ir.model'].search([('model', '=', 'res.partner')], limit=1).id,
                 'note': "<ul class='o_checklist'>" +
-                     ' '.join(missing)
-                     + "</ul>",
+                        ' '.join(missing)
+                        + "</ul>",
                 'res_id': res.id,
                 'user_id': self.env.user.id
             })
@@ -156,6 +199,37 @@ class ResPartner(models.Model):
             'is_cons_purchase': True
         })
         sale_order_id.action_confirm()
+
+    def _compute_for_followup(self):
+        """
+        Compute the fields 'total_due', 'total_overdue','followup_level' and 'followup_status'
+        """
+        first_followup_level = self.env['account_followup.followup.line'].search([('company_id', '=', self.env.company.id)], order="delay asc", limit=1)
+        followup_data = self._query_followup_level()
+        today = fields.Date.context_today(self)
+        for record in self:
+            total_due = 0
+            total_overdue = 0
+            followup_status = "no_action_needed"
+            for aml in record.unreconciled_aml_ids:
+                print('aml.cheque_client_id', aml.cheque_client_id)
+                if aml.cheque_client_id and not aml.cheque_client_id.accord:
+                    continue
+                if aml.company_id == self.env.company:
+                    amount = aml.amount_residual
+                    total_due += amount
+                    is_overdue = today > aml.date_maturity if aml.date_maturity else today > aml.date
+                    if is_overdue and not aml.blocked:
+                        total_overdue += amount
+            record.total_due = total_due
+            print('record.total_due', record.total_due)
+            record.total_overdue = total_overdue
+            if record.id in followup_data:
+                record.followup_status = followup_data[record.id]['followup_status']
+                record.followup_level = self.env['account_followup.followup.line'].browse(followup_data[record.id]['followup_level']) or first_followup_level
+            else:
+                record.followup_status = 'no_action_needed'
+                record.followup_level = first_followup_level
 
     # def _compute_for_followup(self):
     #     """
@@ -216,7 +290,8 @@ class ResPartner(models.Model):
             rec.count_cons_client = len(rec.cons_client_ids)
 
     count_cons_client = fields.Integer(compute='_cons_count', string=u'Nbre de consultations achetées')
-    cons_client_ids = fields.One2many('account.move.line', 'patient_id', string=u'Consultations achetées', readonly=True)
+    cons_client_ids = fields.One2many('account.move.line', 'patient_id', string=u'Consultations achetées',
+                                      readonly=True)
 
 
 class PartnerAssurance(models.Model):
@@ -252,3 +327,115 @@ class AccountMoveLine(models.Model):
             ])
             if exists and rec.patient_id:
                 raise ValidationError("Un patient ne peux pas avoir plus que deux consultations")
+
+
+class AccountFollowupReport(models.AbstractModel):
+    _inherit = "account.followup.report"
+
+    def _get_lines(self, options, line_id=None):
+        """
+        Override
+        Compute and return the lines of the columns of the follow-ups report.
+        """
+        # Get date format for the lang
+        partner = options.get('partner_id') and self.env['res.partner'].browse(options['partner_id']) or False
+        if not partner:
+            return []
+
+        lang_code = partner.lang if self._context.get('print_mode') else self.env.user.lang or get_lang(self.env).code
+        lines = []
+        res = {}
+        today = fields.Date.today()
+        line_num = 0
+        for l in partner.unreconciled_aml_ids.filtered(lambda l: l.company_id == self.env.company):
+            if l.company_id == self.env.company:
+                if self.env.context.get('print_mode') and l.blocked:
+                    continue
+                currency = l.currency_id or l.company_id.currency_id
+                if currency not in res:
+                    res[currency] = []
+                res[currency].append(l)
+        for currency, aml_recs in res.items():
+            total = 0
+            total_issued = 0
+            for aml in aml_recs:
+                if aml.cheque_client_id and not aml.cheque_client_id.accord:
+                    continue
+                amount = aml.amount_residual_currency if aml.currency_id else aml.amount_residual
+                date_due = format_date(self.env, aml.date_maturity or aml.date, lang_code=lang_code)
+                total += not aml.blocked and amount or 0
+                is_overdue = today > aml.date_maturity if aml.date_maturity else today > aml.date
+                is_payment = aml.payment_id
+                if is_overdue or is_payment:
+                    total_issued += not aml.blocked and amount or 0
+                if is_overdue:
+                    date_due = {'name': date_due, 'class': 'color-red date', 'style': 'white-space:nowrap;text-align:center;color: red;'}
+                if is_payment:
+                    date_due = ''
+                move_line_name = self._format_aml_name(aml.name, aml.move_id.ref, aml.move_id.name)
+                if self.env.context.get('print_mode'):
+                    move_line_name = {'name': move_line_name, 'style': 'text-align:right; white-space:normal;'}
+                amount = formatLang(self.env, amount, currency_obj=currency)
+                line_num += 1
+                expected_pay_date = format_date(self.env, aml.expected_pay_date, lang_code=lang_code) if aml.expected_pay_date else ''
+                invoice_origin = aml.move_id.invoice_origin or ''
+                if len(invoice_origin) > 43:
+                    invoice_origin = invoice_origin[:40] + '...'
+                columns = [
+                    format_date(self.env, aml.date, lang_code=lang_code),
+                    date_due,
+                    invoice_origin,
+                    move_line_name,
+                    (expected_pay_date and expected_pay_date + ' ') + (aml.internal_note or ''),
+                    {'name': '', 'blocked': aml.blocked},
+                    amount,
+                ]
+                if self.env.context.get('print_mode'):
+                    columns = columns[:4] + columns[6:]
+                lines.append({
+                    'id': aml.id,
+                    'account_move': aml.move_id,
+                    'name': aml.move_id.name,
+                    'caret_options': 'followup',
+                    'move_id': aml.move_id.id,
+                    'type': is_payment and 'payment' or 'unreconciled_aml',
+                    'unfoldable': False,
+                    'columns': [type(v) == dict and v or {'name': v} for v in columns],
+                })
+            total_due = formatLang(self.env, total, currency_obj=currency)
+            line_num += 1
+            lines.append({
+                'id': line_num,
+                'name': '',
+                'class': 'total',
+                'style': 'border-top-style: double',
+                'unfoldable': False,
+                'level': 3,
+                'columns': [{'name': v} for v in [''] * (3 if self.env.context.get('print_mode') else 5) + [total >= 0 and _('Total Due') or '', total_due]],
+            })
+            if total_issued > 0:
+                total_issued = formatLang(self.env, total_issued, currency_obj=currency)
+                line_num += 1
+                lines.append({
+                    'id': line_num,
+                    'name': '',
+                    'class': 'total',
+                    'unfoldable': False,
+                    'level': 3,
+                    'columns': [{'name': v} for v in [''] * (3 if self.env.context.get('print_mode') else 5) + [_('Total Overdue'), total_issued]],
+                })
+            # Add an empty line after the total to make a space between two currencies
+            line_num += 1
+            lines.append({
+                'id': line_num,
+                'name': '',
+                'class': '',
+                'style': 'border-bottom-style: none',
+                'unfoldable': False,
+                'level': 0,
+                'columns': [{} for col in columns],
+            })
+        # Remove the last empty line
+        if lines:
+            lines.pop()
+        return lines
