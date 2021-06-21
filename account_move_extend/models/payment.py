@@ -76,8 +76,10 @@ class CustomRegisterPayment(models.TransientModel):
     payment_method_id = fields.Selection([
             ('cheque', 'Chèque'),
             ('cash', 'Éspèces'),
+            ('ov', 'Virement')
         ],
         string=u'Méthode de paiement', default='cash')
+    due_date = fields.Date('Date d\'échéance')
 
     @api.model
     def _get_batch_communication(self, batch_result):
@@ -202,7 +204,7 @@ class CustomRegisterPayment(models.TransientModel):
     @api.depends('company_id', 'source_currency_id', 'payment_method_id')
     def _compute_journal_id(self):
         for wizard in self:
-            journal_type = 'bank' if wizard.payment_method_id == 'cheque' else 'cash'
+            journal_type = 'bank' if wizard.payment_method_id in ('cheque', 'ov') else 'cash'
             domain = [
                 ('type', '=', journal_type),
                 # ('type', 'in', ('bank', 'cash')),
@@ -309,6 +311,8 @@ class CustomRegisterPayment(models.TransientModel):
             'amount': self.amount,
             'company_id': self.company_id.id,
         }
+        if self.payment_method_id == 'ov':
+            vals['due_date'] = self.due_date
         entity = 'client' if self.partner_type == 'customer' else 'partner_id'
         vals[entity] = self.partner_id.id
         return vals
@@ -317,7 +321,6 @@ class CustomRegisterPayment(models.TransientModel):
         self.ensure_one()
         entity = 'client' if self.partner_type == 'customer' else 'supplier'
         model = 'paiement.' + self.payment_method_id + '.' + entity
-        print('model', model)
 
         batches = self._get_batches()
         edit_mode = self.can_edit_wizard and (len(batches[0]['lines']) == 1 or self.group_payment)

@@ -13,26 +13,28 @@
                 </field>
                 <xpath expr="//sheet" position="before">
                     <header>
-                        <button name="client_to_valid" string="Valider" states="non_valid" type="object" class="oe_highlight"/>
-                        <button name="client_to_non_valid" string="Annuler la validation" type="object" states="valid"
+                        <button name="client_to_encours" string="En cours" states="non_valid" type="object" class="oe_highlight"/>
+                        <button name="client_to_valid" string="Valider" states="en_cours" type="object" class="oe_highlight"/>
+                        <button name="client_to_non_valid" string="Annuler la validation" type="object" states="valid,en_cours"
                                 class="oe_highlight"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                 </xpath>
                 <field name="vat" position="before">
+                    <field name="is_patient" />
                     <field name="fax" widget="phone"/>
                     <field name="cin"/>
                     <field name="password" groups="base.group_system"/>
                     <field name="is_editable" invisible="1"/>
                     <field name="see_all" attrs="{'readonly': [('is_editable', '=', False)]}"/>
                     <field name="user_id" attrs="{'readonly': [('is_editable', '=', False)]}"/>
-                    <field name="delapartun_id" options="{'no_create': 1, 'no_open': 1}"/>
-                    <field name="plateforme" options="{'no_create': 1, 'no_open': 1}"/>
-                    <field name="delapartdeux_id" options="{'no_create': 1, 'no_open': 1}"/>
-                    <field name="is_autres"/>
-                    <field name="medecin_id"/>
-                    <field name="autres" options="{'no_create': 1, 'no_open': 1}"
-                           attrs="{'invisible': [('is_autres', '=', False)], 'required': [('is_autres', '=', True)]}"/>
+                    <field name="is_delapartun" />
+                    <field name="is_delapartdeux" />
+                    <field name="delapartun_id" domain="[('is_delapartun', '=', True)]" options="{'no_create': 1, 'no_open': 1}"/>
+                    <field name="activate_2l2" invisible="1"/>
+                    <field name="delapartdeux_id" domain="[('is_delapartdeux', '=', True)]"
+                           options="{'no_create': 1, 'no_open': 1}"
+                            attrs="{'invisible': [('activate_2l2', '=', False)]}"/>
                 </field>
                 <xpath expr="//page[@name='sales_purchases']/group/group[1]" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -90,6 +92,12 @@
                 </xpath>
                 <xpath expr="//div[@class='o_address_format']" position="attributes">
                     <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='internal_notes']" position="inside">
+                    <group>
+                        <field name="is_delapartun" />
+                        <field name="is_delapartdeux" />
+                    </group>
                 </xpath>
                 <!--<xpath expr="//field[@name='image_1920']" position="before">
                     <button name="creer_consultation" string="Créer Consultation" type="object"

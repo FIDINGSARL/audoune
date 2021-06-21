@@ -54,15 +54,18 @@ class ProjectTask(models.Model):
             accorde_stage_id = self.env.ref('project_extend.s_stage_6')
             ns_stage_2_id = self.env.ref('project_extend.ns_stage_2')
             if self.project_id == project_soumise_id and stage_id == accorde_stage_id:
-                task_id = self.env['project.task'].create({
-                    'project_id': project_non_soumise_id.id,
-                    'name': self.partner_id.name + ' ' + self.assurance_id.name,
-                    'partner_id': self.partner_id.id,
-                    'stage_id': ns_stage_2_id.id,
-                    'accorde_task_id': self.id
-                })
-                task_id.activity_schedule(
+                # task_id = self.env['project.task'].create({
+                #     'project_id': project_non_soumise_id.id,
+                #     'name': self.partner_id.name + ' ' + self.assurance_id.name,
+                #     'partner_id': self.partner_id.id,
+                #     'stage_id': ns_stage_2_id.id,
+                #     'accorde_task_id': self.id
+                # })
+                vals['project_id'] = project_non_soumise_id.id
+                vals['stage_id'] = ns_stage_2_id.id
+                self.activity_schedule(
                  activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
                  summary=stage_id.name + ' ' + self.partner_id.name,
                  user_id=self.user_id.id)
+
         return super(ProjectTask, self).write(vals)

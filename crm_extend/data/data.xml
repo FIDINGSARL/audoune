@@ -2,21 +2,36 @@
 <odoo>
     <data>
 
-        <!--<delete id="crm.stage_lead1" model="crm.stage" />
+        <delete id="crm.stage_lead1" model="crm.stage" />
         <delete id="crm.stage_lead2" model="crm.stage" />
         <delete id="crm.stage_lead3" model="crm.stage" />
-        <delete id="crm.stage_lead4" model="crm.stage" />-->
+        <delete id="crm.stage_lead4" model="crm.stage" />
+
+        <record model="crm.team" id="team_centre_appel">
+            <field name="name">Centre d'appel</field>
+        </record>
+
+        <record model="crm.team" id="team_centre">
+            <field name="name">Centre</field>
+        </record>
+
+        <record model="crm.team" id="team_both">
+            <field name="name">Les deux</field>
+        </record>
 
         <record id="lead_stage_nouveau" model="crm.stage">
             <field name="sequence">1</field>
+            <field name="team_id" ref="team_centre_appel"/>
             <field name="name">Nouveau</field>
         </record>
         <record id="lead_stage_qualification" model="crm.stage">
             <field name="sequence">2</field>
+            <field name="team_id" ref="team_centre_appel"/>
             <field name="name">Qualification</field>
         </record>
         <record id="lead_stage_nrp" model="crm.stage">
             <field name="sequence">3</field>
+            <field name="team_id" ref="team_centre_appel"/>
             <field name="name">NRP</field>
         </record>
         <record id="lead_stage_deja_traite" model="crm.stage">
@@ -39,12 +54,17 @@
             <field name="sequence">7</field>
             <field name="name">Relance</field>
         </record>
+        <record model="crm.stage" id="lead_stage_gagne">
+            <field name="name">Gagné</field>
+            <field name="fold" eval="False"/>
+            <field name="is_won">True</field>
+            <field name="sequence">8</field>
+        </record>
 
         <record id="mail_activity_type_moderer" model="mail.activity.type">
             <field name="name">Modérer</field>
-            <field name="default_user_id" ref="base.user_admin" />
+            <field name="default_user_id" ref="base.user_admin"/>
         </record>
-
 
 
     </data>
