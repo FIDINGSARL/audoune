@@ -131,5 +131,29 @@
             <field name="type_ids"
                    eval="[(4, ref('pc_stage_1')),(4, ref('pc_stage_2'))]"/>
         </record>
+
+        <!-- Procédure judiciaire -->
+
+        <record id="pj_stage_1" model="project.task.type">
+            <field name="sequence">1</field>
+            <field name="name">Nouveau</field>
+        </record>
+
+        <record id="pj_stage_2" model="project.task.type">
+            <field name="sequence">2</field>
+            <field name="name">En cours</field>
+        </record>
+
+        <record id="pj_stage_3" model="project.task.type">
+            <field name="sequence">3</field>
+            <field name="name">Términé</field>
+        </record>
+
+        <record id="project_procedure_judiciare" model="project.project">
+            <field name="name">Procédure Judiciaire</field>
+            <field name="color">5</field>
+            <field name="type_ids"
+                   eval="[(4, ref('pj_stage_1')),(4, ref('pj_stage_2')),(4, ref('pj_stage_3'))]"/>
+        </record>
     </data>
 </odoo>

@@ -34,11 +34,21 @@ class ResPartner(models.Model):
     delapartun_id = fields.Many2one('res.partner', 'De la part un')
     plateforme = fields.Many2one('utm.medium', 'Plateforme')
     delapartdeux_id = fields.Many2one('res.partner', 'De la part deux')
-    is_autres = fields.Boolean('Autres')
-    autres = fields.Many2one('utm.medium', 'Autres')
-    medecin_id = fields.Many2one('res.partner', string='Médecin')
     state = fields.Selection([('non_valid', 'Non validé'),
-                              ('valid', u'Validé')], 'Etat', default='non_valid', readonly=True, required=True)
+                              ('en_cours', 'Validation en cours'),
+                              ('valid', u'Validé')],
+                             'Etat', default='non_valid', readonly=True, required=True, track_visibility='onchange')
+    is_delapartun = fields.Boolean('est \'de la part un\'')
+    is_delapartdeux = fields.Boolean('est \'de la part deux\'')
+    activate_2l2 = fields.Boolean('afficher de la part de deux', compute='_show_2l2')
+    is_patient = fields.Boolean('Est un patient', default=False)
+
+    @api.depends('delapartun_id')
+    def _show_2l2(self):
+        for rec in self:
+            rec.activate_2l2 = False
+            if rec.delapartun_id == self.env.ref('partner_extend.res_partner_autres'):
+                rec.activate_2l2 = True
 
     def client_to_valid(self):
         if self.count_cheque_client == 0 and self.count_cash_client == 0:
@@ -46,7 +56,7 @@ class ResPartner(models.Model):
         if self.opportunity_ids:
             opportunity_id = self.opportunity_ids[0]
             opportunity_id.write({
-                'stage_id': self.env.ref('crm.stage_lead4').id
+                'stage_id': self.env.ref('crm_extend.lead_stage_gagne').id
             })
         self.write({
             'state': 'valid'
@@ -57,16 +67,27 @@ class ResPartner(models.Model):
             'state': 'non_valid'
         })
 
+    def client_to_encours(self):
+        self.write({
+            'state': 'en_cours'
+        })
+
     def update_crm_partner_extend(self):
         recs = self.env['res.partner'].search([])
         for rec in recs:
-            if rec.state == 'non_valid':
+            if rec.state in ['non_valid', 'en_cours']:
                 if rec.opportunity_ids:
-                    print('inside', rec.opportunity_ids)
                     if rec.opportunity_ids[0].stage_id in [self.env.ref('crm_extend.lead_stage_centre'), self.env.ref('crm_extend.lead_stage_non_arrive')]:
                         rec.opportunity_ids[0].write({
                             'stage_id': self.env.ref('crm_extend.lead_stage_relance').id
                         })
+                        state_str = '(Non validé)' if rec.state == 'non_valid' else '(En cours de validation)'
+                        user_id = rec.opportunity_ids[0].user_id if rec.state == 'non_valid' else rec.user_id
+                        summary = 'Relance du client %s %s' % (state_str, rec.name)
+                        rec.opportunity_ids[0].activity_schedule(
+                            activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
+                            summary=summary,
+                            user_id=user_id.id)
 
     @api.constrains('ice')
     def _check_ice(self):
@@ -85,77 +106,80 @@ class ResPartner(models.Model):
 
     @api.model
     def create(self, vals):
-        missing = []
-        dr_obj = self.env['dossier.rembourssement']
-        missing.append("<li id='checklist-id-1'><p>Dossier Physique</p></li>")
-        if not vals.get('phone', False):
-            missing.append("<li id='checklist-id-1'><p>Numéro de Téléphone</p></li>")
-        if not vals.get('cin', False):
-            missing.append("<li id='checklist-id-1'><p>Numéro de CIN</p></li>")
-        if not vals.get('password', False):
-            missing.append("<li id='checklist-id-1'><p>Mot de passe</p></li>")
-        if not vals.get('cin_attachment_id', False):
-            missing.append("<li id='checklist-id-1'><p>Photocopie CIN</p></li>")
-        if not vals.get('mut_attachment_id', False):
-            missing.append("<li id='checklist-id-2'><p>Photocopie Mutuelle</p></li>")
-        if not vals.get('comp_attachment_id', False):
-            missing.append("<li id='checklist-id-3'><p>Photocopie Complémentaire</p></li>")
-        if not vals.get('delapartun_id', False):
-            missing.append("<li id='checklist-id-3'><p>De la part un</p></li>")
-        if not vals.get('plateforme', False):
-            missing.append("<li id='checklist-id-3'><p>Plateforme</p></li>")
-        if not vals.get('delapartdeux_id', False):
-            missing.append("<li id='checklist-id-3'><p>De la part deux</p></li>")
+        if vals.get('is_patient', False):
+            missing = []
+            dr_obj = self.env['dossier.rembourssement']
+            missing.append("<li id='checklist-id-1'><p>Dossier Physique</p></li>")
+            if not vals.get('phone', False):
+                missing.append("<li id='checklist-id-1'><p>Numéro de Téléphone</p></li>")
+            if not vals.get('cin', False):
+                missing.append("<li id='checklist-id-1'><p>Numéro de CIN</p></li>")
+            if not vals.get('password', False):
+                missing.append("<li id='checklist-id-1'><p>Mot de passe</p></li>")
+            if not vals.get('cin_attachment_id', False):
+                missing.append("<li id='checklist-id-1'><p>Photocopie CIN</p></li>")
+            if not vals.get('mut_attachment_id', False):
+                missing.append("<li id='checklist-id-2'><p>Photocopie Mutuelle</p></li>")
+            if not vals.get('comp_attachment_id', False):
+                missing.append("<li id='checklist-id-3'><p>Photocopie Complémentaire</p></li>")
+            if not vals.get('delapartun_id', False):
+                missing.append("<li id='checklist-id-3'><p>De la part un</p></li>")
+            if not vals.get('plateforme', False):
+                missing.append("<li id='checklist-id-3'><p>Plateforme</p></li>")
+            if not vals.get('delapartdeux_id', False):
+                missing.append("<li id='checklist-id-3'><p>De la part deux</p></li>")
 
-        res = super(ResPartner, self).create(vals)
-        print('res', res)
-        dr_obj.create({
-            'partner_id': res.id,
-            'date': fields.Date.today(),
-            'assurance_id': False,
-            'amount': 0.0
-        })
-        if vals.get('assurance_ids', False):
-            for line in vals['assurance_ids']:
-                assurance_id = self.env['pec.assurance'].browse(line[2]['assurance_id'])
-                dr_obj.create({
-                    'partner_id': res.id,
-                    'date': fields.Date.today(),
-                    'assurance_id': assurance_id.id,
-                    'amount': 0.0
-                })
-                if not line[2]['num_affi']:
-                    missing.append("<li id='checklist-id-3'><p>Numéro d'affiliation relatif à l'assurance "
-                                   + assurance_id.name + "</p></li>")
-                if not line[2]['num_imma']:
-                    missing.append("<li id='checklist-id-3'><p>Numéro d'immatriculation relatif à l'assurance "
-                                   + assurance_id.name + "</p></li>")
-                if not line[2]['num_fonda']:
-                    missing.append("<li id='checklist-id-3'><p>Numéro de la fondation relatif à l'assurance "
-                                   + assurance_id.name + "</p></li>")
-        else:
-            missing.append(
-                "<li id='checklist-id-3'><p>La liste des assurances du patient " + vals['name'] + "</p></li>")
-
-        if missing:
-            # res.activity_schedule(
-            #     activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
-            #     summary='Champs à renseigner pour la fiche du patient ' + vals['name'],
-            #     note="<ul class='o_checklist'>" +
-            #          ' '.join(missing)
-            #          + "</ul>",
-            #     user_id=self.env.user.id)
-            activity_id = self.env['mail.activity'].with_user(self.env.ref('base.user_admin')).create({
-                'summary': 'Champs à renseigner pour la fiche du patient ' + vals['name'],
-                'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
-                'res_model_id': self.env['ir.model'].search([('model', '=', 'res.partner')], limit=1).id,
-                'note': "<ul class='o_checklist'>" +
-                        ' '.join(missing)
-                        + "</ul>",
-                'res_id': res.id,
-                'user_id': self.env.user.id
+            res = super(ResPartner, self).create(vals)
+            dr_obj.create({
+                'partner_id': res.id,
+                'date': fields.Date.today(),
+                'assurance_id': False,
+                'amount': 0.0
             })
-        return res
+            if vals.get('assurance_ids', False):
+                for line in vals['assurance_ids']:
+                    assurance_id = self.env['pec.assurance'].browse(line[2]['assurance_id'])
+                    dr_obj.create({
+                        'partner_id': res.id,
+                        'date': fields.Date.today(),
+                        'assurance_id': assurance_id.id,
+                        'amount': 0.0
+                    })
+                    if not line[2]['num_affi']:
+                        missing.append("<li id='checklist-id-3'><p>Numéro d'affiliation relatif à l'assurance "
+                                       + assurance_id.name + "</p></li>")
+                    if not line[2]['num_imma']:
+                        missing.append("<li id='checklist-id-3'><p>Numéro d'immatriculation relatif à l'assurance "
+                                       + assurance_id.name + "</p></li>")
+                    if not line[2]['num_fonda']:
+                        missing.append("<li id='checklist-id-3'><p>Numéro de la fondation relatif à l'assurance "
+                                       + assurance_id.name + "</p></li>")
+            else:
+                missing.append(
+                    "<li id='checklist-id-3'><p>La liste des assurances du patient " + vals['name'] + "</p></li>")
+
+            if missing:
+                # res.activity_schedule(
+                #     activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
+                #     summary='Champs à renseigner pour la fiche du patient ' + vals['name'],
+                #     note="<ul class='o_checklist'>" +
+                #          ' '.join(missing)
+                #          + "</ul>",
+                #     user_id=self.env.user.id)
+                activity_id = self.env['mail.activity'].with_user(self.env.ref('base.user_admin')).create({
+                    'summary': 'Champs à renseigner pour la fiche du patient ' + vals['name'],
+                    'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
+                    'res_model_id': self.env['ir.model'].search([('model', '=', 'res.partner')], limit=1).id,
+                    'note': "<ul class='o_checklist'>" +
+                            ' '.join(missing)
+                            + "</ul>",
+                    'res_id': res.id,
+                    'user_id': self.env.user.id
+                })
+            return res
+        else:
+            return super(ResPartner, self).create(vals)
+
 
     def creer_consultation(self):
         if not self.medecin_id:
@@ -211,8 +235,15 @@ class ResPartner(models.Model):
             total_due = 0
             total_overdue = 0
             followup_status = "no_action_needed"
-            for aml in record.unreconciled_aml_ids:
-                print('aml.cheque_client_id', aml.cheque_client_id)
+            reconciled_chk_na_domain = [('reconciled', '=', True),
+                                       ('account_id.deprecated', '=', False),
+                                       ('partner_id', '=', record.id),
+                                       ('account_id.internal_type', '=', 'receivable'),
+                                       ('cheque_client_id', '!=', False),
+                                       ('cheque_client_id.accord', '=', False),
+                                       ('move_id.state', '=', 'posted')]
+            reconciled_chk_na_lines = self.env['account.move.line'].search(reconciled_chk_na_domain)
+            for aml in record.unreconciled_aml_ids + reconciled_chk_na_lines:
                 if aml.cheque_client_id and not aml.cheque_client_id.accord:
                     continue
                 if aml.company_id == self.env.company:
@@ -222,7 +253,6 @@ class ResPartner(models.Model):
                     if is_overdue and not aml.blocked:
                         total_overdue += amount
             record.total_due = total_due
-            print('record.total_due', record.total_due)
             record.total_overdue = total_overdue
             if record.id in followup_data:
                 record.followup_status = followup_data[record.id]['followup_status']
@@ -359,8 +389,8 @@ class AccountFollowupReport(models.AbstractModel):
             total = 0
             total_issued = 0
             for aml in aml_recs:
-                if aml.cheque_client_id and not aml.cheque_client_id.accord:
-                    continue
+                # if aml.cheque_client_id and not aml.cheque_client_id.accord:
+                #     continue
                 amount = aml.amount_residual_currency if aml.currency_id else aml.amount_residual
                 date_due = format_date(self.env, aml.date_maturity or aml.date, lang_code=lang_code)
                 total += not aml.blocked and amount or 0

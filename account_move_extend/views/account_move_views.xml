@@ -15,6 +15,31 @@
                 <xpath expr="//button[@name='action_register_payment']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="//field[@name='payment_reference']" position="after">
+                    <field name="payment_method_id" required="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="inherit_account_move_in_tree_custom_payment" model="ir.ui.view">
+            <field name="name">inherit.account.in.tree.custom.payment</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_in_invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='ref']" position="after">
+                    <field name="payment_method_id" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="inherit_account_move_out_tree_custom_payment" model="ir.ui.view">
+            <field name="name">inherit.account.out.tree.custom.payment</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='ref']" position="after">
+                    <field name="payment_method_id" />
+                </xpath>
             </field>
         </record>
     </data>

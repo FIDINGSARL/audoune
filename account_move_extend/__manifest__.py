@@ -12,6 +12,7 @@
     "init_xml": [],
     'data': [
         'security/ir.model.access.csv',
+        'report/report_invoice.xml',
         'views/account_move_views.xml',
         'views/custom_register_payment_views.xml',
     ],

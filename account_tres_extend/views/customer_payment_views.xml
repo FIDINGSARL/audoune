@@ -42,6 +42,28 @@
             </field>
         </record>
 
+        <record id="inherit_payment_cheque_tree" model="ir.ui.view">
+            <field name="name">inherit.payment.cheque.tree</field>
+            <field name="model">paiement.cheque.client</field>
+            <field name="inherit_id" ref="account_tres_customer.cheque_client_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="amount" position="after">
+                    <field name="accord" />
+                </field>
+            </field>
+        </record>
+        <record id="view_cheque_client_filter_inherit_accord" model="ir.ui.view">
+            <field name="name">Cheques Clients Accord</field>
+            <field name="model">paiement.cheque.client</field>
+            <field name="inherit_id" ref="account_tres_customer.view_cheque_client_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="before">
+                    <filter string="Accordé" name="accorde" domain="[('accord','=',True)]"/>
+                    <filter string="Non accordé" name="non_accorde" domain="[('accord','=',False)]"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="inherit_payment_cash_form" model="ir.ui.view">
             <field name="name">inherit.payment.cash.form</field>
             <field name="model">paiement.cash.client</field>

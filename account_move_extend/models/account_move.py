@@ -21,3 +21,10 @@ class AccountMove(models.Model):
             'target': 'new',
             'type': 'ir.actions.act_window',
         }
+
+    payment_method_id = fields.Selection([
+        ('cheque', 'Chèque'),
+        ('cash', 'Éspèces'),
+        ('ov', 'Virement')
+    ],
+        string=u'Méthode de paiement', default='cash')

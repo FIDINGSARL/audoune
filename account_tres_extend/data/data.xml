@@ -29,5 +29,54 @@
             <field name="prefix">OVF</field>
             <field name="padding">5</field>
         </record>
+
+        <record id="rejet_motif_insu" model="rejet.cheque.motif">
+            <field name="name">Le défaut ou insuffisance de provision</field>
+        </record>
+        <record id="rejet_motif_opp1" model="rejet.cheque.motif">
+            <field name="name">perte</field>
+        </record>
+        <record id="rejet_motif_opp2" model="rejet.cheque.motif">
+            <field name="name">vol</field>
+        </record>
+        <record id="rejet_motif_opp3" model="rejet.cheque.motif">
+            <field name="name">utilisation frauduleuse</field>
+        </record>
+        <record id="rejet_motif_opp4" model="rejet.cheque.motif">
+            <field name="name">redressement</field>
+        </record>
+        <record id="rejet_motif_opp5" model="rejet.cheque.motif">
+            <field name="name">liquidation judiciaire du porteur</field>
+        </record>
+        <record id="rejet_motif_irr1" model="rejet.cheque.motif">
+            <field name="name">signature non conforme</field>
+        </record>
+        <record id="rejet_motif_irr2" model="rejet.cheque.motif">
+            <field name="name">falsification</field>
+        </record>
+        <record id="rejet_motif_irr3" model="rejet.cheque.motif">
+            <field name="name">surcharge</field>
+        </record>
+        <record id="rejet_motif_irr4" model="rejet.cheque.motif">
+            <field name="name">oubli de signature du dos</field>
+        </record>
+        <record id="rejet_motif_presc" model="rejet.cheque.motif">
+            <field name="name">La prescription</field>
+        </record>
+        <record id="rejet_motif_ind1" model="rejet.cheque.motif">
+            <field name="name">compte clôturé</field>
+        </record>
+        <record id="rejet_motif_ind2" model="rejet.cheque.motif">
+            <field name="name">fait l'objet d'une saisie attribution</field>
+        </record>
+        <record id="rejet_motif_ind3" model="rejet.cheque.motif">
+            <field name="name">avis à tiers détenteur</field>
+        </record>
+        <record id="rejet_motif_ind4" model="rejet.cheque.motif">
+            <field name="name">dénonciation de convention de compte collectif</field>
+        </record>
+        <record id="rejet_motif_ind5" model="rejet.cheque.motif">
+            <field name="name">titulaire du compte est décédé</field>
+        </record>
     </data>
 </odoo>

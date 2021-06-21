@@ -1,4 +1,4 @@
-id,code_prefix_start,name
+"id","code_prefix_start","name"
 account.data_account_group_111,111,Capital social ou personnel
 account.data_account_group_112,112,Primes d'émission, de fusion et d'apport
 account.data_account_group_113,113,Ecarts de réévaluation

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="wizard_rejet_cheque_view_inherit" model="ir.ui.view">
+            <field name="name">bordereau.rejet.cheque.wizard.inherit</field>
+            <field name="model">rejet.cheque.wizard</field>
+            <field name="inherit_id" ref="account_tres_customer.wizard_rejet_cheque_view" />
+            <field name="arch" type="xml">
+                <field name="in_relevet" position="before">
+                    <field name="motif" required="1"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>
