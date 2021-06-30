@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
@@ -74,3 +75,46 @@ class CrmLead(models.Model):
             #         summary=('Relance du client %s' % self.name),
             #         user_id=resp_id.id)
         return super(CrmLead, self).write(vals)
+
+    def create_auto_crm_activity(self):
+        lead_relance_ids = self.env['crm.lead'].search(
+            [('stage_id', '=', self.env.ref('crm_extend.lead_stage_relance').id)])
+        lead_nrp_ids = self.env['crm.lead'].search([('stage_id', '=', self.env.ref('crm_extend.lead_stage_nrp').id)])
+        for rec in lead_relance_ids:
+            activity_relance_ids = rec.activity_ids.filtered(
+                lambda activity: activity.activity_type_id == self.env.ref('crm_extend.mail_activity_type_relance'))
+            if len(activity_relance_ids):
+                if len(activity_relance_ids) >= 5:
+                    rec.write({
+                        'stage_id': self.env.ref('crm_extend.lead_stage_quarantine').id
+                    })
+                elif len(activity_relance_ids) < 5:
+                    recent_date = max(activity_relance_ids.mapped('date_deadline'))
+                    if recent_date and (fields.date.today() - recent_date).days > 7:
+                        rec.activity_schedule(
+                            activity_type_id=self.env.ref('crm_extend.mail_activity_type_relance').id,
+                            summary='Relance du client %s' % (rec.partner_id.name if rec.partner_id else rec.name),
+                            user_id=rec.responsable_centre_id.id if rec.responsable_centre_id else rec.user_id.id,
+                            date_deadline=fields.date.today() + datetime.timedelta(weeks=1)
+                        )
+
+        for rec in lead_nrp_ids:
+            activity_nrp_ids = rec.activity_ids.filtered(
+                lambda activity: activity.activity_type_id == self.env.ref('crm_extend.mail_activity_type_nrp'))
+
+            if len(activity_nrp_ids):
+                if len(activity_nrp_ids) >= 5:
+                    rec.write({
+                        'stage_id': self.env.ref('crm_extend.lead_stage_quarantine').id
+                    })
+                elif len(activity_nrp_ids) < 5:
+                    recent_date = max(activity_nrp_ids.mapped('date_deadline'))
+                    if recent_date and (fields.date.today() - recent_date).days >= 1:
+                        rec.opportunity_ids[0].activity_schedule(
+                            activity_type_id=self.env.ref('crm_extend.mail_activity_type_nrp').id,
+                            summary='NRP du client %s' % (rec.partner_id.name if rec.partner_id else rec.name),
+                            user_id=rec.resposable_centre_id.id if rec.resposable_centre_id else rec.user_id.id,
+                            date_deadline=fields.date.today() + datetime.timedelta(days=1)
+                        )
+
+

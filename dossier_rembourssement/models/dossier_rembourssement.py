@@ -8,6 +8,7 @@ class DossierRembourssement(models.Model):
     _name = "dossier.rembourssement"
 
     name = fields.Char('Référence', readonly=1)
+    description = fields.Char('Description')
     partner_id = fields.Many2one('res.partner', string='Client')
     amount = fields.Float('Montant')
     assurance_id = fields.Many2one('pec.assurance', string="Assurance")

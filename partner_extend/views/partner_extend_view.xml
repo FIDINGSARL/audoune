@@ -13,9 +13,10 @@
                 </field>
                 <xpath expr="//sheet" position="before">
                     <header>
-                        <button name="client_to_encours" string="En cours" states="non_valid" type="object" class="oe_highlight"/>
-                        <button name="client_to_valid" string="Valider" states="en_cours" type="object" class="oe_highlight"/>
-                        <button name="client_to_non_valid" string="Annuler la validation" type="object" states="valid,en_cours"
+                        <button name="client_to_encours" string="En cours" states="non_valid,confirmed,valid" type="object" class="oe_highlight"/>
+                        <button name="client_to_confirmed" string="Validation Responsable" states="en_cours" type="object" class="oe_highlight"/>
+                        <button name="client_to_valid" string="Validation Admin" states="confirmed" type="object" class="oe_highlight" groups="base.group_system"/>
+                        <button name="client_to_non_valid" string="Annuler la validation" type="object" states="valid,confirm,en_cours"
                                 class="oe_highlight"/>
                         <field name="state" widget="statusbar"/>
                     </header>
