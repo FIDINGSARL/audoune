@@ -2,10 +2,10 @@
 <odoo>
     <data>
 
-        <delete id="crm.stage_lead1" model="crm.stage" />
-        <delete id="crm.stage_lead2" model="crm.stage" />
-        <delete id="crm.stage_lead3" model="crm.stage" />
-        <delete id="crm.stage_lead4" model="crm.stage" />
+        <!--<delete id="crm.stage_lead1" model="crm.stage"/>
+        <delete id="crm.stage_lead2" model="crm.stage"/>
+        <delete id="crm.stage_lead3" model="crm.stage"/>
+        <delete id="crm.stage_lead4" model="crm.stage"/>-->
 
         <record model="crm.team" id="team_centre_appel">
             <field name="name">Centre d'appel</field>
@@ -38,13 +38,13 @@
             <field name="sequence">4</field>
             <field name="name">Déjà traité</field>
         </record>
-        <record id="lead_stage_mut" model="crm.stage">
-            <field name="sequence">5</field>
-            <field name="name">MUT</field>
-        </record>
         <record id="lead_stage_centre" model="crm.stage">
-            <field name="sequence">6</field>
+            <field name="sequence">5</field>
             <field name="name">Rendez-vous (Centre)</field>
+        </record>
+        <record id="lead_stage_arrive" model="crm.stage">
+            <field name="sequence">6</field>
+            <field name="name">Arrivé</field>
         </record>
         <record id="lead_stage_non_arrive" model="crm.stage">
             <field name="sequence">6</field>
@@ -61,9 +61,30 @@
             <field name="sequence">8</field>
         </record>
 
+        <record model="crm.stage" id="lead_stage_quarantine">
+            <field name="name">En quarantaine</field>
+            <field name="fold" eval="False"/>
+            <field name="is_won">False</field>
+            <field name="sequence">9</field>
+        </record>
+
         <record id="mail_activity_type_moderer" model="mail.activity.type">
             <field name="name">Modérer</field>
             <field name="default_user_id" ref="base.user_admin"/>
+        </record>
+
+        <record id="mail_activity_type_relance" model="mail.activity.type">
+            <field name="name">Relance</field>
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="delay_count">7</field>
+            <field name="delay_unit">days</field>
+        </record>
+
+        <record id="mail_activity_type_nrp" model="mail.activity.type">
+            <field name="name">NRP</field>
+            <field name="res_model_id" ref="crm.model_crm_lead"/>
+            <field name="delay_count">1</field>
+            <field name="delay_unit">days</field>
         </record>
 
 

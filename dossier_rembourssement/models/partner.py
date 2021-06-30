@@ -12,4 +12,4 @@ class ResPartner(models.Model):
             partner.count_dr_client = count_dr_client
 
     count_dr_client = fields.Integer(compute='_dr_count', string=u'Nbre des dr')
-    dr_client_ids = fields.One2many('dossier.rembourssement', 'partner_id', string=u'Dossiers de rembourssement', readonly=True)
+    dr_client_ids = fields.One2many('dossier.rembourssement', 'partner_id', string=u'Dossiers de rembourssement')

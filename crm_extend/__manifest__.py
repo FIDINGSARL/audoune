@@ -12,6 +12,7 @@
     ],
     'data': [
         'data/data.xml',
+        'data/cron.xml',
         'security/groups.xml',
         'views/crm_views.xml',
         'views/activity_wizard.xml',

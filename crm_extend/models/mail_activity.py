@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, tools
-from odoo.exceptions import ValidationError
 
 
 class MailActivity(models.Model):

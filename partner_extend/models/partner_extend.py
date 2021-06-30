@@ -36,7 +36,8 @@ class ResPartner(models.Model):
     delapartdeux_id = fields.Many2one('res.partner', 'De la part deux')
     state = fields.Selection([('non_valid', 'Non validé'),
                               ('en_cours', 'Validation en cours'),
-                              ('valid', u'Validé')],
+                              ('confirmed', 'Validé par le responsable'),
+                              ('valid', u'Validé par l\'admin')],
                              'Etat', default='non_valid', readonly=True, required=True, track_visibility='onchange')
     is_delapartun = fields.Boolean('est \'de la part un\'')
     is_delapartdeux = fields.Boolean('est \'de la part deux\'')
@@ -50,7 +51,7 @@ class ResPartner(models.Model):
             if rec.delapartun_id == self.env.ref('partner_extend.res_partner_autres'):
                 rec.activate_2l2 = True
 
-    def client_to_valid(self):
+    def client_to_confirmed(self):
         if self.count_cheque_client == 0 and self.count_cash_client == 0:
             raise ValidationError('Le client ne peut pas être validé sans donner d\'avance')
         if self.opportunity_ids:
@@ -59,7 +60,7 @@ class ResPartner(models.Model):
                 'stage_id': self.env.ref('crm_extend.lead_stage_gagne').id
             })
         self.write({
-            'state': 'valid'
+            'state': 'confirmed'
         })
 
     def client_to_non_valid(self):
@@ -72,20 +73,25 @@ class ResPartner(models.Model):
             'state': 'en_cours'
         })
 
+    def client_to_valid(self):
+        self.write({
+            'state': 'valid'
+        })
+
     def update_crm_partner_extend(self):
         recs = self.env['res.partner'].search([])
         for rec in recs:
             if rec.state in ['non_valid', 'en_cours']:
                 if rec.opportunity_ids:
-                    if rec.opportunity_ids[0].stage_id in [self.env.ref('crm_extend.lead_stage_centre'), self.env.ref('crm_extend.lead_stage_non_arrive')]:
+                    if rec.opportunity_ids[0].stage_id == self.env.ref('crm_extend.lead_stage_arrive'):
                         rec.opportunity_ids[0].write({
                             'stage_id': self.env.ref('crm_extend.lead_stage_relance').id
                         })
                         state_str = '(Non validé)' if rec.state == 'non_valid' else '(En cours de validation)'
-                        user_id = rec.opportunity_ids[0].user_id if rec.state == 'non_valid' else rec.user_id
+                        user_id = rec.opportunity_ids[0].responsable_centre_id
                         summary = 'Relance du client %s %s' % (state_str, rec.name)
                         rec.opportunity_ids[0].activity_schedule(
-                            activity_type_id=self.env.ref('mail.mail_activity_data_todo').id,
+                            activity_type_id=self.env.ref('crm_extend.mail_activity_type_relance').id,
                             summary=summary,
                             user_id=user_id.id)
 
