@@ -90,12 +90,13 @@ class CrmLead(models.Model):
                     })
                 elif len(activity_relance_ids) < 5:
                     recent_date = max(activity_relance_ids.mapped('date_deadline'))
+                    print('recent_date', recent_date)
                     if recent_date and (fields.date.today() - recent_date).days > 7:
                         rec.activity_schedule(
                             activity_type_id=self.env.ref('crm_extend.mail_activity_type_relance').id,
                             summary='Relance du client %s' % (rec.partner_id.name if rec.partner_id else rec.name),
                             user_id=rec.responsable_centre_id.id if rec.responsable_centre_id else rec.user_id.id,
-                            date_deadline=fields.date.today() + datetime.timedelta(weeks=1)
+                            date_deadline=recent_date + datetime.timedelta(weeks=1)
                         )
 
         for rec in lead_nrp_ids:
@@ -110,11 +111,16 @@ class CrmLead(models.Model):
                 elif len(activity_nrp_ids) < 5:
                     recent_date = max(activity_nrp_ids.mapped('date_deadline'))
                     if recent_date and (fields.date.today() - recent_date).days >= 1:
-                        rec.opportunity_ids[0].activity_schedule(
+                        rec.activity_schedule(
                             activity_type_id=self.env.ref('crm_extend.mail_activity_type_nrp').id,
                             summary='NRP du client %s' % (rec.partner_id.name if rec.partner_id else rec.name),
-                            user_id=rec.resposable_centre_id.id if rec.resposable_centre_id else rec.user_id.id,
-                            date_deadline=fields.date.today() + datetime.timedelta(days=1)
+                            user_id=rec.responsable_centre_id.id if rec.responsable_centre_id else rec.user_id.id,
+                            date_deadline=recent_date + datetime.timedelta(days=1)
                         )
-
-
+            else:
+                rec.activity_schedule(
+                    activity_type_id=self.env.ref('crm_extend.mail_activity_type_nrp').id,
+                    summary='NRP du client %s' % (rec.partner_id.name if rec.partner_id else rec.name),
+                    user_id=rec.responsable_centre_id.id if rec.responsable_centre_id else rec.user_id.id,
+                    date_deadline=fields.date.today() + datetime.timedelta(days=1)
+                )
