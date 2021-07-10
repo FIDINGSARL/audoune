@@ -29,8 +29,6 @@
                     <field name="is_editable" invisible="1"/>
                     <field name="see_all" attrs="{'readonly': [('is_editable', '=', False)]}"/>
                     <field name="user_id" attrs="{'readonly': [('is_editable', '=', False)]}"/>
-                    <field name="is_delapartun" />
-                    <field name="is_delapartdeux" />
                     <field name="delapartun_id" domain="[('is_delapartun', '=', True)]" options="{'no_create': 1, 'no_open': 1}"/>
                     <field name="activate_2l2" invisible="1"/>
                     <field name="delapartdeux_id" domain="[('is_delapartdeux', '=', True)]"

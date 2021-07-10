@@ -8,7 +8,7 @@ class ProjectTask(models.Model):
     _inherit = 'project.task'
 
     dr_id = fields.Many2one('dossier.rembourssement', string="Dossier de Rembourssement")
-    assurance_id = fields.Many2one('pec.assurance', related='dr_id.assurance_id', string="Assurance")
+    assurance_id = fields.Many2one('pec.assurance', related='dr_id.assurance_id', string="Assurance", readonly=False)
     accorde_task_id = fields.Many2one('project.task', 'Provenant de l\'accord')
     assurance_ids = fields.One2many('partner.assurance', related='partner_id.assurance_ids', string="Assurances")
     cin = fields.Char(string='CIN', related='partner_id.cin')

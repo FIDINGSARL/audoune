@@ -3,71 +3,71 @@
     <data>
         <record id="ns_stage_1" model="project.task.type">
             <field name="sequence">1</field>
-            <field name="name">Attente Prescription</field>
+            <field name="name">Attente Prescription NS</field>
         </record>
         <record id="ns_stage_2" model="project.task.type">
             <field name="sequence">2</field>
-            <field name="name">Attente Depot</field>
+            <field name="name">Attente Depot NS</field>
         </record>
         <record id="ns_stage_3" model="project.task.type">
             <field name="sequence">3</field>
-            <field name="name">Retour pour complément</field>
+            <field name="name">Retour pour complément NS</field>
         </record>
         <record id="ns_stage_4" model="project.task.type">
             <field name="sequence">4</field>
-            <field name="name">attente accord CNOPS</field>
+            <field name="name">attente accord CNOPS NS</field>
         </record>
         <record id="ns_stage_5" model="project.task.type">
             <field name="sequence">5</field>
-            <field name="name">Attente remboursement mutuelle</field>
+            <field name="name">Attente remboursement mutuelle NS</field>
         </record>
         <record id="ns_stage_6" model="project.task.type">
             <field name="sequence">6</field>
-            <field name="name">Accordé</field>
+            <field name="name">Accordé NS</field>
         </record>
         <record id="ns_stage_7" model="project.task.type">
             <field name="sequence">7</field>
-            <field name="name">Attente remboursement</field>
+            <field name="name">Attente remboursement NS</field>
         </record>
         <record id="ns_stage_8" model="project.task.type">
             <field name="sequence">8</field>
-            <field name="name">Compteur remboursement</field>
+            <field name="name">Compteur remboursement NS</field>
         </record>
         <record id="ns_stage_9" model="project.task.type">
             <field name="sequence">9</field>
-            <field name="name">En cours de traitement</field>
+            <field name="name">En cours de traitement NS</field>
         </record>
         <record id="ns_stage_10" model="project.task.type">
             <field name="sequence">11</field>
-            <field name="name">En cours de paiement</field>
+            <field name="name">En cours de paiement NS</field>
         </record>
         <record id="ns_stage_11" model="project.task.type">
             <field name="sequence">12</field>
-            <field name="name">Remboursé</field>
+            <field name="name">Remboursé NS</field>
         </record>
         <record id="ns_stage_12" model="project.task.type">
             <field name="sequence">13</field>
-            <field name="name">Rejeté</field>
+            <field name="name">Rejeté NS</field>
         </record>
         <record id="ns_stage_13" model="project.task.type">
             <field name="sequence">14</field>
-            <field name="name">Payé</field>
+            <field name="name">Payé NS</field>
         </record>
         <record id="ns_stage_14" model="project.task.type">
             <field name="sequence">15</field>
-            <field name="name">Refus de paiement</field>
+            <field name="name">Refus de paiement NS</field>
         </record>
         <record id="ns_stage_15" model="project.task.type">
             <field name="sequence">16</field>
-            <field name="name">Attente prothèse</field>
+            <field name="name">Attente prothèse NS</field>
         </record>
         <record id="ns_stage_16" model="project.task.type">
             <field name="sequence">17</field>
-            <field name="name">Procédure amiable</field>
+            <field name="name">Procédure amiable NS</field>
         </record>
         <record id="ns_stage_17" model="project.task.type">
             <field name="sequence">18</field>
-            <field name="name">Procédure pénale</field>
+            <field name="name">Procédure pénale NS</field>
         </record>
 
         <record id="project_non_soumise" model="project.project">
@@ -81,31 +81,31 @@
 
         <record id="s_stage_1" model="project.task.type">
             <field name="sequence">1</field>
-            <field name="name">Attente Prescription</field>
+            <field name="name">Attente Prescription S</field>
         </record>
         <record id="s_stage_2" model="project.task.type">
             <field name="sequence">2</field>
-            <field name="name">Attente Depot</field>
+            <field name="name">Attente Depot S</field>
         </record>
         <record id="s_stage_3" model="project.task.type">
             <field name="sequence">3</field>
-            <field name="name">Attente Accord</field>
+            <field name="name">Attente Accord S</field>
         </record>
         <record id="s_stage_4" model="project.task.type">
             <field name="sequence">4</field>
-            <field name="name">Compteur accord</field>
+            <field name="name">Compteur accord S</field>
         </record>
         <record id="s_stage_5" model="project.task.type">
             <field name="sequence">5</field>
-            <field name="name">Rejeté</field>
+            <field name="name">Rejeté S</field>
         </record>
         <record id="s_stage_6" model="project.task.type">
             <field name="sequence">6</field>
-            <field name="name">Accordé</field>
+            <field name="name">Accordé S</field>
         </record>
         <record id="s_stage_7" model="project.task.type">
             <field name="sequence">7</field>
-            <field name="name">Payé</field>
+            <field name="name">Payé S</field>
         </record>
 
         <record id="project_soumise" model="project.project">
@@ -122,7 +122,7 @@
 
         <record id="pc_stage_2" model="project.task.type">
             <field name="sequence">2</field>
-            <field name="name">Payé</field>
+            <field name="name">Payé PC</field>
         </record>
 
         <record id="project_partie_client" model="project.project">
