@@ -30,14 +30,15 @@ class DossierRembourssement(models.Model):
         else:
             project_id = self.env.ref('project_extend.project_partie_client')
             stage_id = self.env.ref('project_extend.pc_stage_1')
-
-        task_id = self.env['project.task'].create({
-            'project_id': project_id.id,
-            'name': partner_id.name + ' ' + assurance_id.name if assurance_id else partner_id.name + ' partie client',
-            'partner_id': partner_id.id,
-            'stage_id': stage_id.id,
-            # 'pec_id': vals['id']
-        })
+        if not vals.get('task_id', False):
+            task_id = self.env['project.task'].create({
+                'project_id': project_id.id,
+                'name': partner_id.name + ' ' + assurance_id.name if assurance_id else partner_id.name + ' partie client',
+                'partner_id': partner_id.id,
+                'stage_id': stage_id.id
+            })
+        else:
+            task_id = self.env['project.task'].browse(vals['task_id'])
         vals['task_id'] = task_id.id
         res = super(DossierRembourssement, self).create(vals)
         task_id.write({
